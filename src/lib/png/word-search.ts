@@ -1,5 +1,6 @@
 import type { WSGrid } from "../puzzles/word-search/types";
 import { WS_DIRECTIONS, type WSDirection } from "../puzzles/word-search/types";
+import { sanitizeFilename } from "../../store/puzzle-store";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -14,7 +15,8 @@ function getSolutionCells(grid: WSGrid): Set<string> {
 
 export function downloadWordSearchPNG(
   grid: WSGrid,
-  mode: "students" | "solution"
+  mode: "students" | "solution",
+  title?: string
 ) {
   const cellSize = 32;
   const padding = 8;
@@ -66,8 +68,8 @@ export function downloadWordSearchPNG(
     ctx.fillText(grid.words[i].word, padding, listY + i * 14);
   }
 
-  const filename =
-    mode === "solution" ? "sopa-de-letras-solucion.png" : "sopa-de-letras.png";
+  const base = sanitizeFilename(title || "", "sopa-de-letras");
+  const filename = mode === "solution" ? `${base}-solucion.png` : `${base}.png`;
 
   const link = document.createElement("a");
   link.download = filename;

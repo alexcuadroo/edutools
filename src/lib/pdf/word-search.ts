@@ -1,6 +1,7 @@
 import jsPDF from "jspdf";
 import type { WSGrid } from "../puzzles/word-search/types";
 import { WS_DIRECTIONS, type WSDirection } from "../puzzles/word-search/types";
+import { sanitizeFilename } from "../../store/puzzle-store";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -74,7 +75,8 @@ function drawWordList(
 
 export function generateWordSearchPDF(
   grid: WSGrid,
-  mode: "students" | "solution"
+  mode: "students" | "solution",
+  title?: string
 ) {
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
@@ -85,18 +87,19 @@ export function generateWordSearchPDF(
   const gridY = margin + 10;
   const solution = mode === "solution" ? getSolutionCells(grid) : undefined;
 
-  const title =
-    mode === "solution"
-      ? "Sopa de Letras - Solución"
-      : "Sopa de Letras";
+  const displayTitle = title || "Sopa de Letras";
+  const pdfTitle =
+    mode === "solution" ? `${displayTitle} - Solución` : displayTitle;
 
   pdf.setFontSize(18);
-  pdf.text(title, pageWidth / 2, margin, { align: "center" });
+  pdf.text(pdfTitle, pageWidth / 2, margin, { align: "center" });
   drawGrid(pdf, grid.grid, gridX, gridY, cellSize, solution);
   drawWordList(pdf, grid, margin, gridY + gridTotal + 10, pageWidth);
 
   const filename =
-    mode === "solution" ? "sopa-de-letras-solucion.pdf" : "sopa-de-letras.pdf";
+    mode === "solution"
+      ? `${sanitizeFilename(title || "", "sopa-de-letras")}-solucion.pdf`
+      : `${sanitizeFilename(title || "", "sopa-de-letras")}.pdf`;
 
   pdf.save(filename);
 }

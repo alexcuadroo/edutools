@@ -1,6 +1,11 @@
 import type { CWGrid } from "../puzzles/crossword/types";
+import { sanitizeFilename } from "../../store/puzzle-store";
 
-export function downloadCrosswordPNG(grid: CWGrid, mode: "blank" | "solution") {
+export function downloadCrosswordPNG(
+  grid: CWGrid,
+  mode: "blank" | "solution",
+  title?: string
+) {
   const cellSize = 32;
   const padding = 8;
 
@@ -97,7 +102,8 @@ export function downloadCrosswordPNG(grid: CWGrid, mode: "blank" | "solution") {
     }
   }
 
-  const filename = mode === "solution" ? "crucigrama-solucion.png" : "crucigrama.png";
+  const base = sanitizeFilename(title || "", "crucigrama");
+  const filename = mode === "solution" ? `${base}-solucion.png` : `${base}.png`;
 
   const link = document.createElement("a");
   link.download = filename;

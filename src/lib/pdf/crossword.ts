@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import type { CWGrid } from "../puzzles/crossword/types";
+import { sanitizeFilename } from "../../store/puzzle-store";
 
 function drawCrosswordGrid(pdf: jsPDF, grid: CWGrid, x: number, y: number, cellSize: number) {
   for (let r = 0; r < grid.rows; r++) {
@@ -33,7 +34,11 @@ function drawCrosswordGrid(pdf: jsPDF, grid: CWGrid, x: number, y: number, cellS
   }
 }
 
-export function generateCrosswordPDF(grid: CWGrid, mode: "blank" | "solution") {
+export function generateCrosswordPDF(
+  grid: CWGrid,
+  mode: "blank" | "solution",
+  title?: string
+) {
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;
@@ -43,9 +48,12 @@ export function generateCrosswordPDF(grid: CWGrid, mode: "blank" | "solution") {
   const gridX = (pageWidth - gridTotalX) / 2;
   const gridY = margin + 10;
 
+  const displayTitle = title || "Crucigrama";
+
   if (mode === "solution") {
+    const pdfTitle = `${displayTitle} - Solución`;
     pdf.setFontSize(18);
-    pdf.text("Crucigrama - Soluci\u00F3n", pageWidth / 2, margin, { align: "center" });
+    pdf.text(pdfTitle, pageWidth / 2, margin, { align: "center" });
     drawCrosswordGrid(pdf, grid, gridX, gridY, cellSize);
 
     const across = grid.words.filter((w) => w.direction === "across");
@@ -70,12 +78,14 @@ export function generateCrosswordPDF(grid: CWGrid, mode: "blank" | "solution") {
       }
     }
 
-    pdf.save("crucigrama-solucion.pdf");
+    pdf.save(
+      `${sanitizeFilename(title || "", "crucigrama")}-solucion.pdf`
+    );
     return;
   }
 
   pdf.setFontSize(18);
-  pdf.text("Crucigrama", pageWidth / 2, margin, { align: "center" });
+  pdf.text(displayTitle, pageWidth / 2, margin, { align: "center" });
 
   const blankGrid: CWGrid = {
     ...grid,
@@ -107,5 +117,5 @@ export function generateCrosswordPDF(grid: CWGrid, mode: "blank" | "solution") {
     }
   }
 
-  pdf.save("crucigrama.pdf");
+  pdf.save(`${sanitizeFilename(title || "", "crucigrama")}.pdf`);
 }
