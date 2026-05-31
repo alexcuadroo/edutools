@@ -1,33 +1,28 @@
 import { create } from "zustand";
+import type { WordItem } from "../lib/puzzles/shared-types";
+import type { WSGrid } from "../lib/puzzles/word-search/types";
+import type { CWGrid } from "../lib/puzzles/crossword/types";
 
 interface PuzzleState {
-  activeTab: "word-search" | "crossword";
-  setActiveTab: (tab: "word-search" | "crossword") => void;
-
   wordSearchTitle: string;
   setWordSearchTitle: (t: string) => void;
-  wordSearchWords: { word: string; clue: string }[];
-  setWordSearchWords: (words: { word: string; clue: string }[]) => void;
-  wordSearchResult: unknown;
-  setWordSearchResult: (result: unknown) => void;
+  wordSearchWords: WordItem[];
+  setWordSearchWords: (words: WordItem[]) => void;
+  wordSearchResult: WSGrid | null;
+  setWordSearchResult: (result: WSGrid | null) => void;
 
   crosswordTitle: string;
   setCrosswordTitle: (t: string) => void;
-  crosswordWords: { word: string; clue: string }[];
-  setCrosswordWords: (words: { word: string; clue: string }[]) => void;
-  crosswordResult: unknown;
-  setCrosswordResult: (result: unknown) => void;
+  crosswordWords: WordItem[];
+  setCrosswordWords: (words: WordItem[]) => void;
+  crosswordResult: CWGrid | null;
+  setCrosswordResult: (result: CWGrid | null) => void;
 
-  loading: boolean;
-  setLoading: (v: boolean) => void;
   error: string | null;
   setError: (e: string | null) => void;
 }
 
 export const usePuzzleStore = create<PuzzleState>((set) => ({
-  activeTab: "word-search",
-  setActiveTab: (tab) => set({ activeTab: tab, error: null }),
-
   wordSearchTitle: "",
   setWordSearchTitle: (title) => set({ wordSearchTitle: title }),
   wordSearchWords: [],
@@ -42,8 +37,6 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   crosswordResult: null,
   setCrosswordResult: (result) => set({ crosswordResult: result }),
 
-  loading: false,
-  setLoading: (v) => set({ loading: v }),
   error: null,
   setError: (e) => set({ error: e }),
 }));
