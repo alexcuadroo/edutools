@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
 
+html {
+  scrollbar-gutter: stable;
+  scrollbar-color: #4f46e5 transparent;
+  scrollbar-width: thin;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
