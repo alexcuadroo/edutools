@@ -1,36 +1,14 @@
 import CrosswordInput from "../components/puzzles/Crossword/CrosswordInput";
 import CrosswordPreview from "../components/puzzles/Crossword/CrosswordPreview";
-import { usePuzzleStore } from "../store/puzzle-store";
+import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
 
 export default function CrosswordPage() {
-  const { loading, error } = usePuzzleStore();
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Crucigrama</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Ingresa pares palabra:pista y genera un crucigrama listo para
-          imprimir.
-        </p>
-      </div>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          {error}
-        </div>
-      )}
-
-      <CrosswordInput />
-
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-200 border-t-indigo-600" />
-          <p className="text-gray-400 text-sm mt-2">Generando crucigrama...</p>
-        </div>
-      )}
-
-      <CrosswordPreview />
-    </div>
+    <PuzzlePageLayout
+      title="Crucigrama"
+      description="Ingresa pares palabra:pista y genera un crucigrama listo para imprimir."
+      input={<CrosswordInput />}
+      preview={<CrosswordPreview />}
+    />
   );
 }

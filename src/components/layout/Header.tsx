@@ -14,20 +14,24 @@ export default function Header() {
         <Link to="/" className="text-lg font-bold text-indigo-600 no-underline">
           EduTools
         </Link>
-        <nav className="flex gap-1">
-          {TABS.map((tab) => (
-            <Link
-              key={tab.path}
-              to={tab.path}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
-                location.pathname.startsWith(tab.path)
-                  ? "bg-indigo-100 text-indigo-700"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              {tab.label}
-            </Link>
-          ))}
+        <nav aria-label="Navegación principal" className="flex gap-1">
+          {TABS.map((tab) => {
+            const isActive = location.pathname.startsWith(tab.path);
+            return (
+              <Link
+                key={tab.path}
+                to={tab.path}
+                aria-current={isActive ? "page" : undefined}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
+                  isActive
+                    ? "bg-indigo-100 text-indigo-700"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>
