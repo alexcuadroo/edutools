@@ -32,7 +32,8 @@ function directionLetter(dir: string): string {
 }
 
 export default function WordSearchPreview() {
-  const { wordSearchResult } = usePuzzleStore();
+  const { wordSearchResult, wordSearchTitle } = usePuzzleStore();
+  const title = wordSearchTitle;
   const grid = wordSearchResult as WSGrid | null;
   if (!grid) {
     return null;
@@ -53,15 +54,15 @@ export default function WordSearchPreview() {
               {
                 label: "PDF",
                 options: [
-                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students") },
-                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution") },
+                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", title) },
+                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", title) },
                 ],
               },
               {
                 label: "PNG",
                 options: [
-                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students") },
-                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution") },
+                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students", title) },
+                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution", title) },
                 ],
               },
             ]}

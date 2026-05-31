@@ -7,11 +7,13 @@ export default function CrosswordInput() {
   const {
     setCrosswordWords,
     setCrosswordResult,
+    setCrosswordTitle,
     setLoading,
     setError,
   } = usePuzzleStore();
 
   const [wordsText, setWordsText] = useState("");
+  const [title, setTitle] = useState("");
 
   const handleGenerate = () => {
     const lines = wordsText
@@ -44,6 +46,7 @@ export default function CrosswordInput() {
     }
 
     setCrosswordWords(items);
+    setCrosswordTitle(title);
     setLoading(true);
     setError(null);
 
@@ -71,6 +74,7 @@ export default function CrosswordInput() {
         "JUPITER: Planeta mas grande\n" +
         "SATURNO: Planeta con anillos"
     );
+    setTitle("El Sistema Solar");
   };
 
   return (
@@ -79,7 +83,7 @@ export default function CrosswordInput() {
         <h2 className="text-lg font-semibold text-gray-900">Configuración</h2>
         <button
           onClick={handleLoadExample}
-          className="text-xs text-indigo-600 hover:text-indigo-800 underline"
+          className="cursor-pointer text-xs text-indigo-600 hover:text-indigo-800 underline"
         >
           Cargar ejemplo
         </button>
@@ -101,9 +105,22 @@ export default function CrosswordInput() {
         </p>
       </div>
 
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Título (opcional)
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ej: El Sistema Solar"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none"
+        />
+      </div>
+
       <button
         onClick={handleGenerate}
-        className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+        className="cursor-pointer bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
       >
         Generar
       </button>

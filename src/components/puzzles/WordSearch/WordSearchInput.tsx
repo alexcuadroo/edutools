@@ -4,11 +4,12 @@ import { wordSearchGenerator } from "../../../lib/puzzles/word-search/generator"
 import type { WSGrid } from "../../../lib/puzzles/word-search/types";
 
 export default function WordSearchInput() {
-  const { setWordSearchWords, setWordSearchResult, setLoading, setError } =
+  const { setWordSearchWords, setWordSearchResult, setWordSearchTitle, setLoading, setError } =
     usePuzzleStore();
 
   const [wordsText, setWordsText] = useState("");
   const [gridSize, setGridSize] = useState(15);
+  const [title, setTitle] = useState("");
 
   const handleGenerate = () => {
     const words = wordsText
@@ -24,6 +25,7 @@ export default function WordSearchInput() {
     const items = words.map((word) => ({ word, clue: "" }));
 
     setWordSearchWords(items);
+    setWordSearchTitle(title);
     setLoading(true);
     setError(null);
 
@@ -46,6 +48,7 @@ export default function WordSearchInput() {
     setWordsText(
       "ESCUELA\nMAESTRO\nESTUDIANTE\nLIBRO\nLAPIZ\nTAREA\nCIENCIA\nHISTORIA"
     );
+    setTitle("La Escuela");
   };
 
   return (
@@ -54,7 +57,7 @@ export default function WordSearchInput() {
         <h2 className="text-lg font-semibold text-gray-900">Configuración</h2>
         <button
           onClick={handleLoadExample}
-          className="text-xs text-indigo-600 hover:text-indigo-800 underline"
+          className="cursor-pointer text-xs text-indigo-600 hover:text-indigo-800 underline"
         >
           Cargar ejemplo
         </button>
@@ -70,6 +73,19 @@ export default function WordSearchInput() {
           rows={6}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y"
           placeholder="ESCUELA, MAESTRO, ESTUDIANTE, ..."
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Título (opcional)
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ej: La Escuela"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none"
         />
       </div>
 
@@ -93,7 +109,7 @@ export default function WordSearchInput() {
 
         <button
           onClick={handleGenerate}
-          className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="cursor-pointer bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
           Generar
         </button>

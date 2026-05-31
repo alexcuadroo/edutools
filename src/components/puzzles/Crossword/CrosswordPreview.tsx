@@ -5,7 +5,8 @@ import { downloadCrosswordPNG } from "../../../lib/png/crossword";
 import DownloadDropdown from "../../ui/DownloadDropdown";
 
 export default function CrosswordPreview() {
-  const { crosswordResult } = usePuzzleStore();
+  const { crosswordResult, crosswordTitle } = usePuzzleStore();
+  const title = crosswordTitle;
   const grid = crosswordResult as CWGrid | null;
   if (!grid) {
     return null;
@@ -27,15 +28,15 @@ export default function CrosswordPreview() {
               {
                 label: "PDF",
                 options: [
-                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank") },
-                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution") },
+                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank", title) },
+                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution", title) },
                 ],
               },
               {
                 label: "PNG",
                 options: [
-                  { label: "Con pistas", onClick: () => downloadCrosswordPNG(grid, "blank") },
-                  { label: "Con soluciones", onClick: () => downloadCrosswordPNG(grid, "solution") },
+                  { label: "Con pistas", onClick: () => downloadCrosswordPNG(grid, "blank", title) },
+                  { label: "Con soluciones", onClick: () => downloadCrosswordPNG(grid, "solution", title) },
                 ],
               },
             ]}
