@@ -1,10 +1,11 @@
 import type { CWGrid } from "../../../lib/puzzles/crossword/types";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateCrosswordPDF } from "../../../lib/pdf/crossword";
+import { downloadCrosswordPNG } from "../../../lib/png/crossword";
+import DownloadDropdown from "../../ui/DownloadDropdown";
 
 export default function CrosswordPreview() {
   const { crosswordResult } = usePuzzleStore();
-
   const grid = crosswordResult as CWGrid | null;
   if (!grid) {
     return null;
@@ -14,9 +15,6 @@ export default function CrosswordPreview() {
   const across = grid.words.filter((w) => w.direction === "across");
   const down = grid.words.filter((w) => w.direction === "down");
 
-  const btnBase =
-    "cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border";
-
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl border border-gray-200 p-6 overflow-x-auto">
@@ -24,34 +22,27 @@ export default function CrosswordPreview() {
           <h2 className="text-lg font-semibold text-gray-900">
             Previsualización
           </h2>
-          <div className="flex flex-col items-end gap-1.5">
-            <span className="text-xs text-gray-400 font-medium tracking-wide uppercase">
-              Descargar PDF
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => generateCrosswordPDF(grid, "blank")}
-                className={`${btnBase} bg-white text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Con pistas
-              </button>
-              <button
-                onClick={() => generateCrosswordPDF(grid, "solution")}
-                className={`${btnBase} bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Con soluciones
-              </button>
-            </div>
-          </div>
+          <DownloadDropdown
+            groups={[
+              {
+                label: "PDF",
+                options: [
+                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank") },
+                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution") },
+                ],
+              },
+              {
+                label: "PNG",
+                options: [
+                  { label: "Con pistas", onClick: () => downloadCrosswordPNG(grid, "blank") },
+                  { label: "Con soluciones", onClick: () => downloadCrosswordPNG(grid, "solution") },
+                ],
+              },
+            ]}
+          />
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center bg-white">
           <div
             style={{
               display: "grid",

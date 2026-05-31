@@ -2,6 +2,8 @@ import type { WSGrid, WSWordPlacement } from "../../../lib/puzzles/word-search/t
 import { WS_DIRECTION_LABELS, type WSDirection } from "../../../lib/puzzles/word-search/types";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateWordSearchPDF } from "../../../lib/pdf/word-search";
+import { downloadWordSearchPNG } from "../../../lib/png/word-search";
+import DownloadDropdown from "../../ui/DownloadDropdown";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -31,7 +33,6 @@ function directionLetter(dir: string): string {
 
 export default function WordSearchPreview() {
   const { wordSearchResult } = usePuzzleStore();
-
   const grid = wordSearchResult as WSGrid | null;
   if (!grid) {
     return null;
@@ -40,9 +41,6 @@ export default function WordSearchPreview() {
   const solutionCells = getSolutionCells(grid);
   const cellSize = Math.min(40, 500 / grid.size);
 
-  const btnBase =
-    "cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border";
-
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl border border-gray-200 p-6 overflow-x-auto">
@@ -50,43 +48,27 @@ export default function WordSearchPreview() {
           <h2 className="text-lg font-semibold text-gray-900">
             Previsualización
           </h2>
-          <div className="flex flex-col items-end gap-1.5">
-            <span className="text-xs text-gray-400 font-medium tracking-wide uppercase">
-              Descargar PDF
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => generateWordSearchPDF(grid, "students")}
-                className={`${btnBase} bg-white text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Sin pistas
-              </button>
-              <button
-                onClick={() => generateWordSearchPDF(grid, "clues")}
-                className={`${btnBase} bg-white text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Con pistas
-              </button>
-              <button
-                onClick={() => generateWordSearchPDF(grid, "solution")}
-                className={`${btnBase} bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Con soluciones
-              </button>
-            </div>
-          </div>
+          <DownloadDropdown
+            groups={[
+              {
+                label: "PDF",
+                options: [
+                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students") },
+                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution") },
+                ],
+              },
+              {
+                label: "PNG",
+                options: [
+                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students") },
+                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution") },
+                ],
+              },
+            ]}
+          />
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center bg-white">
           <div
             style={{
               display: "grid",
@@ -124,7 +106,7 @@ export default function WordSearchPreview() {
           {grid.words.map((w: WSWordPlacement, i: number) => (
             <div
               key={i}
-              className="flex items-center gap-2 text-sm px-2 py-1 rounded hover:bg-gray-50"
+              className="flex items-center gap-2 text-sm px-2 py-1"
             >
               <span className="font-mono font-semibold text-indigo-600">
                 {w.word}
@@ -132,11 +114,6 @@ export default function WordSearchPreview() {
               <span className="text-gray-400 text-xs">
                 {directionLetter(w.direction)}
               </span>
-              {w.clue && (
-                <span className="text-gray-500 text-xs truncate">
-                  — {w.clue}
-                </span>
-              )}
             </div>
           ))}
         </div>
