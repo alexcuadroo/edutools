@@ -4,15 +4,10 @@ import { wordSearchGenerator } from "../../../lib/puzzles/word-search/generator"
 import type { WSGrid } from "../../../lib/puzzles/word-search/types";
 
 export default function WordSearchInput() {
-  const {
-    setWordSearchWords,
-    setWordSearchResult,
-    setLoading,
-    setError,
-  } = usePuzzleStore();
+  const { setWordSearchWords, setWordSearchResult, setLoading, setError } =
+    usePuzzleStore();
 
   const [wordsText, setWordsText] = useState("");
-  const [cluesText, setCluesText] = useState("");
   const [gridSize, setGridSize] = useState(15);
 
   const handleGenerate = () => {
@@ -26,15 +21,7 @@ export default function WordSearchInput() {
       return;
     }
 
-    const clues = cluesText
-      .split("\n")
-      .map((c) => c.trim())
-      .filter((c) => c.length > 0);
-
-    const items = words.map((word, i) => ({
-      word,
-      clue: clues[i] ?? "",
-    }));
+    const items = words.map((word) => ({ word, clue: "" }));
 
     setWordSearchWords(items);
     setLoading(true);
@@ -56,22 +43,9 @@ export default function WordSearchInput() {
   };
 
   const handleLoadExample = () => {
-    const exampleWords = [
-      "ESCUELA", "MAESTRO", "ESTUDIANTE", "LIBRO",
-      "LAPIZ", "TAREA", "CIENCIA", "HISTORIA",
-    ];
-    const exampleClues = [
-      "Lugar donde se aprende",
-      "Persona que enseña",
-      "Persona que aprende",
-      "Contiene conocimiento",
-      "Sirve para escribir",
-      "Trabajo para casa",
-      "Estudio de la naturaleza",
-      "Estudio del pasado",
-    ];
-    setWordsText(exampleWords.join("\n"));
-    setCluesText(exampleClues.join("\n"));
+    setWordsText(
+      "ESCUELA\nMAESTRO\nESTUDIANTE\nLIBRO\nLAPIZ\nTAREA\nCIENCIA\nHISTORIA"
+    );
   };
 
   return (
@@ -96,19 +70,6 @@ export default function WordSearchInput() {
           rows={6}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y"
           placeholder="ESCUELA, MAESTRO, ESTUDIANTE, ..."
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Pistas / Descripciones (una por línea, opcional)
-        </label>
-        <textarea
-          value={cluesText}
-          onChange={(e) => setCluesText(e.target.value)}
-          rows={4}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y"
-          placeholder="Lugar donde se aprende, Persona que enseña, ..."
         />
       </div>
 

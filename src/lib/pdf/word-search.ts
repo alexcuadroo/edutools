@@ -33,11 +33,11 @@ function drawGrid(
         pdf.setFillColor(220, 240, 255);
         pdf.rect(px, py, cellSize, cellSize, "F");
       }
-      pdf.setFontSize(cellSize * 0.55);
+      const fontSize = cellSize * 0.72;
+      pdf.setFontSize(fontSize);
       pdf.setTextColor(0);
-      pdf.text(grid[r][c], px + cellSize / 2, py + cellSize / 2 + cellSize * 0.18, {
+      pdf.text(grid[r][c], px + cellSize / 2, py + cellSize / 2 + fontSize * 0.32, {
         align: "center",
-        baseline: "middle",
       });
     }
   }
@@ -48,8 +48,7 @@ function drawWordList(
   grid: WSGrid,
   x: number,
   y: number,
-  pageWidth: number,
-  showClues: boolean
+  pageWidth: number
 ) {
   if (grid.words.length <= 12) {
     const cols = grid.words.length <= 6 ? 1 : grid.words.length <= 8 ? 2 : 3;
@@ -59,11 +58,7 @@ function drawWordList(
       const row = Math.floor(i / cols);
       const wx = x + col * ((pageWidth - x * 2) / cols);
       const wy = y + row * 8;
-      if (showClues && grid.words[i].clue) {
-        pdf.text(`${grid.words[i].word}: ${grid.words[i].clue}`, wx, wy);
-      } else {
-        pdf.text(grid.words[i].word, wx, wy);
-      }
+      pdf.text(grid.words[i].word, wx, wy);
     }
   } else {
     pdf.setFontSize(8);
@@ -72,28 +67,23 @@ function drawWordList(
       const row = Math.floor(i / 3);
       const wx = x + col * 55;
       const wy = y + row * 7;
-      if (showClues && grid.words[i].clue) {
-        pdf.text(`${grid.words[i].word}: ${grid.words[i].clue}`, wx, wy);
-      } else {
-        pdf.text(grid.words[i].word, wx, wy);
-      }
+      pdf.text(grid.words[i].word, wx, wy);
     }
   }
 }
 
 export function generateWordSearchPDF(
   grid: WSGrid,
-  mode: "students" | "clues" | "solution"
+  mode: "students" | "solution"
 ) {
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;
-  const cellSize = Math.min(12, (pageWidth - margin * 2) / grid.size);
+  const cellSize = Math.min(14, (pageWidth - margin * 2) / grid.size);
   const gridTotal = cellSize * grid.size;
   const gridX = (pageWidth - gridTotal) / 2;
   const gridY = margin + 10;
   const solution = mode === "solution" ? getSolutionCells(grid) : undefined;
-  const showClues = mode !== "students";
 
   const title =
     mode === "solution"
@@ -103,14 +93,10 @@ export function generateWordSearchPDF(
   pdf.setFontSize(18);
   pdf.text(title, pageWidth / 2, margin, { align: "center" });
   drawGrid(pdf, grid.grid, gridX, gridY, cellSize, solution);
-  drawWordList(pdf, grid, margin, gridY + gridTotal + 10, pageWidth, showClues);
+  drawWordList(pdf, grid, margin, gridY + gridTotal + 10, pageWidth);
 
   const filename =
-    mode === "solution"
-      ? "sopa-de-letras-solucion.pdf"
-      : mode === "clues"
-        ? "sopa-de-letras-pistas.pdf"
-        : "sopa-de-letras.pdf";
+    mode === "solution" ? "sopa-de-letras-solucion.pdf" : "sopa-de-letras.pdf";
 
   pdf.save(filename);
 }
