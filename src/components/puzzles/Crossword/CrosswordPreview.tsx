@@ -1,4 +1,4 @@
-import type { CWGrid } from "../../../lib/puzzles/crossword/types";
+import Card from "../../ui/Card";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateCrosswordPDF } from "../../../lib/pdf/crossword";
 import { downloadCrosswordPNG } from "../../../lib/png/crossword";
@@ -6,11 +6,8 @@ import DownloadDropdown from "../../ui/DownloadDropdown";
 
 export default function CrosswordPreview() {
   const { crosswordResult, crosswordTitle } = usePuzzleStore();
-  const title = crosswordTitle;
-  const grid = crosswordResult as CWGrid | null;
-  if (!grid) {
-    return null;
-  }
+  const grid = crosswordResult;
+  if (!grid) return null;
 
   const cellSize = Math.min(40, 500 / grid.cols);
   const across = grid.words.filter((w) => w.direction === "across");
@@ -18,25 +15,23 @@ export default function CrosswordPreview() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-gray-200 p-6 overflow-x-auto">
+      <Card className="overflow-x-auto">
         <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Previsualización
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Previsualización</h2>
           <DownloadDropdown
             groups={[
               {
                 label: "PDF",
                 options: [
-                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank", title) },
-                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution", title) },
+                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank", crosswordTitle) },
+                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution", crosswordTitle) },
                 ],
               },
               {
                 label: "PNG",
                 options: [
-                  { label: "Con pistas", onClick: () => downloadCrosswordPNG(grid, "blank", title) },
-                  { label: "Con soluciones", onClick: () => downloadCrosswordPNG(grid, "solution", title) },
+                  { label: "Con pistas", onClick: () => downloadCrosswordPNG(grid, "blank", crosswordTitle) },
+                  { label: "Con soluciones", onClick: () => downloadCrosswordPNG(grid, "solution", crosswordTitle) },
                 ],
               },
             ]}
@@ -79,46 +74,38 @@ export default function CrosswordPreview() {
                     )}
                   </div>
                 );
-              })
+              }),
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       <div className="grid sm:grid-cols-2 gap-6">
         {across.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
-              Horizontales
-            </h3>
+          <Card>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Horizontales</h3>
             <ul className="space-y-1.5">
-              {across.map((w, i) => (
-                <li key={i} className="text-sm flex gap-2">
-                  <span className="font-semibold text-indigo-600 shrink-0">
-                    {w.number}.
-                  </span>
+              {across.map((w) => (
+                <li key={w.number} className="text-sm flex gap-2">
+                  <span className="font-semibold text-indigo-600 shrink-0">{w.number}.</span>
                   <span>{w.clue}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         )}
         {down.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
-              Verticales
-            </h3>
+          <Card>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Verticales</h3>
             <ul className="space-y-1.5">
-              {down.map((w, i) => (
-                <li key={i} className="text-sm flex gap-2">
-                  <span className="font-semibold text-indigo-600 shrink-0">
-                    {w.number}.
-                  </span>
+              {down.map((w) => (
+                <li key={w.number} className="text-sm flex gap-2">
+                  <span className="font-semibold text-indigo-600 shrink-0">{w.number}.</span>
                   <span>{w.clue}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         )}
       </div>
     </div>

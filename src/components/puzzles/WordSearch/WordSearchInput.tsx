@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { wordSearchGenerator } from "../../../lib/puzzles/word-search/generator";
 import type { WSGrid } from "../../../lib/puzzles/word-search/types";
 
 export default function WordSearchInput() {
-  const { setWordSearchWords, setWordSearchResult, setWordSearchTitle, setLoading, setError } =
+  const { setWordSearchWords, setWordSearchResult, setWordSearchTitle, setLoading } =
     usePuzzleStore();
 
   const [wordsText, setWordsText] = useState("");
@@ -18,7 +19,7 @@ export default function WordSearchInput() {
       .filter((w) => w.length >= 2 && w.length <= 20);
 
     if (words.length < 3) {
-      setError("Ingresa al menos 3 palabras");
+      toast.warning("Ingresa al menos 3 palabras");
       return;
     }
 
@@ -27,7 +28,6 @@ export default function WordSearchInput() {
     setWordSearchWords(items);
     setWordSearchTitle(title);
     setLoading(true);
-    setError(null);
 
     setTimeout(() => {
       try {
@@ -36,8 +36,9 @@ export default function WordSearchInput() {
           size: gridSize,
         });
         setWordSearchResult(result.grid as WSGrid);
+        toast.success("¡Sopa de letras generada!");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Error al generar");
+        toast.error(e instanceof Error ? e.message : "Error al generar");
       } finally {
         setLoading(false);
       }

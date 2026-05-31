@@ -1,4 +1,3 @@
-import jsPDF from "jspdf";
 import type { WSGrid } from "../puzzles/word-search/types";
 import { WS_DIRECTIONS, type WSDirection } from "../puzzles/word-search/types";
 import { sanitizeFilename } from "../../store/puzzle-store";
@@ -15,7 +14,7 @@ function getSolutionCells(grid: WSGrid): Set<string> {
 }
 
 function drawGrid(
-  pdf: jsPDF,
+  pdf: InstanceType<typeof import("jspdf").default>,
   grid: string[][],
   x: number,
   y: number,
@@ -45,7 +44,7 @@ function drawGrid(
 }
 
 function drawWordList(
-  pdf: jsPDF,
+  pdf: InstanceType<typeof import("jspdf").default>,
   grid: WSGrid,
   x: number,
   y: number,
@@ -73,11 +72,12 @@ function drawWordList(
   }
 }
 
-export function generateWordSearchPDF(
+export async function generateWordSearchPDF(
   grid: WSGrid,
   mode: "students" | "solution",
   title?: string
 ) {
+  const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;

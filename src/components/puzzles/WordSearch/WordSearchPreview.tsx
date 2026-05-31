@@ -1,3 +1,4 @@
+import Card from "../../ui/Card";
 import type { WSGrid, WSWordPlacement } from "../../../lib/puzzles/word-search/types";
 import { WS_DIRECTION_LABELS, type WSDirection } from "../../../lib/puzzles/word-search/types";
 import { usePuzzleStore } from "../../../store/puzzle-store";
@@ -26,43 +27,36 @@ function getSolutionCells(grid: WSGrid): Set<string> {
 }
 
 function directionLetter(dir: string): string {
-  return (
-    WS_DIRECTION_LABELS[dir as WSDirection] ?? dir.substring(0, 1).toUpperCase()
-  );
+  return WS_DIRECTION_LABELS[dir as WSDirection] ?? dir.substring(0, 1).toUpperCase();
 }
 
 export default function WordSearchPreview() {
   const { wordSearchResult, wordSearchTitle } = usePuzzleStore();
-  const title = wordSearchTitle;
-  const grid = wordSearchResult as WSGrid | null;
-  if (!grid) {
-    return null;
-  }
+  const grid = wordSearchResult;
+  if (!grid) return null;
 
   const solutionCells = getSolutionCells(grid);
   const cellSize = Math.min(40, 500 / grid.size);
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-gray-200 p-6 overflow-x-auto">
+      <Card className="overflow-x-auto">
         <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Previsualización
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Previsualización</h2>
           <DownloadDropdown
             groups={[
               {
                 label: "PDF",
                 options: [
-                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", title) },
-                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", title) },
+                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle) },
+                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", wordSearchTitle) },
                 ],
               },
               {
                 label: "PNG",
                 options: [
-                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students", title) },
-                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution", title) },
+                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students", wordSearchTitle) },
+                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution", wordSearchTitle) },
                 ],
               },
             ]}
@@ -86,39 +80,28 @@ export default function WordSearchPreview() {
                     width: cellSize,
                     height: cellSize,
                     fontSize: cellSize * 0.55,
-                    backgroundColor: solutionCells.has(`${r},${c}`)
-                      ? "#dbeafe"
-                      : "white",
+                    backgroundColor: solutionCells.has(`${r},${c}`) ? "#dbeafe" : "white",
                   }}
                 >
                   {cell}
                 </div>
-              ))
+              )),
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">
-          Palabras a buscar
-        </h2>
+      <Card>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Palabras a buscar</h2>
         <div className="grid sm:grid-cols-2 gap-2">
           {grid.words.map((w: WSWordPlacement, i: number) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 text-sm px-2 py-1"
-            >
-              <span className="font-mono font-semibold text-indigo-600">
-                {w.word}
-              </span>
-              <span className="text-gray-400 text-xs">
-                {directionLetter(w.direction)}
-              </span>
+            <div key={i} className="flex items-center gap-2 text-sm px-2 py-1">
+              <span className="font-mono font-semibold text-indigo-600">{w.word}</span>
+              <span className="text-gray-400 text-xs">{directionLetter(w.direction)}</span>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

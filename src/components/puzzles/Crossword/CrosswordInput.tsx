@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { crosswordGenerator } from "../../../lib/puzzles/crossword/generator";
 import type { CWGrid } from "../../../lib/puzzles/crossword/types";
@@ -9,7 +10,6 @@ export default function CrosswordInput() {
     setCrosswordResult,
     setCrosswordTitle,
     setLoading,
-    setError,
   } = usePuzzleStore();
 
   const [wordsText, setWordsText] = useState("");
@@ -35,20 +35,19 @@ export default function CrosswordInput() {
     }
 
     if (items.length < 3) {
-      setError(
+      toast.warning(
         "Ingresa al menos 3 palabras con pistas (formato: PALABRA: pista)"
       );
       return;
     }
     if (items.length > 15) {
-      setError("Máximo 15 palabras para crucigrama liviano");
+      toast.warning("Máximo 15 palabras para crucigrama liviano");
       return;
     }
 
     setCrosswordWords(items);
     setCrosswordTitle(title);
     setLoading(true);
-    setError(null);
 
     setTimeout(() => {
       try {
@@ -56,8 +55,9 @@ export default function CrosswordInput() {
           words: items,
         });
         setCrosswordResult(result.grid as CWGrid);
+        toast.success("¡Crucigrama generado!");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Error al generar");
+        toast.error(e instanceof Error ? e.message : "Error al generar");
       } finally {
         setLoading(false);
       }

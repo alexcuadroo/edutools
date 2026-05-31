@@ -1,8 +1,13 @@
-import jsPDF from "jspdf";
 import type { CWGrid } from "../puzzles/crossword/types";
 import { sanitizeFilename } from "../../store/puzzle-store";
 
-function drawCrosswordGrid(pdf: jsPDF, grid: CWGrid, x: number, y: number, cellSize: number) {
+function drawCrosswordGrid(
+  pdf: InstanceType<typeof import("jspdf").default>,
+  grid: CWGrid,
+  x: number,
+  y: number,
+  cellSize: number
+) {
   for (let r = 0; r < grid.rows; r++) {
     for (let c = 0; c < grid.cols; c++) {
       const px = x + c * cellSize;
@@ -34,11 +39,12 @@ function drawCrosswordGrid(pdf: jsPDF, grid: CWGrid, x: number, y: number, cellS
   }
 }
 
-export function generateCrosswordPDF(
+export async function generateCrosswordPDF(
   grid: CWGrid,
   mode: "blank" | "solution",
   title?: string
 ) {
+  const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;
