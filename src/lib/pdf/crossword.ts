@@ -31,8 +31,8 @@ function drawCrosswordGrid(
 
         const num = grid.numbers.get(`${r},${c}`);
         if (num !== undefined) {
-          pdf.setFontSize(cellSize * 0.3);
-          pdf.text(String(num), px + 1, py + cellSize * 0.3);
+          pdf.setFontSize(cellSize * 0.45);
+          pdf.text(String(num), px + 0.8, py + cellSize * 0.32);
         }
       }
     }
