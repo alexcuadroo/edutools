@@ -98,7 +98,7 @@ export default function CrosswordInput() {
           onChange={(e) => setWordsText(e.target.value)}
           rows={8}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y font-mono"
-          placeholder="SOL: Estrella del sistema solar, LUNA: Satelite natural, ..."
+          placeholder={`SOL: Estrella del sistema solar\nLUNA: Satelite natural\nTIERRA: Tercer planeta\n...`}
         />
         <p className="text-xs text-gray-400 mt-1">
           Mínimo 3, máximo 15 palabras (modo liviano). Palabras de 2 a 20 letras.

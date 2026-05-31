@@ -1,4 +1,13 @@
 import { Link } from "react-router-dom";
+import {
+  LetterText,
+  Crosshair,
+  Zap,
+  Lock,
+  FileDown,
+  Heart,
+  ArrowRight,
+} from "lucide-react";
 
 const PUZZLES = [
   {
@@ -6,44 +15,109 @@ const PUZZLES = [
     title: "Sopa de Letras",
     description:
       "Genera sopas de letras personalizadas. Ingresa palabras, elige el modo de presentación y descarga el PDF listo para usar en clase.",
-    emoji: "🔤",
+    icon: LetterText,
   },
   {
     path: "/crucigrama",
     title: "Crucigrama",
     description:
       "Crea crucigramas con pistas. Ideal para evaluaciones o actividades de refuerzo. Descarga el PDF con o sin solucionario.",
-    emoji: "📝",
+    icon: Crosshair,
+  },
+];
+
+const FEATURES = [
+  {
+    icon: Zap,
+    title: "Rápido",
+    description: "Genera puzzles en segundos, sin esperas.",
+  },
+  {
+    icon: Lock,
+    title: "Sin registro",
+    description: "Usa la herramienta directamente, sin crear cuenta.",
+  },
+  {
+    icon: FileDown,
+    title: "Descarga en PDF",
+    description: "Exporta listo para imprimir y usar en clase.",
+  },
+  {
+    icon: Heart,
+    title: "Gratuito",
+    description: "Sin límites de uso, sin costos ocultos.",
   },
 ];
 
 export default function HomePage() {
   return (
-    <div>
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Generador de Puzzles Educativos
+    <div className="py-12 sm:py-20">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
+          Generador de Puzzles
+          <br />
+          <span className="text-indigo-600">Educativos</span>
         </h1>
-        <p className="text-gray-500 max-w-lg mx-auto">
+        <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
           Crea sopas de letras y crucigramas en segundos. Sin registro, sin
-          límites. Descarga tus puzzles en PDF.
+          límites.
         </p>
+        <Link
+          to="/sopa-de-letras"
+          className="btn-cta inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-medium no-underline text-sm"
+        >
+          Empezar ahora
+          <ArrowRight className="btn-arrow w-4 h-4" />
+        </Link>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-        {PUZZLES.map((puzzle) => (
-          <Link
-            key={puzzle.path}
-            to={puzzle.path}
-            className="block p-6 bg-white rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all no-underline"
-          >
-            <div className="text-3xl mb-3">{puzzle.emoji}</div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              {puzzle.title}
-            </h2>
-            <p className="text-sm text-gray-500">{puzzle.description}</p>
-          </Link>
-        ))}
+      <div className="grid sm:grid-cols-2 gap-5 max-w-2xl mx-auto mb-20">
+        {PUZZLES.map((puzzle) => {
+          const Icon = puzzle.icon;
+          return (
+            <Link
+              key={puzzle.path}
+              to={puzzle.path}
+              className="group flex flex-col p-6 bg-white rounded-2xl border border-gray-200 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all no-underline"
+            >
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
+                <Icon className="w-5 h-5 text-indigo-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                {puzzle.title}
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed flex-1">
+                {puzzle.description}
+              </p>
+              <div className="mt-4 flex items-center gap-1 text-sm font-medium text-indigo-600">
+                Crear puzzle
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-wider mb-8">
+          Por qué EduTools
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {FEATURES.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <div key={feature.title} className="text-center">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
+                  <Icon className="w-5 h-5 text-gray-600" />
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-0.5">
+                  {feature.title}
+                </h3>
+                <p className="text-xs text-gray-500">{feature.description}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
