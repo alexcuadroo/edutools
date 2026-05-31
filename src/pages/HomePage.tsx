@@ -100,7 +100,7 @@ export default function HomePage() {
 
       <div className="max-w-3xl mx-auto">
         <h2 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-wider mb-8">
-          Por qué EduTools
+          ¿Por qué EduTools?
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
           {FEATURES.map((feature) => {
