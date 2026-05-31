@@ -18,7 +18,12 @@ interface PuzzleState {
   crosswordResult: CWGrid | null;
   setCrosswordResult: (result: CWGrid | null) => void;
 
+  loading: boolean;
+  setLoading: (v: boolean) => void;
   error: string | null;
+
+  activeTab: "word-search" | "crossword";
+  setActiveTab: (tab: "word-search" | "crossword") => void;
   setError: (e: string | null) => void;
 }
 
@@ -37,7 +42,12 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   crosswordResult: null,
   setCrosswordResult: (result) => set({ crosswordResult: result }),
 
+  loading: false,
+  setLoading: (v) => set({ loading: v }),
   error: null,
+
+  activeTab: "word-search",
+  setActiveTab: (tab) => set({ activeTab: tab, error: null }),
   setError: (e) => set({ error: e }),
 }));
 
