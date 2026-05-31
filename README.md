@@ -1,73 +1,99 @@
-# React + TypeScript + Vite
+# EduTools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Generador de puzzles educativos para docentes y estudiantes. Creá sopa de letras, crucigramas y más de forma gratuita, con exportación a PDF e imagen.
 
-Currently, two official plugins are available:
+**En producción:** [https://tools.edualex.uy](https://tools.edualex.uy)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- **React 19** + **TypeScript 6**
+- **Vite 8** como bundler
+- **Tailwind CSS 4** para estilos
+- **Zustand** para estado global
+- **React Router 7** para navegación (BrowserRouter)
+- **jsPDF** + **html2canvas** para exportación a PDF
+- **Lucide React** para iconos
+- **React Toastify** para notificaciones
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Instalación
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Desarrollo
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
 ```
+
+Levanta el servidor en `http://localhost:5173`.
+
+## Build
+
+```bash
+pnpm build
+```
+
+Compila TypeScript y genera el bundle de producción en `dist/`.
+
+## Lint
+
+```bash
+pnpm lint
+```
+
+## Estructura del proyecto
+
+```
+src/
+├── App.tsx              # Router y registro de puzzles
+├── main.tsx             # Entry point
+├── index.css            # Estilos globales (Tailwind)
+├── components/
+│   ├── layout/          # Header, Layout, PuzzlePageLayout
+│   ├── ui/              # Button, PageHeader, DownloadDropdown
+│   └── ErrorBoundary.tsx
+├── hooks/               # Custom hooks
+├── lib/
+│   └── puzzles/
+│       ├── registry.ts  # Registro central de puzzles
+│       ├── word-search/ # Generador de sopa de letras
+│       └── crossword/   # Generador de crucigramas
+├── pages/
+│   ├── HomePage.tsx     # Página principal con selector de puzzles
+│   ├── WordSearchPage.tsx
+│   ├── CrosswordPage.tsx
+│   └── NotFoundPage.tsx
+└── store/               # Zustand stores
+```
+
+## Rutas
+
+| Ruta | Página |
+|------|--------|
+| `/` | Inicio |
+| `/sopa-de-letras` | Generador de sopa de letras |
+| `/crucigrama` | Generador de crucigramas |
+
+## Agregar un nuevo puzzle
+
+1. Crear la carpeta en `src/lib/puzzles/<nombre>/` con un `generator.ts` que implemente la interfaz del registry.
+2. Registrar el puzzle en `src/App.tsx` con `registerPuzzle()`.
+3. Crear la página en `src/pages/<Nombre>Page.tsx`.
+4. Agregar la ruta en `App.tsx` dentro del `<Routes>`.
+5. Agregar la entrada en el array `TABS` de `src/components/layout/Header.tsx`.
+6. Agregar la card en `src/pages/HomePage.tsx`.
+
+## Deployment
+
+El proyecto está desplegado en **Vercel** con dominio propio `tools.edualex.uy`.
+
+- **Build command:** `pnpm build`
+- **Output directory:** `dist`
+- **SPA routing:** manejado con `vercel.json` (rewrites a `index.html`)
+- **SEO:** `robots.txt`, `sitemap.xml`, OpenGraph y Twitter Cards configurados en `index.html`
+
+## Autor
+
+**alexcuadro** — [tools.edualex.uy](https://tools.edualex.uy)
