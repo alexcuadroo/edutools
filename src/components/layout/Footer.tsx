@@ -25,8 +25,6 @@ export default function Footer() {
           EduTools
         </Link>
         <p className="text-xs text-gray-400 flex items-center gap-1">
-          Generador de puzzles
-          <span className="mx-1">·</span>
           Hecho con
           <Heart className="w-3 h-3 text-red-400" />
           por
