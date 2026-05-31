@@ -43,7 +43,7 @@ export default function Footer() {
             href="https://github.com/alexcuadroo/edutools"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-400 hover:text-gray-700 transition-colors ml-2"
+            className="text-gray-400 hover:text-gray-700 transition-colors"
             aria-label="Ver código fuente en GitHub"
           >
             <GithubIcon />
