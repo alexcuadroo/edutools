@@ -2,6 +2,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
+import Button from "../../ui/Button";
+import ExampleButton from "../../ui/ExampleButton";
 
 const EXAMPLE_TEXT = `México es un país ubicado en América del Norte. Su capital es la Ciudad de México, una de las ciudades más grandes del mundo. El país tiene una rica historia que incluye civilizaciones antiguas como los aztecas y los mayas. La gastronomía mexicana es famosa mundialmente por sus sabores intensos y variados. Algunos platillos típicos son los tacos, el mole y las enchiladas.`;
 
@@ -44,35 +46,30 @@ export default function FillBlanksInput() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">Configuración</h2>
-        <button
-          onClick={handleLoadExample}
-          className="cursor-pointer text-xs text-indigo-600 hover:text-indigo-800 underline"
-        >
-          Cargar ejemplo
-        </button>
+        <ExampleButton onClick={handleLoadExample} />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
           Texto base
         </label>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={6}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y"
+          className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y"
           placeholder="Pega aquí el texto al que quieres agregar huecos..."
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-500 mt-1.5">
           {text.length} caracteres
         </p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
           Título (opcional)
         </label>
         <input
@@ -80,19 +77,19 @@ export default function FillBlanksInput() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ej: México"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none"
+          className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none"
         />
       </div>
 
       <div className="flex flex-wrap gap-4 items-end">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
             Cantidad de huecos
           </label>
           <select
             value={blankCount}
             onChange={(e) => setBlankCount(Number(e.target.value))}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 outline-none"
+            className="select-field border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none appearance-none bg-white"
           >
             <option value={3}>3 huecos</option>
             <option value={4}>4 huecos</option>
@@ -106,12 +103,9 @@ export default function FillBlanksInput() {
           </select>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          className="cursor-pointer bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-        >
+        <Button onClick={handleGenerate}>
           Generar
-        </button>
+        </Button>
       </div>
     </div>
   );
