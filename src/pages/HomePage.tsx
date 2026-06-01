@@ -72,10 +72,9 @@ export default function HomePage() {
         </p>
         <Link
           to="/sopa-de-letras"
-          className="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-medium no-underline text-sm"
+          className="btn-primary inline-flex items-center justify-center px-7 py-3.5 rounded-xl text-white font-medium no-underline text-sm"
         >
           Empezar ahora
-          <ArrowRight className="btn-arrow w-4 h-4" />
         </Link>
       </div>
 

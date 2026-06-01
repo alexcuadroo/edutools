@@ -43,6 +43,7 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 - **React Router 7** con `BrowserRouter` (rutas en `src/App.tsx`)
 - **Lucide React** para iconos
 - **jsPDF** + **html2canvas** para exportación PDF
+- **React Toastify** para notificaciones
 
 ### Convenciones de código
 
@@ -69,8 +70,9 @@ src/
 ├── lib/puzzles/
 │   ├── registry.ts      # Registro central de generadores
 │   ├── word-search/     # Sopa de letras
-│   └── crossword/       # Crucigramas
-├── pages/               # HomePage, WordSearchPage, CrosswordPage, NotFoundPage
+│   ├── crossword/       # Crucigramas
+│   └── fill-blanks/     # Rellenar huecos
+├── pages/               # HomePage, WordSearchPage, CrosswordPage, FillBlanksPage, NotFoundPage
 └── store/               # Zustand stores
 ```
 
@@ -81,6 +83,7 @@ src/
 | `/` | `HomePage` |
 | `/sopa-de-letras` | `WordSearchPage` |
 | `/crucigrama` | `CrosswordPage` |
+| `/rellenar-huecos` | `FillBlanksPage` |
 | `*` | `NotFoundPage` |
 
 ## Agregar un nuevo puzzle
