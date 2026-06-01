@@ -7,6 +7,7 @@ import {
   FileDown,
   Heart,
   ArrowRight,
+  TextCursorInput,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -23,6 +24,13 @@ const PUZZLES = [
     description:
       "Crea crucigramas con pistas. Ideal para evaluaciones o actividades de refuerzo. Descarga el PDF con o sin solucionario.",
     icon: Crosshair,
+  },
+  {
+    path: "/rellenar-huecos",
+    title: "Rellenar Huecos",
+    description:
+      "Pega un texto y genera huecos aleatorios para que los estudiantes completen. Incluye distractores automáticos.",
+    icon: TextCursorInput,
   },
 ];
 
@@ -59,7 +67,7 @@ export default function HomePage() {
           <span className="text-indigo-600">Educativos</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
-          Crea sopas de letras y crucigramas en segundos. Sin registro, sin
+          Crea sopas de letras, crucigramas y textos con huecos en segundos. Sin registro, sin
           límites.
         </p>
         <Link
@@ -71,7 +79,7 @@ export default function HomePage() {
         </Link>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-5 max-w-2xl mx-auto mb-20">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto mb-20">
         {PUZZLES.map((puzzle) => {
           const Icon = puzzle.icon;
           return (
