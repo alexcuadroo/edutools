@@ -15,6 +15,14 @@ Generador de puzzles educativos para docentes y estudiantes. Creá sopa de letra
 - **Lucide React** para iconos
 - **React Toastify** para notificaciones
 
+## Puzzles disponibles
+
+| Puzzle | Ruta |
+|--------|------|
+| Sopa de letras | `/sopa-de-letras` |
+| Crucigrama | `/crucigrama` |
+| Rellenar huecos | `/rellenar-huecos` |
+
 ## Instalación
 
 ```bash
@@ -59,11 +67,13 @@ src/
 │   └── puzzles/
 │       ├── registry.ts  # Registro central de puzzles
 │       ├── word-search/ # Generador de sopa de letras
-│       └── crossword/   # Generador de crucigramas
+│       ├── crossword/   # Generador de crucigramas
+│       └── fill-blanks/ # Generador de rellenar huecos
 ├── pages/
 │   ├── HomePage.tsx     # Página principal con selector de puzzles
 │   ├── WordSearchPage.tsx
 │   ├── CrosswordPage.tsx
+│   ├── FillBlanksPage.tsx
 │   └── NotFoundPage.tsx
 └── store/               # Zustand stores
 ```
@@ -75,6 +85,7 @@ src/
 | `/` | Inicio |
 | `/sopa-de-letras` | Generador de sopa de letras |
 | `/crucigrama` | Generador de crucigramas |
+| `/rellenar-huecos` | Generador de rellenar huecos |
 
 ## Agregar un nuevo puzzle
 
