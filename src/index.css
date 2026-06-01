@@ -10,40 +10,55 @@ html {
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #fafbff 0%, #f3f4f8 100%);
+  min-height: 100vh;
 }
 
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 200%;
-  }
-}
+/* ============================================
+   BUTTON MICRO-INTERACTIONS
+   ============================================ */
 
-@keyframes bounce-right {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(6px);
-  }
-}
-
-.btn-cta {
+/* Primary button with scale + shadow lift on hover, press effect on active */
+.btn-primary {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #4f46e5, #6366f1);
-  transition: all 0.3s ease;
+  color: white;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
-.btn-cta:hover {
+.btn-primary:hover {
   background: linear-gradient(135deg, #4338ca, #4f46e5);
-  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.4);
-  transform: translateY(-1px);
+  transform: scale(1.03) translateY(-1px);
+  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.35),
+              0 4px 12px -2px rgba(79, 70, 229, 0.2);
 }
 
-.btn-cta::before {
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px -2px rgba(79, 70, 229, 0.3);
+}
+
+/* Ripple effect container */
+.btn-primary .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  animation: ripple-effect 0.5s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Shine effect on hover */
+.btn-primary::before {
   content: '';
   position: absolute;
   top: 0;
@@ -53,16 +68,222 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.15),
     transparent
   );
   transition: none;
 }
 
-.btn-cta:hover::before {
+.btn-primary:hover::before {
   animation: shine 0.6s ease-in-out;
 }
 
-.btn-cta:hover .btn-arrow {
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* Arrow bounce on hover */
+.btn-primary:hover .btn-arrow {
   animation: bounce-right 0.5s ease;
+}
+
+@keyframes bounce-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+/* Ghost button */
+.btn-ghost {
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.btn-ghost:active {
+  transform: scale(0.98);
+}
+
+/* Link button */
+.btn-link {
+  transition: all 0.15s ease;
+}
+
+.btn-link:hover {
+  color: #4338ca;
+}
+
+/* ============================================
+   CARD HOVER EFFECTS
+   ============================================ */
+
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.08),
+              0 4px 16px -4px rgba(79, 70, 229, 0.06);
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+/* Card icon container hover */
+.card-icon {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover .card-icon {
+  transform: scale(1.1) rotate(-3deg);
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+}
+
+/* ============================================
+   INPUT FOCUS ANIMATIONS
+   ============================================ */
+
+.input-field {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-field:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15),
+              0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Select custom styling */
+.select-field {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+  padding-right: 2.5rem;
+}
+
+.select-field:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ============================================
+   NAVIGATION IMPROVEMENTS
+   ============================================ */
+
+.nav-link {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+
+.nav-link:hover::after {
+  width: 60%;
+}
+
+.nav-link-active {
+  position: relative;
+}
+
+.nav-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+
+/* ============================================
+   CONTENT ENTRANCE ANIMATIONS
+   ============================================ */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+
+/* Stagger children animation */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+
+/* ============================================
+   TOAST CUSTOMIZATION
+   ============================================ */
+
+:root {
+  --toastify-color-success: #10b981;
+  --toastify-color-warning: #f59e0b;
+  --toastify-color-error: #ef4444;
+  --toastify-color-info: #6366f1;
+}
+
+.Toastify__toast {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Smooth scroll behavior */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle background pattern */
+.bg-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(99, 102, 241, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
 }
