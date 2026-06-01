@@ -59,12 +59,12 @@ const FEATURES = [
 
 export default function HomePage() {
   return (
-    <div className="py-12 sm:py-20">
-      <div className="text-center mb-16">
+    <div className="py-12 sm:py-20 bg-pattern">
+      <div className="text-center mb-16 animate-fade-in-up">
         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
           Generador de Puzzles
           <br />
-          <span className="text-indigo-600">Educativos</span>
+          <span className="gradient-text">Educativos</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
           Crea sopas de letras, crucigramas y textos con huecos en segundos. Sin registro, sin
@@ -72,23 +72,23 @@ export default function HomePage() {
         </p>
         <Link
           to="/sopa-de-letras"
-          className="btn-cta inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-medium no-underline text-sm"
+          className="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-medium no-underline text-sm"
         >
           Empezar ahora
           <ArrowRight className="btn-arrow w-4 h-4" />
         </Link>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto mb-20">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto mb-20 stagger-children">
         {PUZZLES.map((puzzle) => {
           const Icon = puzzle.icon;
           return (
             <Link
               key={puzzle.path}
               to={puzzle.path}
-              className="group flex flex-col p-6 bg-white rounded-2xl border border-gray-200 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all no-underline"
+              className="card-hover group flex flex-col p-6 bg-white rounded-2xl border border-gray-200 no-underline"
             >
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
+              <div className="card-icon w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-4">
                 <Icon className="w-5 h-5 text-indigo-600" />
               </div>
               <h2 className="text-lg font-semibold text-gray-900 mb-1">
@@ -99,7 +99,7 @@ export default function HomePage() {
               </p>
               <div className="mt-4 flex items-center gap-1 text-sm font-medium text-indigo-600">
                 Crear puzzle
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           );
@@ -110,7 +110,7 @@ export default function HomePage() {
         <h2 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-wider mb-8">
           ¿Por qué EduTools?
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 stagger-children">
           {FEATURES.map((feature) => {
             const Icon = feature.icon;
             return (
