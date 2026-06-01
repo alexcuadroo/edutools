@@ -29,7 +29,7 @@ export default function Header() {
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-lg font-bold text-gray-900 no-underline"
+            className="flex items-center gap-2 text-lg font-bold text-gray-900 no-underline hover:opacity-80 transition-opacity"
           >
             <Puzzle className="w-6 h-6 text-indigo-600" />
             EduTools
@@ -47,9 +47,9 @@ export default function Header() {
                   key={tab.path}
                   to={tab.path}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all no-underline ${
+                  className={`nav-link flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-700"
+                      ? "nav-link-active bg-indigo-50 text-indigo-700"
                       : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                   }`}
                 >
