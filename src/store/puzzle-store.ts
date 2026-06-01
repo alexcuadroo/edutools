@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { WordItem } from "../lib/puzzles/shared-types";
 import type { WSGrid } from "../lib/puzzles/word-search/types";
 import type { CWGrid } from "../lib/puzzles/crossword/types";
+import type { FillBlanksResult } from "../lib/puzzles/fill-blanks/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -18,12 +19,17 @@ interface PuzzleState {
   crosswordResult: CWGrid | null;
   setCrosswordResult: (result: CWGrid | null) => void;
 
+  fillBlanksTitle: string;
+  setFillBlanksTitle: (t: string) => void;
+  fillBlanksResult: FillBlanksResult | null;
+  setFillBlanksResult: (result: FillBlanksResult | null) => void;
+
   loading: boolean;
   setLoading: (v: boolean) => void;
   error: string | null;
 
-  activeTab: "word-search" | "crossword";
-  setActiveTab: (tab: "word-search" | "crossword") => void;
+  activeTab: "word-search" | "crossword" | "fill-blanks";
+  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks") => void;
   setError: (e: string | null) => void;
 }
 
@@ -41,6 +47,11 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setCrosswordWords: (words) => set({ crosswordWords: words }),
   crosswordResult: null,
   setCrosswordResult: (result) => set({ crosswordResult: result }),
+
+  fillBlanksTitle: "",
+  setFillBlanksTitle: (title) => set({ fillBlanksTitle: title }),
+  fillBlanksResult: null,
+  setFillBlanksResult: (result) => set({ fillBlanksResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),
