@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { crosswordGenerator } from "../../../lib/puzzles/crossword/generator";
 import type { CWGrid } from "../../../lib/puzzles/crossword/types";
+import Button from "../../ui/Button";
+import ExampleButton from "../../ui/ExampleButton";
 
 export default function CrosswordInput() {
   const {
@@ -78,35 +80,30 @@ export default function CrosswordInput() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">Configuración</h2>
-        <button
-          onClick={handleLoadExample}
-          className="cursor-pointer text-xs text-indigo-600 hover:text-indigo-800 underline"
-        >
-          Cargar ejemplo
-        </button>
+        <ExampleButton onClick={handleLoadExample} />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
           Palabras y pistas (una por línea, formato: PALABRA: pista)
         </label>
         <textarea
           value={wordsText}
           onChange={(e) => setWordsText(e.target.value)}
           rows={8}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none resize-y font-mono"
+          className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y font-mono"
           placeholder={`SOL: Estrella del sistema solar\nLUNA: Satelite natural\nTIERRA: Tercer planeta\n...`}
         />
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-gray-400 mt-1.5">
           Mínimo 3, máximo 15 palabras (modo liviano). Palabras de 2 a 20 letras.
         </p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
           Título (opcional)
         </label>
         <input
@@ -114,16 +111,13 @@ export default function CrosswordInput() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ej: El Sistema Solar"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none"
+          className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none"
         />
       </div>
 
-      <button
-        onClick={handleGenerate}
-        className="cursor-pointer bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-      >
+      <Button onClick={handleGenerate}>
         Generar
-      </button>
+      </Button>
     </div>
   );
 }

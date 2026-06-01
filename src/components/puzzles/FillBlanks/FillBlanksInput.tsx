@@ -1,44 +1,36 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "../../../store/puzzle-store";
-import { wordSearchGenerator } from "../../../lib/puzzles/word-search/generator";
-import type { WSGrid } from "../../../lib/puzzles/word-search/types";
+import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
 import Button from "../../ui/Button";
 import ExampleButton from "../../ui/ExampleButton";
 
-export default function WordSearchInput() {
-  const { setWordSearchWords, setWordSearchResult, setWordSearchTitle, setLoading } =
-    usePuzzleStore();
+const EXAMPLE_TEXT = `México es un país ubicado en América del Norte. Su capital es la Ciudad de México, una de las ciudades más grandes del mundo. El país tiene una rica historia que incluye civilizaciones antiguas como los aztecas y los mayas. La gastronomía mexicana es famosa mundialmente por sus sabores intensos y variados. Algunos platillos típicos son los tacos, el mole y las enchiladas.`;
 
-  const [wordsText, setWordsText] = useState("");
-  const [gridSize, setGridSize] = useState(15);
+export default function FillBlanksInput() {
+  const { setFillBlanksResult, setFillBlanksTitle, setLoading } = usePuzzleStore();
+
+  const [text, setText] = useState("");
+  const [blankCount, setBlankCount] = useState(5);
   const [title, setTitle] = useState("");
 
   const handleGenerate = () => {
-    const words = wordsText
-      .split("\n")
-      .map((w) => w.trim())
-      .filter((w) => w.length >= 2 && w.length <= 20);
-
-    if (words.length < 3) {
-      toast.warning("Ingresa al menos 3 palabras");
+    if (text.trim().length < 20) {
+      toast.warning("El texto debe tener al menos 20 caracteres");
       return;
     }
 
-    const items = words.map((word) => ({ word, clue: "" }));
-
-    setWordSearchWords(items);
-    setWordSearchTitle(title);
+    setFillBlanksTitle(title);
     setLoading(true);
 
     setTimeout(() => {
       try {
-        const result = wordSearchGenerator.generate({
-          words: items,
-          size: gridSize,
+        const result = fillBlanksGenerator.generateFromText({
+          text: text.trim(),
+          blankCount,
         });
-        setWordSearchResult(result.grid as WSGrid);
-        toast.success("¡Sopa de letras generada!");
+        setFillBlanksResult(result);
+        toast.success("¡Texto con huecos generado!");
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Error al generar");
       } finally {
@@ -48,10 +40,9 @@ export default function WordSearchInput() {
   };
 
   const handleLoadExample = () => {
-    setWordsText(
-      "ESCUELA\nMAESTRO\nESTUDIANTE\nLIBRO\nLAPIZ\nTAREA\nCIENCIA\nHISTORIA"
-    );
-    setTitle("La Escuela");
+    setText(EXAMPLE_TEXT);
+    setTitle("México");
+    setBlankCount(5);
   };
 
   return (
@@ -63,15 +54,18 @@ export default function WordSearchInput() {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          Palabras (una por línea, 2-20 letras)
+          Texto base
         </label>
         <textarea
-          value={wordsText}
-          onChange={(e) => setWordsText(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           rows={6}
           className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y"
-          placeholder={`ESCUELA\nMAESTRO\nESTUDIANTE\n...`}
+          placeholder="Pega aquí el texto al que quieres agregar huecos..."
         />
+        <p className="text-xs text-gray-500 mt-1.5">
+          {text.length} caracteres
+        </p>
       </div>
 
       <div>
@@ -82,7 +76,7 @@ export default function WordSearchInput() {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Ej: La Escuela"
+          placeholder="Ej: México"
           className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none"
         />
       </div>
@@ -90,18 +84,22 @@ export default function WordSearchInput() {
       <div className="flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Tamaño del tablero
+            Cantidad de huecos
           </label>
           <select
-            value={gridSize}
-            onChange={(e) => setGridSize(Number(e.target.value))}
+            value={blankCount}
+            onChange={(e) => setBlankCount(Number(e.target.value))}
             className="select-field border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none appearance-none bg-white"
           >
-            <option value={10}>10×10 (fácil)</option>
-            <option value={12}>12×12</option>
-            <option value={15}>15×15</option>
-            <option value={18}>18×18</option>
-            <option value={20}>20×20 (difícil)</option>
+            <option value={3}>3 huecos</option>
+            <option value={4}>4 huecos</option>
+            <option value={5}>5 huecos</option>
+            <option value={6}>6 huecos</option>
+            <option value={7}>7 huecos</option>
+            <option value={8}>8 huecos</option>
+            <option value={10}>10 huecos</option>
+            <option value={12}>12 huecos</option>
+            <option value={15}>15 huecos</option>
           </select>
         </div>
 
