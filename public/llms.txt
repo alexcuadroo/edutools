@@ -1,0 +1,23 @@
+# EduTools
+
+Herramientas educativas gratuitas para crear materiales de clase.
+
+## Acerca de
+
+EduTools es una plataforma web que genera actividades educativas imprimibles:
+- Sopa de letras personalizadas
+- Crucigramas con pistas
+- Ejercicios de rellenar huecos
+
+URL: https://tools.edualex.uy
+
+## Herramientas
+
+- [Sopa de Letras](https://tools.edualex.uy/sopa-de-letras): Crea sopas de letras con palabras personalizadas y exporta en PDF o PNG.
+- [Crucigrama](https://tools.edualex.uy/crucigrama): Genera crucigramas con definiciones personalizadas.
+- [Rellenar Huecos](https://tools.edualex.uy/rellenar-huecos): Crea ejercicios de completar texto con palabras faltantes.
+
+## Recursos
+
+- [Repositorio en GitHub](https://github.com/alexcuadroo/edutools)
+- [Sitio web del autor](https://edualex.uy)
