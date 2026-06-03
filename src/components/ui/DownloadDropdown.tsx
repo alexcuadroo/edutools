@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Download, ChevronDown, FileText, Image } from "lucide-react";
+import { Download, ChevronDown, FileText, Image, Eye } from "lucide-react";
 import type { DownloadGroup } from "./DownloadDropdown.types";
 
 interface DownloadDropdownProps {
@@ -9,6 +9,7 @@ interface DownloadDropdownProps {
 const FORMAT_ICONS: Record<string, typeof FileText> = {
   pdf: FileText,
   png: Image,
+  preview: Eye,
 };
 
 export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
@@ -67,7 +68,7 @@ export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
               {group.options.map((opt) => {
                 const format = opt.label.toLowerCase();
                 const Icon =
-                  FORMAT_ICONS[format] ?? FileText;
+                  opt.icon ?? FORMAT_ICONS[format] ?? FileText;
                 return (
                   <button
                     key={opt.label}
