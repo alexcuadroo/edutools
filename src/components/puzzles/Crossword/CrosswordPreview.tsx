@@ -3,13 +3,14 @@ import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateCrosswordPDF } from "../../../lib/pdf/crossword";
 import { downloadCrosswordPNG } from "../../../lib/png/crossword";
 import DownloadDropdown from "../../ui/DownloadDropdown";
+import { Eye } from "lucide-react";
 
 export default function CrosswordPreview() {
   const { crosswordResult, crosswordTitle } = usePuzzleStore();
   const grid = crosswordResult;
   if (!grid) return null;
 
-  const cellSize = Math.min(40, 500 / grid.cols);
+  const cellSize = Math.min(36, 280 / grid.cols);
   const across = grid.words.filter((w) => w.direction === "across");
   const down = grid.words.filter((w) => w.direction === "down");
 
@@ -23,8 +24,9 @@ export default function CrosswordPreview() {
               {
                 label: "PDF",
                 options: [
-                  { label: "Con pistas", onClick: () => generateCrosswordPDF(grid, "blank", crosswordTitle) },
-                  { label: "Con soluciones", onClick: () => generateCrosswordPDF(grid, "solution", crosswordTitle) },
+                  { label: "Ver en navegador", icon: Eye, onClick: () => generateCrosswordPDF(grid, "blank", crosswordTitle, "preview") },
+                  { label: "Descargar con pistas", onClick: () => generateCrosswordPDF(grid, "blank", crosswordTitle, "download") },
+                  { label: "Descargar con soluciones", onClick: () => generateCrosswordPDF(grid, "solution", crosswordTitle, "download") },
                 ],
               },
               {
