@@ -31,7 +31,7 @@ function drawCrosswordGrid(
 
         const num = grid.numbers.get(`${r},${c}`);
         if (num !== undefined) {
-          pdf.setFontSize(cellSize * 0.45);
+          pdf.setFontSize(cellSize * 0.55);
           pdf.text(String(num), px + 0.8, py + cellSize * 0.32);
         }
       }
@@ -47,81 +47,72 @@ export async function generateCrosswordPDF(
   const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
-  const margin = 15;
-  const cellSize = Math.min(14, (pageWidth - margin * 2) / grid.cols);
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10;
+  const cellSize = Math.min(10, (pageWidth - margin * 2) / grid.cols);
   const gridTotalX = cellSize * grid.cols;
   const gridTotalY = cellSize * grid.rows;
   const gridX = (pageWidth - gridTotalX) / 2;
-  const gridY = margin + 10;
+  const gridY = margin + 8;
 
   const displayTitle = title || "Crucigrama";
 
-  if (mode === "solution") {
-    const pdfTitle = `${displayTitle} - Solución`;
-    pdf.setFontSize(18);
-    pdf.text(pdfTitle, pageWidth / 2, margin, { align: "center" });
-    drawCrosswordGrid(pdf, grid, gridX, gridY, cellSize);
+  pdf.setFontSize(16);
+  pdf.text(
+    mode === "solution" ? `${displayTitle} - Solución` : displayTitle,
+    pageWidth / 2,
+    margin,
+    { align: "center" }
+  );
 
-    const across = grid.words.filter((w) => w.direction === "across");
-    const down = grid.words.filter((w) => w.direction === "down");
-    const wordsY = gridY + gridTotalY + 10;
-
-    if (across.length > 0) {
-      pdf.setFontSize(11);
-      pdf.text("Horizontales", margin, wordsY);
-      for (let i = 0; i < across.length; i++) {
-        pdf.setFontSize(9);
-        pdf.text(`${across[i].number}. ${across[i].word}`, margin, wordsY + 7 + i * 6);
-      }
-    }
-    if (down.length > 0) {
-      const ds = wordsY + 7 + across.length * 6 + 4;
-      pdf.setFontSize(11);
-      pdf.text("Verticales", margin, ds);
-      for (let i = 0; i < down.length; i++) {
-        pdf.setFontSize(9);
-        pdf.text(`${down[i].number}. ${down[i].word}`, margin, ds + 7 + i * 6);
-      }
-    }
-
-    pdf.save(
-      `${sanitizeFilename(title || "", "crucigrama")}-solucion.pdf`
-    );
-    return;
-  }
-
-  pdf.setFontSize(18);
-  pdf.text(displayTitle, pageWidth / 2, margin, { align: "center" });
-
-  const blankGrid: CWGrid = {
+  const drawGrid = mode === "solution" ? grid : {
     ...grid,
     grid: grid.grid.map((row) =>
       row.map((cell) => (cell === null ? null : ""))
     ),
   };
-  drawCrosswordGrid(pdf, blankGrid, gridX, gridY, cellSize);
+  drawCrosswordGrid(pdf, drawGrid, gridX, gridY, cellSize);
 
   const across = grid.words.filter((w) => w.direction === "across");
   const down = grid.words.filter((w) => w.direction === "down");
-  const cluesY = gridY + gridTotalY + 8;
+  const wordsY = gridY + gridTotalY + 6;
+  const availableHeight = pageHeight - margin - wordsY;
+  const lineHeight = 5;
+  const columnWidth = (pageWidth - margin * 2 - 5) / 2;
+
+  const drawWordList = (
+    words: typeof across,
+    startX: number,
+    startY: number,
+    label: string,
+    showClue: boolean
+  ) => {
+    pdf.setFontSize(10);
+    pdf.text(label, startX, startY);
+    
+    const maxItemsPerColumn = Math.floor((availableHeight - 8) / lineHeight);
+    const useTwoColumns = words.length > maxItemsPerColumn;
+    
+    for (let i = 0; i < words.length; i++) {
+      const col = useTwoColumns && i >= Math.ceil(words.length / 2) ? 1 : 0;
+      const row = useTwoColumns && col === 1 ? i - Math.ceil(words.length / 2) : i;
+      const x = startX + col * (columnWidth / 2);
+      const y = startY + 5 + row * lineHeight;
+      
+      pdf.setFontSize(8);
+      const text = showClue ? `${words[i].number}. ${words[i].clue}` : `${words[i].number}. ${words[i].word}`;
+      pdf.text(text, x, y);
+    }
+  };
 
   if (across.length > 0) {
-    pdf.setFontSize(11);
-    pdf.text("Horizontales", margin, cluesY);
-    for (let i = 0; i < across.length; i++) {
-      pdf.setFontSize(9);
-      pdf.text(`${across[i].number}. ${across[i].clue}`, margin, cluesY + 7 + i * 6);
-    }
+    drawWordList(across, margin, wordsY, "Horizontales", mode !== "solution");
   }
   if (down.length > 0) {
-    const ds = cluesY + 7 + across.length * 6 + 4;
-    pdf.setFontSize(11);
-    pdf.text("Verticales", margin, ds);
-    for (let i = 0; i < down.length; i++) {
-      pdf.setFontSize(9);
-      pdf.text(`${down[i].number}. ${down[i].clue}`, margin, ds + 7 + i * 6);
-    }
+    drawWordList(down, margin + columnWidth + 5, wordsY, "Verticales", mode !== "solution");
   }
 
-  pdf.save(`${sanitizeFilename(title || "", "crucigrama")}.pdf`);
+  pdf.save(
+    `${sanitizeFilename(title || "", "crucigrama")}${mode === "solution" ? "-solucion" : ""}.pdf`
+  );
 }

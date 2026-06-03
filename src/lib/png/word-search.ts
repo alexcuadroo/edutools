@@ -22,9 +22,13 @@ export function downloadWordSearchPNG(
   const padding = 8;
   const solution = mode === "solution" ? getSolutionCells(grid) : new Set<string>();
 
-  const wordListHeight = padding + grid.words.length * 14 + 20;
+  const numCols = grid.words.length > 12 ? 3 : grid.words.length > 6 ? 2 : 1;
+  const wordsPerColumn = Math.ceil(grid.words.length / numCols);
+  const wordListHeight = padding + wordsPerColumn * 14 + 20;
 
-  const width = grid.size * cellSize + padding * 2;
+  const gridWidth = grid.size * cellSize + padding * 2;
+  const minWordsWidth = numCols > 1 ? 100 * numCols + padding * 2 : gridWidth;
+  const width = Math.max(gridWidth, minWordsWidth);
   const height = grid.size * cellSize + padding * 2 + wordListHeight;
 
   const canvas = document.createElement("canvas");
@@ -64,8 +68,11 @@ export function downloadWordSearchPNG(
   ctx.textBaseline = "top";
   ctx.font = "bold 11px monospace";
   ctx.fillStyle = "#333333";
+  const colWidth = (width - padding * 2) / numCols;
   for (let i = 0; i < grid.words.length; i++) {
-    ctx.fillText(grid.words[i].word, padding, listY + i * 14);
+    const col = Math.floor(i / wordsPerColumn);
+    const row = i - col * wordsPerColumn;
+    ctx.fillText(grid.words[i].word, padding + col * colWidth, listY + row * 14);
   }
 
   const base = sanitizeFilename(title || "", "sopa-de-letras");
