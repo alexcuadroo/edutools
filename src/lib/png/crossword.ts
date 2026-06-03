@@ -12,12 +12,12 @@ export function downloadCrosswordPNG(
   const across = grid.words.filter((w) => w.direction === "across");
   const down = grid.words.filter((w) => w.direction === "down");
 
-  const cluesHeight =
-    (across.length > 0 ? 16 + across.length * 12 : 0) +
-    (down.length > 0 ? 16 + down.length * 12 : 0) +
-    padding;
+  const maxWordsInColumn = Math.max(across.length, down.length);
+  const cluesHeight = maxWordsInColumn > 0 ? 16 + maxWordsInColumn * 12 + padding : 0;
 
-  const width = grid.cols * cellSize + padding * 2;
+  const gridWidth = grid.cols * cellSize + padding * 2;
+  const cluesWidth = 320;
+  const width = Math.max(gridWidth, cluesWidth);
   const height = grid.rows * cellSize + padding * 2 + cluesHeight;
 
   const canvas = document.createElement("canvas");
@@ -71,34 +71,35 @@ export function downloadCrosswordPNG(
 
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  let cy = padding + grid.rows * cellSize + padding;
+  const cy = padding + grid.rows * cellSize + padding;
+  const columnWidth = (width - padding * 2) / 2;
 
   if (across.length > 0) {
     ctx.font = "bold 11px sans-serif";
     ctx.fillStyle = "#333333";
     ctx.fillText("Horizontales", padding, cy);
-    cy += 14;
+    let itemY = cy + 14;
     ctx.font = "9px sans-serif";
     for (const w of across) {
       const text =
         mode === "solution" ? `${w.number}. ${w.word}` : `${w.number}. ${w.clue}`;
-      ctx.fillText(text, padding, cy);
-      cy += 12;
+      ctx.fillText(text, padding, itemY);
+      itemY += 12;
     }
-    cy += 4;
   }
 
   if (down.length > 0) {
+    const downX = padding + columnWidth;
     ctx.font = "bold 11px sans-serif";
     ctx.fillStyle = "#333333";
-    ctx.fillText("Verticales", padding, cy);
-    cy += 14;
+    ctx.fillText("Verticales", downX, cy);
+    let itemY = cy + 14;
     ctx.font = "9px sans-serif";
     for (const w of down) {
       const text =
         mode === "solution" ? `${w.number}. ${w.word}` : `${w.number}. ${w.clue}`;
-      ctx.fillText(text, padding, cy);
-      cy += 12;
+      ctx.fillText(text, downX, itemY);
+      itemY += 12;
     }
   }
 
