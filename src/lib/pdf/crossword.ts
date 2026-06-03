@@ -42,7 +42,8 @@ function drawCrosswordGrid(
 export async function generateCrosswordPDF(
   grid: CWGrid,
   mode: "blank" | "solution",
-  title?: string
+  title?: string,
+  action: "preview" | "download" = "preview"
 ) {
   const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
@@ -112,7 +113,11 @@ export async function generateCrosswordPDF(
     drawWordList(down, margin + columnWidth + 5, wordsY, "Verticales", mode !== "solution");
   }
 
-  pdf.save(
-    `${sanitizeFilename(title || "", "crucigrama")}${mode === "solution" ? "-solucion" : ""}.pdf`
-  );
+  const filename = `${sanitizeFilename(title || "", "crucigrama")}${mode === "solution" ? "-solucion" : ""}.pdf`;
+
+  if (action === "download") {
+    pdf.save(filename);
+  } else {
+    window.open(pdf.output("bloburl"), "_blank");
+  }
 }
