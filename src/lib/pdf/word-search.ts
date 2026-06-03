@@ -75,7 +75,8 @@ function drawWordList(
 export async function generateWordSearchPDF(
   grid: WSGrid,
   mode: "students" | "solution",
-  title?: string
+  title?: string,
+  action: "preview" | "download" = "preview"
 ) {
   const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
@@ -101,5 +102,9 @@ export async function generateWordSearchPDF(
       ? `${sanitizeFilename(title || "", "sopa-de-letras")}-solucion.pdf`
       : `${sanitizeFilename(title || "", "sopa-de-letras")}.pdf`;
 
-  pdf.save(filename);
+  if (action === "download") {
+    pdf.save(filename);
+  } else {
+    window.open(pdf.output("bloburl"), "_blank");
+  }
 }

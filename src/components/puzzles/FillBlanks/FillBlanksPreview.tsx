@@ -3,6 +3,7 @@ import DownloadDropdown from "../../ui/DownloadDropdown";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
 import { generateFillBlanksPDF } from "../../../lib/pdf/fill-blanks";
+import { Eye } from "lucide-react";
 
 export default function FillBlanksPreview() {
   const { fillBlanksResult, setFillBlanksResult, fillBlanksTitle } = usePuzzleStore();
@@ -34,12 +35,17 @@ export default function FillBlanksPreview() {
                   label: "PDF",
                   options: [
                     {
-                      label: "Con huecos",
-                      onClick: () => generateFillBlanksPDF(fillBlanksResult, "students", fillBlanksTitle),
+                      label: "Ver en navegador",
+                      icon: Eye,
+                      onClick: () => generateFillBlanksPDF(fillBlanksResult, "students", fillBlanksTitle, "preview"),
                     },
                     {
-                      label: "Con solución",
-                      onClick: () => generateFillBlanksPDF(fillBlanksResult, "solution", fillBlanksTitle),
+                      label: "Descargar con huecos",
+                      onClick: () => generateFillBlanksPDF(fillBlanksResult, "students", fillBlanksTitle, "download"),
+                    },
+                    {
+                      label: "Descargar con solución",
+                      onClick: () => generateFillBlanksPDF(fillBlanksResult, "solution", fillBlanksTitle, "download"),
                     },
                   ],
                 },

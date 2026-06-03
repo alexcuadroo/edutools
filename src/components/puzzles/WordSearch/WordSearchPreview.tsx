@@ -5,6 +5,7 @@ import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateWordSearchPDF } from "../../../lib/pdf/word-search";
 import { downloadWordSearchPNG } from "../../../lib/png/word-search";
 import DownloadDropdown from "../../ui/DownloadDropdown";
+import { Eye } from "lucide-react";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -36,7 +37,7 @@ export default function WordSearchPreview() {
   if (!grid) return null;
 
   const solutionCells = getSolutionCells(grid);
-  const cellSize = Math.min(40, 500 / grid.size);
+  const cellSize = Math.min(36, 280 / grid.size);
 
   return (
     <div className="space-y-6">
@@ -48,8 +49,9 @@ export default function WordSearchPreview() {
               {
                 label: "PDF",
                 options: [
-                  { label: "Sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle) },
-                  { label: "Con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", wordSearchTitle) },
+                  { label: "Ver en navegador", icon: Eye, onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "preview") },
+                  { label: "Descargar sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "download") },
+                  { label: "Descargar con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", wordSearchTitle, "download") },
                 ],
               },
               {
