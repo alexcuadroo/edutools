@@ -1,5 +1,11 @@
 import type { WSWordPlacement } from "../puzzles/word-search/types";
 import type { CWWord } from "../puzzles/crossword/types";
+import type { FillBlanksResult } from "../puzzles/fill-blanks/types";
+import type { HangmanResult } from "../puzzles/hangman/types";
+import type { AnagramResult } from "../puzzles/anagram/types";
+import type { SentenceOrderResult } from "../puzzles/sentence-order/types";
+
+export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order";
 
 export interface WSPlayData {
   g: string[][];
@@ -16,8 +22,6 @@ export interface CWPlayData {
   n: Record<string, number>;
   t?: string;
 }
-
-export type PlayablePuzzleType = "word-search" | "crossword";
 
 export interface PlayableWSWord {
   word: string;
@@ -113,4 +117,58 @@ export function playDataToCWNumbers(data: CWPlayData): Map<string, number> {
     map.set(key, val);
   }
   return map;
+}
+
+export interface FBPlayData {
+  t?: string;
+  txt: string;
+  b: { i: number; w: string }[];
+  o: string[];
+}
+
+export interface HangmanPlayData {
+  t?: string;
+  w: { w: string; c?: string }[];
+  m: number;
+}
+
+export interface AnagramPlayData {
+  t?: string;
+  w: { w: string; c?: string; s: string }[];
+}
+
+export interface SOPlayData {
+  t?: string;
+  s: { o: string; w: string[] }[];
+}
+
+export function fillBlanksResultToPlayData(result: FillBlanksResult, title?: string): FBPlayData {
+  return {
+    t: title || undefined,
+    txt: result.originalText,
+    b: result.blanks.map((b) => ({ i: b.tokenIndex, w: b.word })),
+    o: result.options,
+  };
+}
+
+export function hangmanResultToPlayData(result: HangmanResult, title?: string): HangmanPlayData {
+  return {
+    t: title || undefined,
+    w: result.words.map((w) => ({ w: w.word, c: w.clue })),
+    m: result.maxAttempts,
+  };
+}
+
+export function anagramResultToPlayData(result: AnagramResult, title?: string): AnagramPlayData {
+  return {
+    t: title || undefined,
+    w: result.words.map((w) => ({ w: w.word, c: w.clue, s: w.scrambled })),
+  };
+}
+
+export function sentenceOrderResultToPlayData(result: SentenceOrderResult, title?: string): SOPlayData {
+  return {
+    t: title || undefined,
+    s: result.sentences.map((s) => ({ o: s.original, w: s.shuffled })),
+  };
 }
