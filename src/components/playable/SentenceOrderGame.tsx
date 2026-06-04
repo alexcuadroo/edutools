@@ -74,7 +74,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
         setCelebration(true);
       }
     }
-  }, [userOrder, currentSentence, currentIdx, sentences.length, score]);
+  }, [userOrder, currentSentence, currentIdx, sentences, score]);
 
   const handleNext = useCallback(() => {
     if (currentIdx < sentences.length - 1) {

@@ -1,10 +1,5 @@
-import type { Env } from "./index";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+import type { Env } from "../utils";
+import { corsHeaders } from "../utils";
 
 export const onRequestOptions: PagesFunction<Env> = async () => {
   return new Response(null, { status: 204, headers: corsHeaders });
@@ -12,16 +7,18 @@ export const onRequestOptions: PagesFunction<Env> = async () => {
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
-    const id = context.params.id?.toLowerCase();
+    const idParam = context.params.id;
+    const id = Array.isArray(idParam) ? idParam[0] : idParam;
+    const normalizedId = id?.toLowerCase();
 
-    if (!id || typeof id !== "string" || id.length < 4 || id.length > 20) {
+    if (!normalizedId || typeof normalizedId !== "string" || normalizedId.length < 4 || normalizedId.length > 20) {
       return Response.json(
         { error: "ID de puzzle no válido" },
         { status: 400, headers: corsHeaders }
       );
     }
 
-    const value = await context.env.PUZZLES.get(id);
+    const value = await context.env.PUZZLES.get(normalizedId);
 
     if (!value) {
       return Response.json(

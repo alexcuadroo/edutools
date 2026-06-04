@@ -1,6 +1,5 @@
-export interface Env {
-  PUZZLES: KVNamespace;
-}
+import type { Env } from "../utils";
+import { corsHeaders } from "../utils";
 
 const MAX_PAYLOAD_SIZE = 100 * 1024;
 const ALLOWED_TYPES = [
@@ -10,13 +9,7 @@ const ALLOWED_TYPES = [
   "hangman",
   "anagram",
   "sentence-order",
-];
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+] as const;
 
 function generateShortId(): string {
   return crypto.randomUUID().replace(/-/g, "").substring(0, 8);
@@ -33,14 +26,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       return Response.json(
         { error: "Content-Type debe ser application/json" },
         { status: 400, headers: corsHeaders }
-      );
-    }
-
-    const contentLength = context.request.headers.get("Content-Length");
-    if (contentLength && parseInt(contentLength) > MAX_PAYLOAD_SIZE) {
-      return Response.json(
-        { error: "Payload demasiado grande (max 100KB)" },
-        { status: 413, headers: corsHeaders }
       );
     }
 
@@ -70,7 +55,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    if (!ALLOWED_TYPES.includes(data.type)) {
+    if (!ALLOWED_TYPES.includes(data.type as typeof ALLOWED_TYPES[number])) {
       return Response.json(
         { error: `Tipo de puzzle no válido. Permitidos: ${ALLOWED_TYPES.join(", ")}` },
         { status: 400, headers: corsHeaders }

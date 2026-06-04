@@ -17,6 +17,7 @@ import PlayHangmanPage from "./pages/play/PlayHangmanPage";
 import PlayAnagramPage from "./pages/play/PlayAnagramPage";
 import PlaySentenceOrderPage from "./pages/play/PlaySentenceOrderPage";
 import ErrorBoundary from "./components/ErrorBoundary";
+import ScrollToTop from "./components/ScrollToTop";
 import { wordSearchGenerator } from "./lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "./lib/puzzles/crossword/generator";
 import { fillBlanksGenerator } from "./lib/puzzles/fill-blanks/generator";
@@ -44,6 +45,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
