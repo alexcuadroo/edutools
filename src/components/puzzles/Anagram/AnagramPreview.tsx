@@ -4,10 +4,11 @@ import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateAnagramPDF } from "../../../lib/pdf/anagram";
 import DownloadDropdown from "../../ui/DownloadDropdown";
-import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
 import { anagramResultToPlayData } from "../../../lib/share/types";
-import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2 } from "lucide-react";
+import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2, Loader2 } from "lucide-react";
 import type { AnagramWord, AnagramResult } from "../../../lib/puzzles/anagram/types";
+import { toast } from "react-toastify";
 
 type WordStatus = "pending" | "correct" | "incorrect";
 
@@ -16,7 +17,7 @@ interface WordState {
   status: WordStatus;
 }
 
-function AnagramGame({ result, title, onShare }: { result: AnagramResult; title: string; onShare?: () => void }) {
+function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResult; title: string; onShare?: () => void; sharing?: boolean }) {
   const { words } = result;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -89,10 +90,11 @@ function AnagramGame({ result, title, onShare }: { result: AnagramResult; title:
             {onShare && (
               <button
                 onClick={onShare}
-                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+                disabled={sharing}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Share2 className="w-4 h-4" />
-                Compartir
+                {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+                {sharing ? "Generando..." : "Compartir"}
               </button>
             )}
             <DownloadDropdown
@@ -282,15 +284,24 @@ export default function AnagramPreview() {
   const { anagramResult, anagramTitle } = usePuzzleStore();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [sharing, setSharing] = useState(false);
 
   if (!anagramResult) return null;
 
-  const handleShare = () => {
-    const data = anagramResultToPlayData(anagramResult, anagramTitle);
-    const encoded = encodePuzzleData(data);
-    const url = buildPlayUrl("anagrama", encoded);
-    setShareUrl(url);
-    setShareOpen(true);
+  const handleShare = async () => {
+    if (sharing) return;
+    setSharing(true);
+    try {
+      const data = anagramResultToPlayData(anagramResult, anagramTitle);
+      const id = await savePuzzle({ type: "anagram", puzzle: data });
+      const url = buildPlayUrl("anagrama", id);
+      setShareUrl(url);
+      setShareOpen(true);
+    } catch {
+      toast.error("No se pudo generar el link para compartir");
+    } finally {
+      setSharing(false);
+    }
   };
 
   return (
@@ -300,6 +311,7 @@ export default function AnagramPreview() {
         result={anagramResult}
         title={anagramTitle}
         onShare={handleShare}
+        sharing={sharing}
       />
       {shareOpen && shareUrl && (
         <ShareModal

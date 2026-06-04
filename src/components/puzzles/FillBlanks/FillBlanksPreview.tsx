@@ -5,23 +5,33 @@ import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
 import { generateFillBlanksPDF } from "../../../lib/pdf/fill-blanks";
-import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
 import { fillBlanksResultToPlayData } from "../../../lib/share/types";
-import { Eye, Share2 } from "lucide-react";
+import { Eye, Share2, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function FillBlanksPreview() {
   const { fillBlanksResult, setFillBlanksResult, fillBlanksTitle } = usePuzzleStore();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [sharing, setSharing] = useState(false);
 
   if (!fillBlanksResult) return null;
 
-  const handleShare = () => {
-    const data = fillBlanksResultToPlayData(fillBlanksResult, fillBlanksTitle);
-    const encoded = encodePuzzleData(data);
-    const url = buildPlayUrl("rellenar-huecos", encoded);
-    setShareUrl(url);
-    setShareOpen(true);
+  const handleShare = async () => {
+    if (sharing) return;
+    setSharing(true);
+    try {
+      const data = fillBlanksResultToPlayData(fillBlanksResult, fillBlanksTitle);
+      const id = await savePuzzle({ type: "fill-blanks", puzzle: data });
+      const url = buildPlayUrl("rellenar-huecos", id);
+      setShareUrl(url);
+      setShareOpen(true);
+    } catch {
+      toast.error("No se pudo generar el link para compartir");
+    } finally {
+      setSharing(false);
+    }
   };
 
   const handleToggleBlank = (tokenIndex: number) => {
@@ -45,10 +55,11 @@ export default function FillBlanksPreview() {
             </span>
             <button
               onClick={handleShare}
-              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+              disabled={sharing}
+              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Share2 className="w-4 h-4" />
-              Compartir
+              {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+              {sharing ? "Generando..." : "Compartir"}
             </button>
             <DownloadDropdown
               groups={[
