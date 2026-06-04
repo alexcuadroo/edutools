@@ -12,7 +12,7 @@ export const onRequestOptions: PagesFunction<Env> = async () => {
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
-    const id = context.params.id;
+    const id = context.params.id?.toLowerCase();
 
     if (!id || typeof id !== "string" || id.length < 4 || id.length > 20) {
       return Response.json(

@@ -95,7 +95,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const id = generateShortId();
 
     await context.env.PUZZLES.put(id, jsonString, {
-      expirationTtl: 60 * 60 * 24 * 30,
+      expirationTtl: 60 * 60 * 24,
     });
 
     return Response.json({ id }, { status: 201, headers: corsHeaders });

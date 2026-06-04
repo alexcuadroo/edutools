@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { X, Copy, Check, Share2 } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { X, Copy, Check, Share2, Hash } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "react-toastify";
 
@@ -11,6 +11,12 @@ interface ShareModalProps {
 
 export default function ShareModal({ url, title, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+
+  const puzzleCode = useMemo(() => {
+    const parts = url.split("/");
+    return parts[parts.length - 1] || "";
+  }, [url]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -22,6 +28,17 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
       toast.error("No se pudo copiar el link");
     }
   }, [url]);
+
+  const handleCopyCode = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(puzzleCode.toUpperCase());
+      setCopiedCode(true);
+      toast.success("Código copiado al portapapeles");
+      setTimeout(() => setCopiedCode(false), 2000);
+    } catch {
+      toast.error("No se pudo copiar el código");
+    }
+  }, [puzzleCode]);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -66,34 +83,69 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 text-center mb-4">
-          Escanea el QR o copia el link para jugar
-        </p>
+        <div className="space-y-3 mb-4">
+          <div>
+            <p className="text-xs text-gray-400 text-center mb-2">
+              Código del puzzle
+            </p>
+            <div className="flex items-center gap-2 bg-indigo-50 rounded-xl p-3 border-2 border-indigo-200">
+              <Hash className="w-5 h-5 text-indigo-600 shrink-0" />
+              <span className="flex-1 font-mono text-lg font-bold text-indigo-700 tracking-wider">
+                {puzzleCode.toUpperCase()}
+              </span>
+              <button
+                onClick={handleCopyCode}
+                className="shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+              >
+                {copiedCode ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    Copiado
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    Copiar
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-2 mb-4">
-          <input
-            readOnly
-            value={url}
-            className="flex-1 bg-transparent text-xs text-gray-600 outline-none px-2 truncate"
-            onClick={(e) => (e.target as HTMLInputElement).select()}
-          />
-          <button
-            onClick={handleCopy}
-            className="shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4" />
-                Copiado
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4" />
-                Copiar
-              </>
-            )}
-          </button>
+          <div>
+            <p className="text-xs text-gray-400 text-center mb-2">
+              Link completo
+            </p>
+            <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-2">
+              <input
+                readOnly
+                value={url}
+                className="flex-1 bg-transparent text-xs text-gray-600 outline-none px-2 truncate"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                onClick={handleCopy}
+                className="shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    Copiado
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    Copiar
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
+
+        <p className="text-xs text-gray-400 text-center">
+          Compartí el código o el link para jugar
+        </p>
       </div>
     </div>
   );
