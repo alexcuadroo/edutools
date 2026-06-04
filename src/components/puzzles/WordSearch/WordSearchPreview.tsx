@@ -7,9 +7,10 @@ import { generateWordSearchPDF } from "../../../lib/pdf/word-search";
 import { downloadWordSearchPNG } from "../../../lib/png/word-search";
 import DownloadDropdown from "../../ui/DownloadDropdown";
 import ShareModal from "../../ui/ShareModal";
-import { Eye, Share2 } from "lucide-react";
-import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { Eye, Share2, Loader2 } from "lucide-react";
+import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
 import { wsGridToPlayData } from "../../../lib/share/types";
+import { toast } from "react-toastify";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -39,15 +40,23 @@ export default function WordSearchPreview() {
   const { wordSearchResult, wordSearchTitle } = usePuzzleStore();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [sharing, setSharing] = useState(false);
   const grid = wordSearchResult;
 
-  const handleShare = () => {
-    if (!grid) return;
-    const data = wsGridToPlayData(grid, wordSearchTitle);
-    const encoded = encodePuzzleData(data);
-    const url = buildPlayUrl("sopa-de-letras", encoded);
-    setShareUrl(url);
-    setShareOpen(true);
+  const handleShare = async () => {
+    if (!grid || sharing) return;
+    setSharing(true);
+    try {
+      const data = wsGridToPlayData(grid, wordSearchTitle);
+      const id = await savePuzzle({ type: "word-search", puzzle: data });
+      const url = buildPlayUrl("sopa-de-letras", id);
+      setShareUrl(url);
+      setShareOpen(true);
+    } catch {
+      toast.error("No se pudo generar el link para compartir");
+    } finally {
+      setSharing(false);
+    }
   };
 
   if (!grid) return null;
@@ -63,10 +72,11 @@ export default function WordSearchPreview() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+              disabled={sharing}
+              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Share2 className="w-4 h-4" />
-              Compartir
+              {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+              {sharing ? "Generando..." : "Compartir"}
             </button>
             <DownloadDropdown
               groups={[

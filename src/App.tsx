@@ -56,12 +56,12 @@ export default function App() {
           </Route>
           <Route element={<PlayableLayout />}>
             <Route path="/jugar" element={<PlayHubPage />} />
-            <Route path="/jugar/sopa-de-letras" element={<PlayWordSearchPage />} />
-            <Route path="/jugar/crucigrama" element={<PlayCrosswordPage />} />
-            <Route path="/jugar/rellenar-huecos" element={<PlayFillBlanksPage />} />
-            <Route path="/jugar/adivina-la-palabra" element={<PlayHangmanPage />} />
-            <Route path="/jugar/anagrama" element={<PlayAnagramPage />} />
-            <Route path="/jugar/ordenar-oracion" element={<PlaySentenceOrderPage />} />
+            <Route path="/jugar/sopa-de-letras/:id" element={<PlayWordSearchPage />} />
+            <Route path="/jugar/crucigrama/:id" element={<PlayCrosswordPage />} />
+            <Route path="/jugar/rellenar-huecos/:id" element={<PlayFillBlanksPage />} />
+            <Route path="/jugar/adivina-la-palabra/:id" element={<PlayHangmanPage />} />
+            <Route path="/jugar/anagrama/:id" element={<PlayAnagramPage />} />
+            <Route path="/jugar/ordenar-oracion/:id" element={<PlaySentenceOrderPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

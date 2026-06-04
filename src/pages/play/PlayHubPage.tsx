@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import AnagramGame from "../../components/playable/AnagramGame";
+import { loadPuzzle } from "../../lib/share/api";
 
 const DEMO_ANAGRAM = {
   words: [
@@ -13,16 +15,110 @@ const DEMO_ANAGRAM = {
   title: "Ejemplo de Anagrama",
 };
 
+const PUZZLE_TYPE_ROUTES: Record<string, string> = {
+  "word-search": "sopa-de-letras",
+  "crossword": "crucigrama",
+  "fill-blanks": "rellenar-huecos",
+  "hangman": "adivina-la-palabra",
+  "anagram": "anagrama",
+  "sentence-order": "ordenar-oracion",
+};
+
 export default function PlayHubPage() {
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    const normalizedCode = code.trim().toLowerCase();
+    if (!normalizedCode) {
+      setError("Ingresá un código de puzzle");
+      return;
+    }
+
+    if (normalizedCode.length !== 8) {
+      setError("El código debe tener exactamente 8 caracteres");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await loadPuzzle(normalizedCode);
+      const route = PUZZLE_TYPE_ROUTES[data.type];
+      if (!route) {
+        setError("Tipo de puzzle no reconocido");
+        return;
+      }
+      navigate(`/jugar/${route}/${normalizedCode}`);
+    } catch {
+      setError("Puzzle no encontrado. Verificá el código e intentá de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-start px-4 py-2">
       <div className="w-full max-w-3xl mx-auto space-y-6">
         <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-gray-900">Jugar un puzzle</h1>
           <p className="text-gray-500 text-sm sm:text-base">
-            Los puzzles se cargan desde un link compartido por el anfitrión.
+            Ingresá el código que te compartió el docente para acceder al puzzle.
           </p>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="puzzle-code" className="block text-sm font-medium text-gray-700 mb-2">
+                Código del puzzle
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="puzzle-code"
+                  type="text"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Ej: f3d78213"
+                  maxLength={8}
+                  className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none transition-colors text-lg font-mono uppercase"
+                  disabled={loading}
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <button
+                  type="submit"
+                  disabled={loading || code.trim().length !== 8}
+                  className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Buscando...
+                    </>
+                  ) : (
+                    "Jugar"
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                {error}
+              </div>
+            )}
+          </form>
+        </div>
+
+        <div className="text-center space-y-2">
           <p className="text-xs sm:text-sm text-gray-400">
-            Mientras tanto, probá este ejemplo:
+            ¿No tenés un código? Probá este ejemplo:
           </p>
         </div>
 

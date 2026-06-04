@@ -1,0 +1,11 @@
+name = "edutools"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "dist"
+
+[vars]
+ENVIRONMENT = "production"
+
+[[kv_namespaces]]
+binding = "PUZZLES"
+id = "ae8d3daa2607494f8e0cd33095867c09"
+preview_id = "ae8d3daa2607494f8e0cd33095867c09"
