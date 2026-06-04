@@ -12,6 +12,10 @@ import NotFoundPage from "./pages/NotFoundPage";
 import PlayHubPage from "./pages/play/PlayHubPage";
 import PlayWordSearchPage from "./pages/play/PlayWordSearchPage";
 import PlayCrosswordPage from "./pages/play/PlayCrosswordPage";
+import PlayFillBlanksPage from "./pages/play/PlayFillBlanksPage";
+import PlayHangmanPage from "./pages/play/PlayHangmanPage";
+import PlayAnagramPage from "./pages/play/PlayAnagramPage";
+import PlaySentenceOrderPage from "./pages/play/PlaySentenceOrderPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { wordSearchGenerator } from "./lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "./lib/puzzles/crossword/generator";
@@ -54,6 +58,10 @@ export default function App() {
             <Route path="/jugar" element={<PlayHubPage />} />
             <Route path="/jugar/sopa-de-letras" element={<PlayWordSearchPage />} />
             <Route path="/jugar/crucigrama" element={<PlayCrosswordPage />} />
+            <Route path="/jugar/rellenar-huecos" element={<PlayFillBlanksPage />} />
+            <Route path="/jugar/adivina-la-palabra" element={<PlayHangmanPage />} />
+            <Route path="/jugar/anagrama" element={<PlayAnagramPage />} />
+            <Route path="/jugar/ordenar-oracion" element={<PlaySentenceOrderPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
