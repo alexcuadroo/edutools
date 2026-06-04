@@ -106,9 +106,9 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
       {celebration && (
         <div className="text-center py-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
           <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-          <p className="text-lg font-bold text-green-700">Felicidades!</p>
+          <p className="text-lg font-bold text-green-700">¡Listo!</p>
           <p className="text-sm text-green-600">
-            Ordenaste todas las oraciones correctamente ({score}/{sentences.length})
+            Ordenaste ({score}/{sentences.length}) oraciones correctamente
           </p>
         </div>
       )}
