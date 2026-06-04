@@ -52,7 +52,7 @@ export default function AnagramInput() {
 
   const handleLoadExample = () => {
     setWordsText(
-      "ESCUELA - Lugar donde se estudia\nMAESTRO - Persona que ensena\nESTUDIANTE - Persona que aprende\nLIBRO - Objeto con paginas para leer\nLAPIZ - Utensil para escribir"
+      "ESCUELA - Lugar donde se estudia\nMAESTRO - Persona que enseña\nESTUDIANTE - Persona que aprende\nLIBRO - Objeto con paginas para leer\nLAPIZ - Utensillo para escribir"
     );
     setTitle("La Escuela");
   };
@@ -73,7 +73,7 @@ export default function AnagramInput() {
           onChange={(e) => setWordsText(e.target.value)}
           rows={6}
           className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y"
-          placeholder={`ESCUELA - Lugar donde se estudia\nMAESTRO - Persona que ensena\nESTUDIANTE - Persona que aprende`}
+          placeholder={`ESCUELA - Lugar donde se estudia\nMAESTRO - Persona que enseña\nESTUDIANTE - Persona que aprende`}
         />
       </div>
 

@@ -42,7 +42,7 @@ export default function SentenceOrderInput() {
 
   const handleLoadExample = () => {
     setSentencesText(
-      "El perro corre en el parque\nLa maestra ensena a los estudiantes\nLos ninos juegan en el recreo\nEl sol brilla en el cielo azul\nLos libros estan en la biblioteca"
+      "El perro corre en el parque\nLa maestra enseña a los estudiantes\nLos ninos juegan en el recreo\nEl sol brilla en el cielo azul\nLos libros estan en la biblioteca"
     );
     setTitle("Oraciones Cotidianas");
   };
@@ -63,7 +63,7 @@ export default function SentenceOrderInput() {
           onChange={(e) => setSentencesText(e.target.value)}
           rows={6}
           className="input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y"
-          placeholder={`El perro corre en el parque\nLa maestra ensena a los estudiantes\nLos ninos juegan en el recreo`}
+          placeholder={`El perro corre en el parque\nLa maestra enseña a los estudiantes\nLos ninos juegan en el recreo`}
         />
       </div>
 
