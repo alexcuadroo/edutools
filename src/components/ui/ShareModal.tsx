@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Copy, Check, Share2, Loader2, AlertCircle } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Copy, Check, Share2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { toast } from "react-toastify";
 
 interface ShareModalProps {
@@ -10,31 +11,6 @@ interface ShareModalProps {
 
 export default function ShareModal({ url, title, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
-  const [qrError, setQrError] = useState(false);
-  const backdropRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    async function generateQr() {
-      try {
-        const res = await fetch("https://proxy-edutools.edualex.uy", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: url, size: 250 }),
-        });
-        if (!res.ok) throw new Error("QR generation failed");
-        const data = await res.json();
-        if (data.qrCode) {
-          setQrDataUrl(data.qrCode);
-        } else {
-          setQrError(true);
-        }
-      } catch {
-        setQrError(true);
-      }
-    }
-    generateQr();
-  }, [url]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -57,10 +33,9 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
 
   return (
     <div
-      ref={backdropRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => {
-        if (e.target === backdropRef.current) onClose();
+        if (e.target === e.currentTarget) onClose();
       }}
     >
       <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in-95 duration-200">
@@ -81,16 +56,13 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
 
         <div className="flex justify-center mb-5">
           <div className="bg-white rounded-xl border-2 border-gray-100 w-[250px] h-[250px] flex items-center justify-center overflow-hidden">
-            {qrDataUrl ? (
-              <img src={qrDataUrl} alt="QR Code" className="w-full h-full" />
-            ) : qrError ? (
-              <div className="flex flex-col items-center gap-2 text-gray-400">
-                <AlertCircle className="w-8 h-8" />
-                <span className="text-xs">No se pudo generar el QR</span>
-              </div>
-            ) : (
-              <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
-            )}
+            <QRCodeSVG
+              id="share-qr-code"
+              value={url}
+              size={250}
+              level="M"
+              className="p-2"
+            />
           </div>
         </div>
 
