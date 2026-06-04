@@ -6,7 +6,7 @@ import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
 export default function SentenceOrderPage() {
   return (
     <PuzzlePageLayout
-      title="Ordenar Oracion"
+      title="Ordenar Oración"
       description="Genera oraciones desordenadas para que los estudiantes las ordenen correctamente."
       icon={<ListOrdered className="w-5 h-5 text-indigo-600" />}
       input={<SentenceOrderInput />}

@@ -4,7 +4,7 @@ import { shuffle } from "../../utils";
 
 class SentenceOrderGenerator implements IPuzzleGenerator {
   id = "sentence-order" as const;
-  name = "Ordenar Oracion";
+  name = "Ordenar Oración";
   description = "Genera oraciones desordenadas para ordenar";
 
   generate(input: PuzzleInput): PuzzleResult & { grid: SentenceOrderResult } {
@@ -13,7 +13,9 @@ class SentenceOrderGenerator implements IPuzzleGenerator {
       .filter((s) => s.length > 0 && s.split(/\s+/).length >= 3);
 
     if (sentences.length === 0) {
-      throw new Error("Ingresa al menos una oracion valida (minimo 3 palabras).");
+      throw new Error(
+        "Ingresa al menos una oración válida (mínimo 3 palabras).",
+      );
     }
 
     const result = sentences.map((sentence) => {

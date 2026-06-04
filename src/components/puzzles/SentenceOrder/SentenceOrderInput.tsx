@@ -18,7 +18,7 @@ export default function SentenceOrderInput() {
       .filter((l) => l.length > 0);
 
     if (lines.length === 0) {
-      toast.warning("Ingresa al menos una oracion");
+      toast.warning("Ingresa al menos una oración");
       return;
     }
 
@@ -56,7 +56,7 @@ export default function SentenceOrderInput() {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          Oraciones (una por linea, minimo 3 palabras)
+          Oraciones (una por línea, mínimo 3 palabras)
         </label>
         <textarea
           value={sentencesText}

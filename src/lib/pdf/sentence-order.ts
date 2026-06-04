@@ -12,8 +12,8 @@ export async function generateSentenceOrderPDF(
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;
 
-  const displayTitle = title || "Ordenar Oracion";
-  const pdfTitle = mode === "solution" ? `${displayTitle} - Solucion` : displayTitle;
+  const displayTitle = title || "Ordenar Oración";
+  const pdfTitle = mode === "solution" ? `${displayTitle} - Solución` : displayTitle;
 
   pdf.setFontSize(18);
   pdf.text(pdfTitle, pageWidth / 2, margin, { align: "center" });

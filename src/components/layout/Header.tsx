@@ -8,7 +8,7 @@ const TABS = [
   { path: "/rellenar-huecos", label: "Rellenar Huecos", icon: TextCursorInput },
   { path: "/adivina-la-palabra", label: "Adivina la Palabra", icon: Heart },
   { path: "/anagrama", label: "Anagrama", icon: Shuffle },
-  { path: "/ordenar-oracion", label: "Ordenar Oracion", icon: ListOrdered },
+  { path: "/ordenar-oracion", label: "Ordenar Oración", icon: ListOrdered },
 ];
 
 export default function Header() {

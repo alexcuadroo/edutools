@@ -128,7 +128,7 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
-              Oracion {currentIndex + 1} / {sentences.length}
+              Oración {currentIndex + 1} / {sentences.length}
             </span>
             <button
               onClick={goNext}
@@ -146,7 +146,7 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
             <button
               onClick={handleResetSentence}
               className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 cursor-pointer"
-              title="Reiniciar esta oracion"
+              title="Reiniciar esta oración"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Reiniciar
@@ -155,7 +155,7 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
         </div>
 
         <div className="text-center mb-6">
-          <p className="text-sm text-gray-500 mb-4">Haz click en las palabras para ordenar la oracion:</p>
+          <p className="text-sm text-gray-500 mb-4">Haz click en las palabras para ordenar la oración:</p>
 
           <div className="min-h-[60px] p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mb-4">
             {currentState.answer.length === 0 ? (

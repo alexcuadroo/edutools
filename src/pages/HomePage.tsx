@@ -50,7 +50,7 @@ const PUZZLES = [
   },
   {
     path: "/ordenar-oracion",
-    title: "Ordenar Oracion",
+    title: "Ordenar Oración",
     description:
       "Genera oraciones desordenadas para que los estudiantes las ordenen correctamente.",
     icon: ListOrdered,
