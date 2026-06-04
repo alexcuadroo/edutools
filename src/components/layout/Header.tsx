@@ -1,17 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered } from "lucide-react";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
   { path: "/crucigrama", label: "Crucigrama", icon: Grid3X3 },
   { path: "/rellenar-huecos", label: "Rellenar Huecos", icon: TextCursorInput },
   { path: "/adivina-la-palabra", label: "Adivina la Palabra", icon: Heart },
+  { path: "/anagrama", label: "Anagrama", icon: Shuffle },
+  { path: "/ordenar-oracion", label: "Ordenar Oracion", icon: ListOrdered },
 ];
 
 export default function Header() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [puzzlesOpen, setPuzzlesOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const closePuzzles = useCallback(() => setPuzzlesOpen(false), []);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -23,6 +29,29 @@ export default function Header() {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!puzzlesOpen) return;
+
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        closePuzzles();
+      }
+    }
+
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") closePuzzles();
+    }
+
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [puzzlesOpen, closePuzzles]);
+
+  const activeTab = TABS.find((tab) => location.pathname.startsWith(tab.path));
 
   return (
     <>
@@ -36,30 +65,55 @@ export default function Header() {
             EduTools
           </Link>
 
-          <nav
-            aria-label="Navegación principal"
-            className="hidden sm:flex gap-1"
-          >
-            {TABS.map((tab) => {
-              const isActive = location.pathname.startsWith(tab.path);
-              const Icon = tab.icon;
-              return (
-                <Link
-                  key={tab.path}
-                  to={tab.path}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`nav-link flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline ${
-                    isActive
-                      ? "nav-link-active bg-indigo-50 text-indigo-700"
-                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {tab.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="hidden sm:flex items-center gap-2 relative" ref={dropdownRef}>
+            <button
+              onClick={() => setPuzzlesOpen((v) => !v)}
+              aria-expanded={puzzlesOpen}
+              aria-haspopup="true"
+              className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-all ${
+                activeTab
+                  ? "bg-indigo-50 text-indigo-700"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              Puzzles
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform ${puzzlesOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {puzzlesOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 top-full mt-1 w-80 bg-white border border-gray-200 rounded-xl shadow-lg shadow-gray-100 z-50 py-2"
+              >
+                <div className="grid grid-cols-2 gap-1 px-2">
+                  {TABS.map((tab) => {
+                    const isActive = location.pathname.startsWith(tab.path);
+                    const Icon = tab.icon;
+                    return (
+                      <Link
+                        key={tab.path}
+                        to={tab.path}
+                        onClick={closePuzzles}
+                        role="menuitem"
+                        aria-current={isActive ? "page" : undefined}
+                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all no-underline ${
+                          isActive
+                            ? "bg-indigo-50 text-indigo-700"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" />
+                        {tab.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           <button
             onClick={() => setMobileOpen(true)}
