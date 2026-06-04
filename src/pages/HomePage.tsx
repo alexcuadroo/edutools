@@ -8,6 +8,8 @@ import {
   Heart,
   ArrowRight,
   TextCursorInput,
+  Shuffle,
+  ListOrdered,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -38,6 +40,20 @@ const PUZZLES = [
     description:
       "Genera juegos de adivinar palabras con definiciones. Juego interactivo en linea y PDF para imprimir.",
     icon: Heart,
+  },
+  {
+    path: "/anagrama",
+    title: "Anagrama",
+    description:
+      "Crea anagramas con palabras y definiciones. Ordena las letras para formar la palabra correcta.",
+    icon: Shuffle,
+  },
+  {
+    path: "/ordenar-oracion",
+    title: "Ordenar Oracion",
+    description:
+      "Genera oraciones desordenadas para que los estudiantes las ordenen correctamente.",
+    icon: ListOrdered,
   },
 ];
 
