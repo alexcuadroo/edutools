@@ -7,6 +7,8 @@ interface WordSearchGameProps {
   size: number;
   words: PlayableWSWord[];
   title?: string;
+  attemptCount?: number;
+  onAttemptIncrement?: () => void;
 }
 
 interface Cell {
@@ -40,7 +42,7 @@ function cellKey(r: number, c: number): string {
   return `${r},${c}`;
 }
 
-export default function WordSearchGame({ grid, size, words, title }: WordSearchGameProps) {
+export default function WordSearchGame({ grid, size, words, title, attemptCount, onAttemptIncrement }: WordSearchGameProps) {
   const [foundWords, setFoundWords] = useState<Set<string>>(new Set());
   const [foundCells, setFoundCells] = useState<Map<string, string>>(new Map());
   const [startCell, setStartCell] = useState<Cell | null>(null);
@@ -106,7 +108,8 @@ export default function WordSearchGame({ grid, size, words, title }: WordSearchG
     setFoundCells(new Map());
     setStartCell(null);
     setSelectedCells([]);
-  }, []);
+    onAttemptIncrement?.();
+  }, [onAttemptIncrement]);
 
   const selectedSet = new Set(selectedCells.map((c) => cellKey(c.row, c.col)));
 
@@ -119,17 +122,22 @@ export default function WordSearchGame({ grid, size, words, title }: WordSearchG
       )}
 
       {celebration && (
-        <div className="text-center py-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="text-center py-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
           <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
           <p className="text-lg font-bold text-green-700">Felicidades!</p>
           <p className="text-sm text-green-600">Encontraste todas las palabras</p>
         </div>
       )}
 
-      <div className="flex flex-wrap justify-center gap-3 mb-2">
+      <div className="flex flex-wrap justify-center items-center gap-3 mb-2">
+        {attemptCount !== undefined && (
+          <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+            Intento #{attemptCount}
+          </span>
+        )}
         <button
           onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
           Reiniciar

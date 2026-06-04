@@ -8,10 +8,13 @@ import {
   playDataToCWWords,
   playDataToCWNumbers,
 } from "../../lib/share/types";
+import { useAttemptCounter } from "../../hooks/useAttemptCounter";
 
 export default function PlayCrosswordPage() {
+  const hash = useMemo(() => window.location.hash.slice(1), []);
+  const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("crucigrama", hash);
+
   const decoded = useMemo(() => {
-    const hash = window.location.hash.slice(1);
     if (!hash) return null;
     try {
       const data = decodePuzzleData<CWPlayData>(hash);
@@ -26,7 +29,7 @@ export default function PlayCrosswordPage() {
     } catch {
       return null;
     }
-  }, []);
+  }, [hash]);
 
   if (!decoded) {
     return (
@@ -34,7 +37,7 @@ export default function PlayCrosswordPage() {
         <AlertCircle className="w-12 h-12 text-red-400" />
         <h1 className="text-xl font-bold text-gray-900">Puzzle no encontrado</h1>
         <p className="text-gray-500 max-w-sm">
-          El link del puzzle no es válido o está dañado. Pídele a tu docente que
+          El link del puzzle no es válido o está dañado. Pídele al anfitrión que
           genere un nuevo link.
         </p>
         <Link
@@ -64,6 +67,8 @@ export default function PlayCrosswordPage() {
         words={decoded.words}
         numbers={decoded.numbers}
         title={decoded.title}
+        attemptCount={attemptCount}
+        onAttemptIncrement={onAttemptIncrement}
       />
     </div>
   );

@@ -9,6 +9,8 @@ interface CrosswordGameProps {
   words: PlayableCWWord[];
   numbers: Map<string, number>;
   title?: string;
+  attemptCount?: number;
+  onAttemptIncrement?: () => void;
 }
 
 interface CellPos {
@@ -27,6 +29,8 @@ export default function CrosswordGame({
   words,
   numbers,
   title,
+  attemptCount,
+  onAttemptIncrement,
 }: CrosswordGameProps) {
   const [userGrid, setUserGrid] = useState<(string | null)[][]>(() =>
     grid.map((row) => row.map((cell) => (cell === null ? null : "")))
@@ -201,6 +205,7 @@ export default function CrosswordGame({
     setActiveWordIdx(null);
     setCellStatus(Array.from({ length: rows }, () => Array(cols).fill(null)));
     setCelebration(false);
+    onAttemptIncrement?.();
   };
 
   const activeWordCells = new Set<string>();
@@ -227,17 +232,22 @@ export default function CrosswordGame({
         </div>
       )}
 
-      <div className="flex flex-wrap justify-center gap-3 mb-2">
+      <div className="flex flex-wrap justify-center items-center gap-3 mb-2">
+        {attemptCount !== undefined && (
+          <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+            Intento #{attemptCount}
+          </span>
+        )}
         <button
           onClick={handleCheck}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
+          className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
         >
           <CheckCircle className="w-4 h-4" />
           Comprobar
         </button>
         <button
           onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
           Reiniciar

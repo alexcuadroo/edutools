@@ -4,10 +4,13 @@ import { ArrowLeft, AlertCircle } from "lucide-react";
 import WordSearchGame from "../../components/playable/WordSearchGame";
 import { decodePuzzleData } from "../../lib/share/encoder";
 import { type WSPlayData, playDataToWSWords } from "../../lib/share/types";
+import { useAttemptCounter } from "../../hooks/useAttemptCounter";
 
 export default function PlayWordSearchPage() {
+  const hash = useMemo(() => window.location.hash.slice(1), []);
+  const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("sopa_de_letras", hash);
+
   const decoded = useMemo(() => {
-    const hash = window.location.hash.slice(1);
     if (!hash) return null;
     try {
       const data = decodePuzzleData<WSPlayData>(hash);
@@ -20,7 +23,7 @@ export default function PlayWordSearchPage() {
     } catch {
       return null;
     }
-  }, []);
+  }, [hash]);
 
   if (!decoded) {
     return (
@@ -28,7 +31,7 @@ export default function PlayWordSearchPage() {
         <AlertCircle className="w-12 h-12 text-red-400" />
         <h1 className="text-xl font-bold text-gray-900">Puzzle no encontrado</h1>
         <p className="text-gray-500 max-w-sm">
-          El link del puzzle no es válido o está dañado. Pídele a tu docente que
+          El link del puzzle no es válido o está dañado. Pídele al anfitrión que
           genere un nuevo link.
         </p>
         <Link
@@ -56,6 +59,8 @@ export default function PlayWordSearchPage() {
         size={decoded.size}
         words={decoded.words}
         title={decoded.title}
+        attemptCount={attemptCount}
+        onAttemptIncrement={onAttemptIncrement}
       />
     </div>
   );
