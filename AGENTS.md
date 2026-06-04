@@ -44,6 +44,9 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 - **Lucide React** para iconos
 - **jsPDF** + **html2canvas** para exportación PDF
 - **React Toastify** para notificaciones
+- **nanoid** para IDs cortos de puzzles
+- **qrcode.react** para generación local de QR
+- **Cloudflare Pages** + **Pages Functions** + **KV** para deploy y API
 
 ### Convenciones de código
 
@@ -67,13 +70,19 @@ src/
 │   ├── ui/              # Button, PageHeader, DownloadDropdown
 │   └── ErrorBoundary.tsx
 ├── hooks/               # Custom hooks
-├── lib/puzzles/
-│   ├── registry.ts      # Registro central de generadores
-│   ├── word-search/     # Sopa de letras
-│   ├── crossword/       # Crucigramas
-│   └── fill-blanks/     # Rellenar huecos
-├── pages/               # HomePage, WordSearchPage, CrosswordPage, FillBlanksPage, NotFoundPage
+├── lib/
+│   ├── puzzles/         # Generadores de puzzles
+│   ├── share/           # api.ts (savePuzzle/loadPuzzle) + types.ts
+│   ├── pdf/             # Exportación PDF
+│   └── png/             # Exportación PNG
+├── pages/               # Páginas de la app
+│   └── play/            # Páginas de juego (Play*Page.tsx)
 └── store/               # Zustand stores
+
+functions/
+└── api/puzzles/
+    ├── index.ts         # POST /api/puzzles (crear puzzle)
+    └── [id].ts          # GET /api/puzzles/:id (obtener puzzle)
 ```
 
 ## Rutas
@@ -84,7 +93,23 @@ src/
 | `/sopa-de-letras` | `WordSearchPage` |
 | `/crucigrama` | `CrosswordPage` |
 | `/rellenar-huecos` | `FillBlanksPage` |
+| `/adivina-la-palabra` | `HangmanPage` |
+| `/anagrama` | `AnagramPage` |
+| `/ordenar-oracion` | `SentenceOrderPage` |
+| `/jugar/sopa-de-letras/:id` | `PlayWordSearchPage` |
+| `/jugar/crucigrama/:id` | `PlayCrosswordPage` |
+| `/jugar/rellenar-huecos/:id` | `PlayFillBlanksPage` |
+| `/jugar/adivina-la-palabra/:id` | `PlayHangmanPage` |
+| `/jugar/anagrama/:id` | `PlayAnagramPage` |
+| `/jugar/ordenar-oracion/:id` | `PlaySentenceOrderPage` |
 | `*` | `NotFoundPage` |
+
+## API Endpoints (Pages Functions)
+
+| Method | Path | Descripción |
+|--------|------|-------------|
+| POST | `/api/puzzles` | Crear puzzle (body: `{ type, puzzle }`) → retorna `{ id }` |
+| GET | `/api/puzzles/:id` | Obtener puzzle → retorna `{ type, puzzle }` o 404 |
 
 ## Agregar un nuevo puzzle
 
@@ -97,13 +122,28 @@ src/
 
 ## Deployment
 
-- **Plataforma:** Vercel
+- **Plataforma:** Cloudflare Pages
 - **URL:** https://tools.edualex.uy
 - **Build command:** `pnpm build`
 - **Output directory:** `dist`
-- **SPA routing:** `vercel.json` con rewrites a `/index.html`
+- **SPA routing:** `public/_redirects` con `/* /index.html 200`
+- **API:** Pages Functions en `functions/` con KV binding `PUZZLES`
 - **SEO:** `robots.txt`, `sitemap.xml`, OpenGraph y Twitter Cards en `index.html`
 - **OG image:** `https://res.cloudinary.com/drfdwvrzc/image/upload/v1780247505/tools-og_tx3eya.png`
+
+### Desarrollo local
+
+```bash
+pnpm dev          # Vite dev server (frontend)
+wrangler pages dev dist --binding PUZZLES=puzzles-dev  # Con API + KV local
+```
+
+### Deploy
+
+```bash
+pnpm build        # Build de producción
+wrangler pages deploy dist  # Deploy a Cloudflare Pages
+```
 
 ## Archivos estáticos
 
