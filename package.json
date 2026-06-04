@@ -13,10 +13,10 @@
     "@tailwindcss/vite": "4.3.0",
     "jspdf": "4.2.1",
     "lucide-react": "1.17.0",
-    "qrcode.react": "^4.2.0",
+    "qrcode.react": "4.2.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "react-router-dom": "7.16.0",
+    "react-router-dom": "7.17.0",
     "react-toastify": "11.1.0",
     "tailwindcss": "4.3.0",
     "zustand": "5.0.14"
