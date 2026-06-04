@@ -3,6 +3,9 @@ import type { WordItem } from "../lib/puzzles/shared-types";
 import type { WSGrid } from "../lib/puzzles/word-search/types";
 import type { CWGrid } from "../lib/puzzles/crossword/types";
 import type { FillBlanksResult } from "../lib/puzzles/fill-blanks/types";
+import type { HangmanResult } from "../lib/puzzles/hangman/types";
+import type { AnagramResult } from "../lib/puzzles/anagram/types";
+import type { SentenceOrderResult } from "../lib/puzzles/sentence-order/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -23,6 +26,21 @@ interface PuzzleState {
   setFillBlanksTitle: (t: string) => void;
   fillBlanksResult: FillBlanksResult | null;
   setFillBlanksResult: (result: FillBlanksResult | null) => void;
+
+  hangmanTitle: string;
+  setHangmanTitle: (t: string) => void;
+  hangmanResult: HangmanResult | null;
+  setHangmanResult: (result: HangmanResult | null) => void;
+
+  anagramTitle: string;
+  setAnagramTitle: (t: string) => void;
+  anagramResult: AnagramResult | null;
+  setAnagramResult: (result: AnagramResult | null) => void;
+
+  sentenceOrderTitle: string;
+  setSentenceOrderTitle: (t: string) => void;
+  sentenceOrderResult: SentenceOrderResult | null;
+  setSentenceOrderResult: (result: SentenceOrderResult | null) => void;
 
   loading: boolean;
   setLoading: (v: boolean) => void;
@@ -52,6 +70,21 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setFillBlanksTitle: (title) => set({ fillBlanksTitle: title }),
   fillBlanksResult: null,
   setFillBlanksResult: (result) => set({ fillBlanksResult: result }),
+
+  hangmanTitle: "",
+  setHangmanTitle: (title) => set({ hangmanTitle: title }),
+  hangmanResult: null,
+  setHangmanResult: (result) => set({ hangmanResult: result }),
+
+  anagramTitle: "",
+  setAnagramTitle: (title) => set({ anagramTitle: title }),
+  anagramResult: null,
+  setAnagramResult: (result) => set({ anagramResult: result }),
+
+  sentenceOrderTitle: "",
+  setSentenceOrderTitle: (title) => set({ sentenceOrderTitle: title }),
+  sentenceOrderResult: null,
+  setSentenceOrderResult: (result) => set({ sentenceOrderResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),

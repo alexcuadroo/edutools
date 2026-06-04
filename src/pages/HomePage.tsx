@@ -8,6 +8,10 @@ import {
   Heart,
   ArrowRight,
   TextCursorInput,
+  Shuffle,
+  ListOrdered,
+  Smartphone,
+  Sparkles,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -15,7 +19,7 @@ const PUZZLES = [
     path: "/sopa-de-letras",
     title: "Sopa de Letras",
     description:
-      "Genera sopas de letras personalizadas. Ingresa palabras, elige el modo de presentación y descarga el PDF listo para usar en clase.",
+      "Genera sopas de letras personalizadas. Ingresa palabras, elige el modo de presentacion y descarga el PDF listo para usar en clase.",
     icon: LetterText,
   },
   {
@@ -29,8 +33,29 @@ const PUZZLES = [
     path: "/rellenar-huecos",
     title: "Rellenar Huecos",
     description:
-      "Pega un texto y genera huecos aleatorios para que los estudiantes completen. Incluye distractores automáticos.",
+      "Pega un texto y genera huecos aleatorios para que los estudiantes completen. Incluye distractores automaticos.",
     icon: TextCursorInput,
+  },
+  {
+    path: "/adivina-la-palabra",
+    title: "Adivina la Palabra",
+    description:
+      "Genera juegos de adivinar palabras con definiciones. Juego interactivo en linea y PDF para imprimir.",
+    icon: Heart,
+  },
+  {
+    path: "/anagrama",
+    title: "Anagrama",
+    description:
+      "Crea anagramas con palabras y definiciones. Ordena las letras para formar la palabra correcta.",
+    icon: Shuffle,
+  },
+  {
+    path: "/ordenar-oracion",
+    title: "Ordenar Oración",
+    description:
+      "Genera oraciones desordenadas para que los estudiantes las ordenen correctamente.",
+    icon: ListOrdered,
   },
 ];
 
@@ -51,9 +76,9 @@ const FEATURES = [
     description: "Exporta listo para imprimir y usar en clase.",
   },
   {
-    icon: Heart,
-    title: "Gratuito",
-    description: "Sin límites de uso, sin costos ocultos.",
+    icon: Smartphone,
+    title: "Jugar online",
+    description: "Comparte un link para jugar desde cualquier dispositivo.",
   },
 ];
 
@@ -67,8 +92,8 @@ export default function HomePage() {
           <span className="gradient-text">Educativos</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
-          Crea sopas de letras, crucigramas y textos con huecos en segundos. Sin registro, sin
-          límites.
+          Crea puzzles educativos e imprímelos en PDF o compártelos como juegos digitales interactivos. Sin
+          registro, sin limites.
         </p>
         <Link
           to="/sopa-de-letras"
@@ -103,6 +128,36 @@ export default function HomePage() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="max-w-4xl mx-auto mb-20">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-200 p-8 sm:p-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-4">
+            <Sparkles className="w-4 h-4" />
+            <span>Nuevo</span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+              BETA
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            Puzzles Digitales para Jugar
+          </h2>
+          <p className="text-gray-500 mb-6 max-w-2xl">
+            Comparte un link con tus estudiantes y permite que jueguen desde su celular o computadora.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/jugar"
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium no-underline text-sm"
+            >
+              <Smartphone className="w-4 h-4" />
+              Ver demostración
+            </Link>
+            <span className="text-xs text-gray-400">
+              Función en desarrollo · Puede contener errores
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-3xl mx-auto">
