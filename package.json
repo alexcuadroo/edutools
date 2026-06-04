@@ -13,7 +13,6 @@
     "@tailwindcss/vite": "4.3.0",
     "jspdf": "4.2.1",
     "lucide-react": "1.17.0",
-    "nanoid": "^5.1.11",
     "qrcode.react": "^4.2.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
@@ -24,6 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.39.2",
+    "@cloudflare/workers-types": "^4.20260603.1",
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.14",
