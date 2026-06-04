@@ -3,6 +3,7 @@ import type { WordItem } from "../lib/puzzles/shared-types";
 import type { WSGrid } from "../lib/puzzles/word-search/types";
 import type { CWGrid } from "../lib/puzzles/crossword/types";
 import type { FillBlanksResult } from "../lib/puzzles/fill-blanks/types";
+import type { HangmanResult } from "../lib/puzzles/hangman/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -23,6 +24,11 @@ interface PuzzleState {
   setFillBlanksTitle: (t: string) => void;
   fillBlanksResult: FillBlanksResult | null;
   setFillBlanksResult: (result: FillBlanksResult | null) => void;
+
+  hangmanTitle: string;
+  setHangmanTitle: (t: string) => void;
+  hangmanResult: HangmanResult | null;
+  setHangmanResult: (result: HangmanResult | null) => void;
 
   loading: boolean;
   setLoading: (v: boolean) => void;
@@ -52,6 +58,11 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setFillBlanksTitle: (title) => set({ fillBlanksTitle: title }),
   fillBlanksResult: null,
   setFillBlanksResult: (result) => set({ fillBlanksResult: result }),
+
+  hangmanTitle: "",
+  setHangmanTitle: (title) => set({ hangmanTitle: title }),
+  hangmanResult: null,
+  setHangmanResult: (result) => set({ hangmanResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),

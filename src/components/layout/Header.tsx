@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart } from "lucide-react";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
   { path: "/crucigrama", label: "Crucigrama", icon: Grid3X3 },
   { path: "/rellenar-huecos", label: "Rellenar Huecos", icon: TextCursorInput },
+  { path: "/adivina-la-palabra", label: "Adivina la Palabra", icon: Heart },
 ];
 
 export default function Header() {

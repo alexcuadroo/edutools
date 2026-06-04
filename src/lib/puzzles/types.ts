@@ -1,4 +1,4 @@
-export type PuzzleType = "word-search" | "crossword" | "fill-blanks";
+export type PuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman";
 
 export interface PuzzleInput {
   words: { word: string; clue?: string }[];

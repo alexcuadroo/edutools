@@ -15,7 +15,7 @@ const PUZZLES = [
     path: "/sopa-de-letras",
     title: "Sopa de Letras",
     description:
-      "Genera sopas de letras personalizadas. Ingresa palabras, elige el modo de presentación y descarga el PDF listo para usar en clase.",
+      "Genera sopas de letras personalizadas. Ingresa palabras, elige el modo de presentacion y descarga el PDF listo para usar en clase.",
     icon: LetterText,
   },
   {
@@ -29,8 +29,15 @@ const PUZZLES = [
     path: "/rellenar-huecos",
     title: "Rellenar Huecos",
     description:
-      "Pega un texto y genera huecos aleatorios para que los estudiantes completen. Incluye distractores automáticos.",
+      "Pega un texto y genera huecos aleatorios para que los estudiantes completen. Incluye distractores automaticos.",
     icon: TextCursorInput,
+  },
+  {
+    path: "/adivina-la-palabra",
+    title: "Adivina la Palabra",
+    description:
+      "Genera juegos de adivinar palabras con definiciones. Juego interactivo en linea y PDF para imprimir.",
+    icon: Heart,
   },
 ];
 
@@ -67,8 +74,8 @@ export default function HomePage() {
           <span className="gradient-text">Educativos</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
-          Crea sopas de letras, crucigramas y textos con huecos en segundos. Sin registro, sin
-          límites.
+          Crea sopas de letras, crucigramas, textos con huecos, ahorcado y mas en segundos. Sin
+          registro, sin limites.
         </p>
         <Link
           to="/sopa-de-letras"
