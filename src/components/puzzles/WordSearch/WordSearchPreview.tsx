@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Card from "../../ui/Card";
 import type { WSGrid, WSWordPlacement } from "../../../lib/puzzles/word-search/types";
 import { WS_DIRECTION_LABELS, type WSDirection } from "../../../lib/puzzles/word-search/types";
@@ -5,7 +6,10 @@ import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateWordSearchPDF } from "../../../lib/pdf/word-search";
 import { downloadWordSearchPNG } from "../../../lib/png/word-search";
 import DownloadDropdown from "../../ui/DownloadDropdown";
-import { Eye } from "lucide-react";
+import ShareModal from "../../ui/ShareModal";
+import { Eye, Share2 } from "lucide-react";
+import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { wsGridToPlayData } from "../../../lib/share/types";
 
 function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();
@@ -33,7 +37,19 @@ function directionLetter(dir: string): string {
 
 export default function WordSearchPreview() {
   const { wordSearchResult, wordSearchTitle } = usePuzzleStore();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
   const grid = wordSearchResult;
+
+  const handleShare = () => {
+    if (!grid) return;
+    const data = wsGridToPlayData(grid, wordSearchTitle);
+    const encoded = encodePuzzleData(data);
+    const url = buildPlayUrl("sopa-de-letras", encoded);
+    setShareUrl(url);
+    setShareOpen(true);
+  };
+
   if (!grid) return null;
 
   const solutionCells = getSolutionCells(grid);
@@ -44,25 +60,34 @@ export default function WordSearchPreview() {
       <Card className="overflow-x-auto">
         <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Previsualización</h2>
-          <DownloadDropdown
-            groups={[
-              {
-                label: "PDF",
-                options: [
-                  { label: "Ver en navegador", icon: Eye, onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "preview") },
-                  { label: "Descargar sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "download") },
-                  { label: "Descargar con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", wordSearchTitle, "download") },
-                ],
-              },
-              {
-                label: "PNG",
-                options: [
-                  { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students", wordSearchTitle) },
-                  { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution", wordSearchTitle) },
-                ],
-              },
-            ]}
-          />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleShare}
+              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </button>
+            <DownloadDropdown
+              groups={[
+                {
+                  label: "PDF",
+                  options: [
+                    { label: "Ver en navegador", icon: Eye, onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "preview") },
+                    { label: "Descargar sin soluciones", onClick: () => generateWordSearchPDF(grid, "students", wordSearchTitle, "download") },
+                    { label: "Descargar con soluciones", onClick: () => generateWordSearchPDF(grid, "solution", wordSearchTitle, "download") },
+                  ],
+                },
+                {
+                  label: "PNG",
+                  options: [
+                    { label: "Sin soluciones", onClick: () => downloadWordSearchPNG(grid, "students", wordSearchTitle) },
+                    { label: "Con soluciones", onClick: () => downloadWordSearchPNG(grid, "solution", wordSearchTitle) },
+                  ],
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="flex justify-center bg-white">
@@ -104,6 +129,14 @@ export default function WordSearchPreview() {
           ))}
         </div>
       </Card>
+
+      {shareOpen && shareUrl && (
+        <ShareModal
+          url={shareUrl}
+          title={wordSearchTitle || "Sopa de Letras"}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
     </div>
   );
 }
