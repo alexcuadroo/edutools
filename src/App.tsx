@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
+import PlayableLayout from "./components/layout/PlayableLayout";
 import HomePage from "./pages/HomePage";
 import WordSearchPage from "./pages/WordSearchPage";
 import CrosswordPage from "./pages/CrosswordPage";
@@ -8,6 +9,9 @@ import HangmanPage from "./pages/HangmanPage";
 import AnagramPage from "./pages/AnagramPage";
 import SentenceOrderPage from "./pages/SentenceOrderPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PlayHubPage from "./pages/play/PlayHubPage";
+import PlayWordSearchPage from "./pages/play/PlayWordSearchPage";
+import PlayCrosswordPage from "./pages/play/PlayCrosswordPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { wordSearchGenerator } from "./lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "./lib/puzzles/crossword/generator";
@@ -45,8 +49,13 @@ export default function App() {
             <Route path="/adivina-la-palabra" element={<HangmanPage />} />
             <Route path="/anagrama" element={<AnagramPage />} />
             <Route path="/ordenar-oracion" element={<SentenceOrderPage />} />
-            <Route path="*" element={<NotFoundPage />} />
           </Route>
+          <Route element={<PlayableLayout />}>
+            <Route path="/jugar" element={<PlayHubPage />} />
+            <Route path="/jugar/sopa-de-letras" element={<PlayWordSearchPage />} />
+            <Route path="/jugar/crucigrama" element={<PlayCrosswordPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
