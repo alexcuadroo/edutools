@@ -1,14 +1,28 @@
+import { useState } from "react";
 import Card from "../../ui/Card";
 import DownloadDropdown from "../../ui/DownloadDropdown";
+import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
 import { generateFillBlanksPDF } from "../../../lib/pdf/fill-blanks";
-import { Eye } from "lucide-react";
+import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { fillBlanksResultToPlayData } from "../../../lib/share/types";
+import { Eye, Share2 } from "lucide-react";
 
 export default function FillBlanksPreview() {
   const { fillBlanksResult, setFillBlanksResult, fillBlanksTitle } = usePuzzleStore();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   if (!fillBlanksResult) return null;
+
+  const handleShare = () => {
+    const data = fillBlanksResultToPlayData(fillBlanksResult, fillBlanksTitle);
+    const encoded = encodePuzzleData(data);
+    const url = buildPlayUrl("rellenar-huecos", encoded);
+    setShareUrl(url);
+    setShareOpen(true);
+  };
 
   const handleToggleBlank = (tokenIndex: number) => {
     const updated = fillBlanksGenerator.toggleBlank(fillBlanksResult, tokenIndex);
@@ -29,6 +43,13 @@ export default function FillBlanksPreview() {
             <span className="text-sm text-gray-600">
               <span className="font-medium text-indigo-600">{fillBlanksResult.blanks.length}</span> huecos
             </span>
+            <button
+              onClick={handleShare}
+              className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </button>
             <DownloadDropdown
               groups={[
                 {
@@ -132,6 +153,14 @@ export default function FillBlanksPreview() {
             Verde = respuesta correcta | Gris = distractor
           </p>
         </Card>
+      )}
+
+      {shareOpen && shareUrl && (
+        <ShareModal
+          url={shareUrl}
+          title={fillBlanksTitle || "Rellenar Huecos"}
+          onClose={() => setShareOpen(false)}
+        />
       )}
     </div>
   );

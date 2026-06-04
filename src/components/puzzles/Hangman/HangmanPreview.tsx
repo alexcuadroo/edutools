@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import Card from "../../ui/Card";
+import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateHangmanPDF } from "../../../lib/pdf/hangman";
 import DownloadDropdown from "../../ui/DownloadDropdown";
-import { Eye, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { hangmanResultToPlayData } from "../../../lib/share/types";
+import { Eye, RotateCcw, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import type { HangmanWord, HangmanResult } from "../../../lib/puzzles/hangman/types";
 
-const LETTERS = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("");
+const LETTERS = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789".split("");
 
 type GameStatus = "playing" | "won" | "lost";
 
@@ -34,7 +37,7 @@ function createInitialStates(words: HangmanWord[]): WordGameState[] {
   }));
 }
 
-function HangmanGame({ result, title }: { result: HangmanResult; title: string }) {
+function HangmanGame({ result, title, onShare }: { result: HangmanResult; title: string; onShare?: () => void }) {
   const { words, maxAttempts } = result;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -105,7 +108,7 @@ function HangmanGame({ result, title }: { result: HangmanResult; title: string }
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = e.key.toUpperCase();
-      if (key === "Ñ" || (key.length === 1 && key >= "A" && key <= "Z")) {
+      if (key === "Ñ" || (key.length === 1 && ((key >= "A" && key <= "Z") || (key >= "0" && key <= "9")))) {
         handleLetterClick(key);
       }
     };
@@ -121,18 +124,29 @@ function HangmanGame({ result, title }: { result: HangmanResult; title: string }
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
-          <DownloadDropdown
-            groups={[
-              {
-                label: "PDF",
-                options: [
-                  { label: "Ver en navegador", icon: Eye, onClick: () => generateHangmanPDF(result, "students", title, "preview") },
-                  { label: "Descargar sin soluciones", onClick: () => generateHangmanPDF(result, "students", title, "download") },
-                  { label: "Descargar con soluciones", onClick: () => generateHangmanPDF(result, "solution", title, "download") },
-                ],
-              },
-            ]}
-          />
+          <div className="flex items-center gap-3">
+            {onShare && (
+              <button
+                onClick={onShare}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+              >
+                <Share2 className="w-4 h-4" />
+                Compartir
+              </button>
+            )}
+            <DownloadDropdown
+              groups={[
+                {
+                  label: "PDF",
+                  options: [
+                    { label: "Ver en navegador", icon: Eye, onClick: () => generateHangmanPDF(result, "students", title, "preview") },
+                    { label: "Descargar sin soluciones", onClick: () => generateHangmanPDF(result, "students", title, "download") },
+                    { label: "Descargar con soluciones", onClick: () => generateHangmanPDF(result, "solution", title, "download") },
+                  ],
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between mb-6">
@@ -195,23 +209,10 @@ function HangmanGame({ result, title }: { result: HangmanResult; title: string }
             </p>
           )}
 
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-sm text-gray-600">Intentos:</span>
-            <div className="flex gap-1">
-              {Array.from({ length: maxAttempts }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    i < remainingAttempts
-                      ? "bg-emerald-400"
-                      : "bg-red-400"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-sm font-mono text-gray-600">
-              {remainingAttempts}/{maxAttempts}
-            </span>
+          <div className="flex items-center justify-center gap-1.5 mb-4 text-lg">
+            {Array.from({ length: maxAttempts }).map((_, i) => (
+              <span key={i}>{i < remainingAttempts ? "❤️" : "❌"}</span>
+            ))}
           </div>
 
           {currentState.status === "won" && (
@@ -321,14 +322,34 @@ function HangmanGame({ result, title }: { result: HangmanResult; title: string }
 
 export default function HangmanPreview() {
   const { hangmanResult, hangmanTitle } = usePuzzleStore();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   if (!hangmanResult) return null;
 
+  const handleShare = () => {
+    const data = hangmanResultToPlayData(hangmanResult, hangmanTitle);
+    const encoded = encodePuzzleData(data);
+    const url = buildPlayUrl("adivina-la-palabra", encoded);
+    setShareUrl(url);
+    setShareOpen(true);
+  };
+
   return (
-    <HangmanGame
-      key={hangmanResult.words.map((w) => w.word).join(",")}
-      result={hangmanResult}
-      title={hangmanTitle}
-    />
+    <div className="space-y-6">
+      <HangmanGame
+        key={hangmanResult.words.map((w) => w.word).join(",")}
+        result={hangmanResult}
+        title={hangmanTitle}
+        onShare={handleShare}
+      />
+      {shareOpen && shareUrl && (
+        <ShareModal
+          url={shareUrl}
+          title={hangmanTitle || "Adivina la Palabra"}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
+    </div>
   );
 }

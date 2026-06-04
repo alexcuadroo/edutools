@@ -1,9 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
 import Card from "../../ui/Card";
+import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateAnagramPDF } from "../../../lib/pdf/anagram";
 import DownloadDropdown from "../../ui/DownloadDropdown";
-import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
+import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { anagramResultToPlayData } from "../../../lib/share/types";
+import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2 } from "lucide-react";
 import type { AnagramWord, AnagramResult } from "../../../lib/puzzles/anagram/types";
 
 type WordStatus = "pending" | "correct" | "incorrect";
@@ -13,7 +16,7 @@ interface WordState {
   status: WordStatus;
 }
 
-function AnagramGame({ result, title }: { result: AnagramResult; title: string }) {
+function AnagramGame({ result, title, onShare }: { result: AnagramResult; title: string; onShare?: () => void }) {
   const { words } = result;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -82,18 +85,29 @@ function AnagramGame({ result, title }: { result: AnagramResult; title: string }
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
-          <DownloadDropdown
-            groups={[
-              {
-                label: "PDF",
-                options: [
-                  { label: "Ver en navegador", icon: Eye, onClick: () => generateAnagramPDF(result, "students", title, "preview") },
-                  { label: "Descargar sin soluciones", onClick: () => generateAnagramPDF(result, "students", title, "download") },
-                  { label: "Descargar con soluciones", onClick: () => generateAnagramPDF(result, "solution", title, "download") },
-                ],
-              },
-            ]}
-          />
+          <div className="flex items-center gap-3">
+            {onShare && (
+              <button
+                onClick={onShare}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+              >
+                <Share2 className="w-4 h-4" />
+                Compartir
+              </button>
+            )}
+            <DownloadDropdown
+              groups={[
+                {
+                  label: "PDF",
+                  options: [
+                    { label: "Ver en navegador", icon: Eye, onClick: () => generateAnagramPDF(result, "students", title, "preview") },
+                    { label: "Descargar sin soluciones", onClick: () => generateAnagramPDF(result, "students", title, "download") },
+                    { label: "Descargar con soluciones", onClick: () => generateAnagramPDF(result, "solution", title, "download") },
+                  ],
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between mb-6">
@@ -266,14 +280,34 @@ function AnagramGame({ result, title }: { result: AnagramResult; title: string }
 
 export default function AnagramPreview() {
   const { anagramResult, anagramTitle } = usePuzzleStore();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   if (!anagramResult) return null;
 
+  const handleShare = () => {
+    const data = anagramResultToPlayData(anagramResult, anagramTitle);
+    const encoded = encodePuzzleData(data);
+    const url = buildPlayUrl("anagrama", encoded);
+    setShareUrl(url);
+    setShareOpen(true);
+  };
+
   return (
-    <AnagramGame
-      key={anagramResult.words.map((w) => w.word).join(",")}
-      result={anagramResult}
-      title={anagramTitle}
-    />
+    <div className="space-y-6">
+      <AnagramGame
+        key={anagramResult.words.map((w) => w.word).join(",")}
+        result={anagramResult}
+        title={anagramTitle}
+        onShare={handleShare}
+      />
+      {shareOpen && shareUrl && (
+        <ShareModal
+          url={shareUrl}
+          title={anagramTitle || "Anagrama"}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
+    </div>
   );
 }

@@ -1,9 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
 import Card from "../../ui/Card";
+import ShareModal from "../../ui/ShareModal";
 import { usePuzzleStore } from "../../../store/puzzle-store";
 import { generateSentenceOrderPDF } from "../../../lib/pdf/sentence-order";
 import DownloadDropdown from "../../ui/DownloadDropdown";
-import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
+import { encodePuzzleData, buildPlayUrl } from "../../../lib/share/encoder";
+import { sentenceOrderResultToPlayData } from "../../../lib/share/types";
+import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2 } from "lucide-react";
 import type { SentenceOrderSentence, SentenceOrderResult } from "../../../lib/puzzles/sentence-order/types";
 
 type SentenceStatus = "pending" | "correct" | "incorrect";
@@ -13,7 +16,7 @@ interface SentenceState {
   status: SentenceStatus;
 }
 
-function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; title: string }) {
+function SentenceOrderGame({ result, title, onShare }: { result: SentenceOrderResult; title: string; onShare?: () => void }) {
   const { sentences } = result;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -104,18 +107,29 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
       <Card>
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
-          <DownloadDropdown
-            groups={[
-              {
-                label: "PDF",
-                options: [
-                  { label: "Ver en navegador", icon: Eye, onClick: () => generateSentenceOrderPDF(result, "students", title, "preview") },
-                  { label: "Descargar sin soluciones", onClick: () => generateSentenceOrderPDF(result, "students", title, "download") },
-                  { label: "Descargar con soluciones", onClick: () => generateSentenceOrderPDF(result, "solution", title, "download") },
-                ],
-              },
-            ]}
-          />
+          <div className="flex items-center gap-3">
+            {onShare && (
+              <button
+                onClick={onShare}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors border border-emerald-600"
+              >
+                <Share2 className="w-4 h-4" />
+                Compartir
+              </button>
+            )}
+            <DownloadDropdown
+              groups={[
+                {
+                  label: "PDF",
+                  options: [
+                    { label: "Ver en navegador", icon: Eye, onClick: () => generateSentenceOrderPDF(result, "students", title, "preview") },
+                    { label: "Descargar sin soluciones", onClick: () => generateSentenceOrderPDF(result, "students", title, "download") },
+                    { label: "Descargar con soluciones", onClick: () => generateSentenceOrderPDF(result, "solution", title, "download") },
+                  ],
+                },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-between mb-6">
@@ -127,7 +141,7 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
+            <span className="text-sm font-medium text-gray-700 min-w-20 text-center">
               Oración {currentIndex + 1} / {sentences.length}
             </span>
             <button
@@ -157,7 +171,7 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
         <div className="text-center mb-6">
           <p className="text-sm text-gray-500 mb-4">Haz click en las palabras para ordenar la oración:</p>
 
-          <div className="min-h-[60px] p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mb-4">
+          <div className="min-h-15 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mb-4">
             {currentState.answer.length === 0 ? (
               <p className="text-sm text-gray-400 italic">Haz click en las palabras de abajo</p>
             ) : (
@@ -290,14 +304,34 @@ function SentenceOrderGame({ result, title }: { result: SentenceOrderResult; tit
 
 export default function SentenceOrderPreview() {
   const { sentenceOrderResult, sentenceOrderTitle } = usePuzzleStore();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   if (!sentenceOrderResult) return null;
 
+  const handleShare = () => {
+    const data = sentenceOrderResultToPlayData(sentenceOrderResult, sentenceOrderTitle);
+    const encoded = encodePuzzleData(data);
+    const url = buildPlayUrl("ordenar-oracion", encoded);
+    setShareUrl(url);
+    setShareOpen(true);
+  };
+
   return (
-    <SentenceOrderGame
-      key={sentenceOrderResult.sentences.map((s) => s.original).join(",")}
-      result={sentenceOrderResult}
-      title={sentenceOrderTitle}
-    />
+    <div className="space-y-6">
+      <SentenceOrderGame
+        key={sentenceOrderResult.sentences.map((s) => s.original).join(",")}
+        result={sentenceOrderResult}
+        title={sentenceOrderTitle}
+        onShare={handleShare}
+      />
+      {shareOpen && shareUrl && (
+        <ShareModal
+          url={shareUrl}
+          title={sentenceOrderTitle || "Ordenar Oración"}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
+    </div>
   );
 }
