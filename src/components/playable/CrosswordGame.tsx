@@ -43,6 +43,7 @@ export default function CrosswordGame({
   );
   const [celebration, setCelebration] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const across = words.filter((w) => w.direction === "across");
   const down = words.filter((w) => w.direction === "down");
@@ -137,6 +138,7 @@ export default function CrosswordGame({
       }
     }
     setCellStatus(Array.from({ length: rows }, () => Array(cols).fill(null)));
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -255,7 +257,7 @@ export default function CrosswordGame({
       </div>
 
       <div className="flex justify-center">
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 overflow-x-auto">
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 overflow-x-auto relative">
           <div
             ref={gridRef}
             className="inline-grid select-none"
@@ -321,6 +323,47 @@ export default function CrosswordGame({
               })
             )}
           </div>
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="text"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="sr-only"
+            onInput={(e) => {
+              const input = e.currentTarget;
+              const val = input.value;
+              if (!activeCell || !val) return;
+              const char = val.at(-1)?.toUpperCase();
+              if (char && /^[A-ZÑÁÉÍÓÚ]$/.test(char)) {
+                const { row, col } = activeCell;
+                const newGrid = userGrid.map((r) => [...r]);
+                newGrid[row][col] = char;
+                setUserGrid(newGrid);
+                moveToNext(row, col);
+              }
+              input.value = "";
+            }}
+            onKeyDown={(e) => {
+              if (!activeCell) return;
+              const { row, col } = activeCell;
+              if (e.key === "Backspace") {
+                e.preventDefault();
+                if (userGrid[row][col] !== "") {
+                  const newGrid = userGrid.map((r) => [...r]);
+                  newGrid[row][col] = "";
+                  setUserGrid(newGrid);
+                } else {
+                  moveToPrev(row, col);
+                }
+                e.currentTarget.value = "";
+              }
+            }}
+          />
         </div>
       </div>
 
