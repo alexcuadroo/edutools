@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play } from "lucide-react";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
@@ -66,6 +66,13 @@ export default function Header() {
           </Link>
 
           <div className="hidden sm:flex items-center gap-2 relative" ref={dropdownRef}>
+            <Link
+              to="/jugar"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-all text-indigo-600 bg-white border border-indigo-600 hover:text-white hover:bg-indigo-600 shadow-sm"
+            >
+              <Play className="w-4 h-4" />
+              Jugar
+            </Link>
             <button
               onClick={() => setPuzzlesOpen((v) => !v)}
               aria-expanded={puzzlesOpen}
@@ -159,6 +166,17 @@ export default function Header() {
           </div>
 
           <div className="p-4 space-y-1">
+            <Link
+              to="/jugar"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all no-underline text-indigo-600 bg-white border border-indigo-600 hover:text-white hover:bg-indigo-600"
+            >
+              <Play className="w-5 h-5" />
+              Jugar
+            </Link>
+
+            <div className="border-t border-gray-100 my-2" />
+
             {TABS.map((tab) => {
               const isActive = location.pathname.startsWith(tab.path);
               const Icon = tab.icon;
