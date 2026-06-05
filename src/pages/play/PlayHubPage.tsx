@@ -77,7 +77,7 @@ export default function PlayHubPage() {
               <label htmlFor="puzzle-code" className="block text-sm font-medium text-gray-700 mb-2">
                 Código del puzzle
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   id="puzzle-code"
                   type="text"
@@ -93,7 +93,7 @@ export default function PlayHubPage() {
                 <button
                   type="submit"
                   disabled={loading || code.trim().length !== 8}
-                  className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-2"
+                  className="px-6 py-3 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center gap-2 sm:w-auto w-full"
                 >
                   {loading ? (
                     <>
