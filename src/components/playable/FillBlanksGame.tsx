@@ -79,8 +79,10 @@ export default function FillBlanksGame({ text, blanks, options, title, attemptCo
 
     if (allCorrect && Object.keys(selections).length === blanks.length) {
       setCelebration(true);
+    } else {
+      onAttemptIncrement?.();
     }
-  }, [blanks, selections]);
+  }, [blanks, selections, onAttemptIncrement]);
 
   const handleReset = useCallback(() => {
     setSelections({});
