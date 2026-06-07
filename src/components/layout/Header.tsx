@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play } from "lucide-react";
 
 const TABS = [
@@ -15,8 +16,7 @@ export default function Header() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [puzzlesOpen, setPuzzlesOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const dropdownRef = useClickOutside<HTMLDivElement>(puzzlesOpen, () => setPuzzlesOpen(false));
   const closePuzzles = useCallback(() => setPuzzlesOpen(false), []);
 
   useEffect(() => {
@@ -29,27 +29,6 @@ export default function Header() {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
-
-  useEffect(() => {
-    if (!puzzlesOpen) return;
-
-    function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        closePuzzles();
-      }
-    }
-
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") closePuzzles();
-    }
-
-    document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [puzzlesOpen, closePuzzles]);
 
   const activeTab = TABS.find((tab) => location.pathname.startsWith(tab.path));
 

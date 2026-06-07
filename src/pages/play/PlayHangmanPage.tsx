@@ -1,38 +1,20 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import HangmanGame from "../../components/playable/HangmanGame";
-import { loadPuzzle } from "../../lib/share/api";
 import type { HangmanPlayData } from "../../lib/share/types";
+import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
 import { useAttemptCounter } from "../../hooks/useAttemptCounter";
-
-interface DecodedData {
-  words: { word: string; clue?: string }[];
-  maxAttempts: number;
-  title?: string;
-}
 
 export default function PlayHangmanPage() {
   const { id } = useParams<{ id: string }>();
-  const [decoded, setDecoded] = useState<DecodedData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    loadPuzzle(id)
-      .then((payload) => {
-        const data = payload.puzzle as HangmanPlayData;
-        setDecoded({
-          words: data.w.map((w) => ({ word: w.w, clue: w.c })),
-          maxAttempts: data.m,
-          title: data.t,
-        });
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: decoded, loading, error } = usePuzzleLoader(id, (puzzle) => {
+    const d = puzzle as HangmanPlayData;
+    return {
+      words: d.w.map((w) => ({ word: w.w, clue: w.c })),
+      maxAttempts: d.m,
+      title: d.t,
+    };
+  });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("adivina_la_palabra", id || "");
 

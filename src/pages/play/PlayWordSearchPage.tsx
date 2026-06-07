@@ -1,40 +1,21 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import WordSearchGame from "../../components/playable/WordSearchGame";
-import { loadPuzzle } from "../../lib/share/api";
 import { type WSPlayData, playDataToWSWords } from "../../lib/share/types";
+import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
 import { useAttemptCounter } from "../../hooks/useAttemptCounter";
-
-interface DecodedData {
-  grid: string[][];
-  size: number;
-  words: { word: string; clue?: string; startRow: number; startCol: number; direction: string }[];
-  title?: string;
-}
 
 export default function PlayWordSearchPage() {
   const { id } = useParams<{ id: string }>();
-  const [decoded, setDecoded] = useState<DecodedData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    loadPuzzle(id)
-      .then((payload) => {
-        const data = payload.puzzle as WSPlayData;
-        setDecoded({
-          grid: data.g,
-          size: data.s,
-          words: playDataToWSWords(data),
-          title: data.t,
-        });
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: decoded, loading, error } = usePuzzleLoader(id, (puzzle) => {
+    const d = puzzle as WSPlayData;
+    return {
+      grid: d.g,
+      size: d.s,
+      words: playDataToWSWords(d),
+      title: d.t,
+    };
+  });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("sopa_de_letras", id || "");
 
