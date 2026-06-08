@@ -1,48 +1,27 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import CrosswordGame from "../../components/playable/CrosswordGame";
-import { loadPuzzle } from "../../lib/share/api";
 import {
   type CWPlayData,
   playDataToCWWords,
   playDataToCWNumbers,
 } from "../../lib/share/types";
+import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
 import { useAttemptCounter } from "../../hooks/useAttemptCounter";
-
-interface DecodedData {
-  grid: (string | null)[][];
-  rows: number;
-  cols: number;
-  words: { word: string; clue: string; number: number; direction: "across" | "down"; startRow: number; startCol: number }[];
-  numbers: Map<string, number>;
-  title?: string;
-}
 
 export default function PlayCrosswordPage() {
   const { id } = useParams<{ id: string }>();
-  const [decoded, setDecoded] = useState<DecodedData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    loadPuzzle(id)
-      .then((payload) => {
-        const data = payload.puzzle as CWPlayData;
-        setDecoded({
-          grid: data.g,
-          rows: data.r,
-          cols: data.c,
-          words: playDataToCWWords(data),
-          numbers: playDataToCWNumbers(data),
-          title: data.t,
-        });
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: decoded, loading, error } = usePuzzleLoader(id, (puzzle) => {
+    const d = puzzle as CWPlayData;
+    return {
+      grid: d.g,
+      rows: d.r,
+      cols: d.c,
+      words: playDataToCWWords(d),
+      numbers: playDataToCWNumbers(d),
+      title: d.t,
+    };
+  });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("crucigrama", id || "");
 

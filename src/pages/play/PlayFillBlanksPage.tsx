@@ -1,40 +1,21 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import FillBlanksGame from "../../components/playable/FillBlanksGame";
-import { loadPuzzle } from "../../lib/share/api";
 import type { FBPlayData } from "../../lib/share/types";
+import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
 import { useAttemptCounter } from "../../hooks/useAttemptCounter";
-
-interface DecodedData {
-  text: string;
-  blanks: { tokenIndex: number; word: string }[];
-  options: string[];
-  title?: string;
-}
 
 export default function PlayFillBlanksPage() {
   const { id } = useParams<{ id: string }>();
-  const [decoded, setDecoded] = useState<DecodedData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    loadPuzzle(id)
-      .then((payload) => {
-        const data = payload.puzzle as FBPlayData;
-        setDecoded({
-          text: data.txt,
-          blanks: data.b.map((b) => ({ tokenIndex: b.i, word: b.w })),
-          options: data.o,
-          title: data.t,
-        });
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: decoded, loading, error } = usePuzzleLoader(id, (puzzle) => {
+    const d = puzzle as FBPlayData;
+    return {
+      text: d.txt,
+      blanks: d.b.map((b) => ({ tokenIndex: b.i, word: b.w })),
+      options: d.o,
+      title: d.t,
+    };
+  });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("rellenar_huecos", id || "");
 

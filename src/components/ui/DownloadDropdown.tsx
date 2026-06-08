@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Download, ChevronDown, FileText, Image, Eye } from "lucide-react";
 import type { DownloadGroup } from "./DownloadDropdown.types";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface DownloadDropdownProps {
   groups: DownloadGroup[];
@@ -14,30 +15,7 @@ const FORMAT_ICONS: Record<string, typeof FileText> = {
 
 export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  const close = useCallback(() => setOpen(false), []);
-
-  useEffect(() => {
-    if (!open) return;
-
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        close();
-      }
-    }
-
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
-    }
-
-    document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [open, close]);
+  const ref = useClickOutside<HTMLDivElement>(open, () => setOpen(false));
 
   return (
     <div ref={ref} className="relative">
@@ -75,7 +53,7 @@ export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
                     role="menuitem"
                     onClick={() => {
                       opt.onClick();
-                      close();
+                      setOpen(false);
                     }}
                     className="cursor-pointer w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >

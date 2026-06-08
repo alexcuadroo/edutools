@@ -1,36 +1,19 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import SentenceOrderGame from "../../components/playable/SentenceOrderGame";
-import { loadPuzzle } from "../../lib/share/api";
 import type { SOPlayData } from "../../lib/share/types";
+import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
 import { useAttemptCounter } from "../../hooks/useAttemptCounter";
-
-interface DecodedData {
-  sentences: { original: string; shuffled: string[] }[];
-  title?: string;
-}
 
 export default function PlaySentenceOrderPage() {
   const { id } = useParams<{ id: string }>();
-  const [decoded, setDecoded] = useState<DecodedData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    loadPuzzle(id)
-      .then((payload) => {
-        const data = payload.puzzle as SOPlayData;
-        setDecoded({
-          sentences: data.s.map((s) => ({ original: s.o, shuffled: s.w })),
-          title: data.t,
-        });
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: decoded, loading, error } = usePuzzleLoader(id, (puzzle) => {
+    const d = puzzle as SOPlayData;
+    return {
+      sentences: d.s.map((s) => ({ original: s.o, shuffled: s.w })),
+      title: d.t,
+    };
+  });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("ordenar_oracion", id || "");
 
