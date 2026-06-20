@@ -46,8 +46,8 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
     createInitialStates(words)
   );
 
-  const currentWord = words[currentWordIndex];
-  const currentState = gameStates[currentWordIndex];
+  const currentWord = words[currentWordIndex]!;
+  const currentState = gameStates[currentWordIndex]!;
   const displayWord = useMemo(
     () => getDisplayWord(currentWord.word, currentState.guessedLetters),
     [currentWord.word, currentState.guessedLetters]
@@ -56,7 +56,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
 
   const handleLetterClick = useCallback((letter: string) => {
     setGameStates((prev) => {
-      const state = prev[currentWordIndex];
+      const state = prev[currentWordIndex]!;
       if (state.status !== "playing" || state.guessedLetters.has(letter)) {
         return prev;
       }
@@ -66,7 +66,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
       updated.guessedLetters = new Set(state.guessedLetters);
       updated.guessedLetters.add(letter);
 
-      const word = words[currentWordIndex].word;
+      const word = words[currentWordIndex]!.word;
       if (!word.includes(letter)) {
         updated.wrongLetters = [...state.wrongLetters, letter];
         if (updated.wrongLetters.length >= maxAttempts) {
@@ -89,7 +89,9 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
   const handleResetWord = useCallback(() => {
     setGameStates((prev) => {
       const next = [...prev];
+      const state = next[currentWordIndex]!;
       next[currentWordIndex] = {
+        ...state,
         guessedLetters: new Set<string>(),
         wrongLetters: [],
         status: "playing",
@@ -285,7 +287,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
         <h2 className="text-lg font-semibold text-gray-900 mb-3">Palabras</h2>
         <div className="grid gap-2">
           {words.map((w: HangmanWord, i: number) => {
-            const state = gameStates[i];
+            const state = gameStates[i]!;
             return (
               <button
                 key={i}

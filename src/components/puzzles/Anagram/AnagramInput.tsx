@@ -24,7 +24,7 @@ export default function AnagramInput() {
 
     const items = lines.map((line) => {
       const parts = line.split("-").map((p) => p.trim());
-      const word = parts[0].toUpperCase().replace(/\s/g, "");
+      const word = parts[0]!.toUpperCase().replace(/\s/g, "");
       const clue = parts.length > 1 ? parts.slice(1).join("-").trim() : "";
       return { word, clue };
     }).filter((item) => item.word.length >= 3);

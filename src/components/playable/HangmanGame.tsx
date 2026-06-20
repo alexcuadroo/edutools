@@ -17,7 +17,7 @@ export default function HangmanGame({ words, maxAttempts, title, attemptCount, o
   const [errors, setErrors] = useState(0);
   const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">("playing");
 
-  const currentWord = words[currentWordIdx];
+  const currentWord = words[currentWordIdx]!;
   const wordLetters = currentWord.word.split("");
 
   const handleGuess = useCallback(

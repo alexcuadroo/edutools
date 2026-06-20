@@ -28,7 +28,7 @@ export default function CrosswordInput() {
     for (const line of lines) {
       const parts = line.split(/[:\-–—]\s*/);
       if (parts.length >= 2) {
-        const word = parts[0].trim().toUpperCase();
+        const word = parts[0]!.trim().toUpperCase();
         const clue = parts.slice(1).join(": ").trim();
         if (word.length >= 2 && word.length <= 20 && clue.length > 0) {
           items.push({ word, clue });

@@ -25,14 +25,15 @@ function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResul
     words.map(() => ({ answer: "", status: "pending" as WordStatus }))
   );
 
-  const currentWord = words[currentWordIndex];
-  const currentState = wordStates[currentWordIndex];
+  const currentWord = words[currentWordIndex]!;
+  const currentState = wordStates[currentWordIndex]!;
 
   const handleAnswerChange = useCallback((answer: string) => {
     setWordStates((prev) => {
       const next = [...prev];
+      const state = next[currentWordIndex]!;
       next[currentWordIndex] = {
-        ...next[currentWordIndex],
+        ...state,
         answer: answer.toUpperCase().replace(/\s/g, ""),
         status: "pending",
       };
@@ -43,7 +44,7 @@ function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResul
   const handleVerify = useCallback(() => {
     setWordStates((prev) => {
       const next = [...prev];
-      const state = next[currentWordIndex];
+      const state = next[currentWordIndex]!;
       const isCorrect = state.answer === currentWord.word;
       next[currentWordIndex] = {
         ...state,
@@ -61,7 +62,8 @@ function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResul
   const handleResetWord = useCallback(() => {
     setWordStates((prev) => {
       const next = [...prev];
-      next[currentWordIndex] = { answer: "", status: "pending" };
+      const state = next[currentWordIndex]!;
+      next[currentWordIndex] = { ...state, answer: "", status: "pending" };
       return next;
     });
   }, [currentWordIndex]);
@@ -227,7 +229,7 @@ function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResul
         <h2 className="text-lg font-semibold text-gray-900 mb-3">Palabras</h2>
         <div className="grid gap-2">
           {words.map((w: AnagramWord, i: number) => {
-            const state = wordStates[i];
+            const state = wordStates[i]!;
             return (
               <button
                 key={i}
