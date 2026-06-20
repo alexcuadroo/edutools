@@ -9,6 +9,8 @@ const ALLOWED_TYPES = [
   "hangman",
   "anagram",
   "sentence-order",
+  "match-columns",
+  "memory",
 ] as const;
 
 function generateShortId(): string {
