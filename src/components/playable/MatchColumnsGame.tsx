@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { RotateCcw, Trophy, Link } from "lucide-react";
 
 interface MatchColumnsGameProps {
@@ -8,6 +8,17 @@ interface MatchColumnsGameProps {
   attemptCount?: number;
   onAttemptIncrement?: () => void;
 }
+
+const PAIR_COLORS = [
+  "bg-sky-100 border-sky-400 text-sky-800",
+  "bg-amber-100 border-amber-400 text-amber-800",
+  "bg-violet-100 border-violet-400 text-violet-800",
+  "bg-rose-100 border-rose-400 text-rose-800",
+  "bg-teal-100 border-teal-400 text-teal-800",
+  "bg-orange-100 border-orange-400 text-orange-800",
+  "bg-cyan-100 border-cyan-400 text-cyan-800",
+  "bg-fuchsia-100 border-fuchsia-400 text-fuchsia-800",
+];
 
 export default function MatchColumnsGame({
   matches,
@@ -67,46 +78,39 @@ export default function MatchColumnsGame({
     setShakeDefIdx(null);
   }, []);
 
-  const wordRefs = useMemo(() => matches.map(() => ({ current: null as HTMLDivElement | null })), [matches]);
-  const defRefs = useMemo(() => shuffledDefinitions.map(() => ({ current: null as HTMLDivElement | null })), [shuffledDefinitions]);
-
-  const lines = useMemo(() => {
-    const result: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    const ITEM_HEIGHT = 44;
-    const GAP = 8;
-    const STEP = ITEM_HEIGHT + GAP;
-
-    matchedWords.forEach((defIdx, wordIdx) => {
-      const y1 = wordIdx * STEP + ITEM_HEIGHT / 2;
-      const y2 = defIdx * STEP + ITEM_HEIGHT / 2;
-      result.push({ x1: 0, y1, x2: 0, y2 });
-    });
-
-    return result;
-  }, [matchedWords]);
-
   const getWordClass = (wordIdx: number) => {
     if (matchedWords.has(wordIdx)) {
-      return "bg-emerald-50 border-emerald-300 text-emerald-700";
+      return PAIR_COLORS[wordIdx % PAIR_COLORS.length]!;
     }
     if (selectedWord === wordIdx) {
-      return "bg-indigo-50 border-indigo-300 text-indigo-700";
+      return "bg-indigo-50 border-indigo-400 text-indigo-700 ring-2 ring-indigo-200";
     }
     if (wrongAttempt && wrongAttempt.wordIdx === wordIdx) {
       return "bg-red-50 border-red-300 text-red-700";
     }
-    return "bg-white border-gray-200 text-gray-800";
+    return "bg-white border-gray-200 text-gray-800 hover:border-gray-300 hover:bg-gray-50";
   };
 
   const getDefinitionClass = (defIdx: number) => {
-    const isMatched = [...matchedWords.values()].includes(defIdx);
-    if (isMatched) {
-      return "bg-emerald-50 border-emerald-300 text-emerald-700";
+    const matchedEntry = [...matchedWords.entries()].find(([, d]) => d === defIdx);
+    if (matchedEntry) {
+      return PAIR_COLORS[matchedEntry[0]! % PAIR_COLORS.length]!;
     }
     if (wrongAttempt && wrongAttempt.defIdx === defIdx) {
       return "bg-red-50 border-red-300 text-red-700";
     }
-    return "bg-white border-gray-200 text-gray-800";
+    return "bg-white border-gray-200 text-gray-800 hover:border-gray-300 hover:bg-gray-50";
+  };
+
+  const getPairNumber = (wordIdx: number): number | null => {
+    if (!matchedWords.has(wordIdx)) return null;
+    return wordIdx + 1;
+  };
+
+  const getDefPairNumber = (defIdx: number): number | null => {
+    const entry = [...matchedWords.entries()].find(([, d]) => d === defIdx);
+    if (!entry) return null;
+    return entry[0]! + 1;
   };
 
   return (
@@ -161,78 +165,54 @@ export default function MatchColumnsGame({
       </div>
 
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div className="relative" style={{ minHeight: matches.length * 52 }}>
-          <svg
-            className="absolute inset-0 pointer-events-none"
-            width="100%"
-            height="100%"
-            style={{ zIndex: 10 }}
-          >
-            {lines.map((line, i) => {
-              const containerWidth = 600;
-              const leftColWidth = containerWidth * 0.4;
-              const rightColStart = containerWidth * 0.6;
-              const x1 = leftColWidth - 8;
-              const x2 = rightColStart + 8;
-              const midX = (x1 + x2) / 2;
-              return (
-                <path
-                  key={i}
-                  d={`M ${x1} ${line.y1} C ${midX} ${line.y1}, ${midX} ${line.y2}, ${x2} ${line.y2}`}
-                  fill="none"
-                  stroke="#4ade80"
-                  strokeWidth="2"
-                  opacity="0.7"
-                />
-              );
-            })}
-          </svg>
-
-          <div className="grid grid-cols-[1fr_1fr] gap-4 relative" style={{ zIndex: 1 }}>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                <Link className="w-3.5 h-3.5 inline mr-1" />
-                Palabras
-              </h3>
-              <div className="space-y-2">
-                {matches.map((m, wordIdx) => (
-                  <div
-                    key={wordIdx}
-                    ref={(el) => { wordRefs[wordIdx]!.current = el; }}
+        <div className="grid grid-cols-2 gap-4 sm:gap-8">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <Link className="w-3.5 h-3.5 inline mr-1" />
+              Palabras
+            </h3>
+            <div className="space-y-2">
+              {matches.map((m, wordIdx) => (
+                <div key={wordIdx} className="relative">
+                  <button
+                    onClick={() => handleWordClick(wordIdx)}
+                    disabled={matchedWords.has(wordIdx)}
+                    className={`w-full text-left px-4 py-3 rounded-lg border-2 font-medium text-sm transition-all cursor-pointer disabled:cursor-default ${getWordClass(wordIdx)}`}
                   >
-                    <button
-                      onClick={() => handleWordClick(wordIdx)}
-                      disabled={matchedWords.has(wordIdx)}
-                      className={`w-full text-left px-4 py-3 rounded-lg border-2 font-medium text-sm transition-all cursor-pointer disabled:cursor-default ${getWordClass(wordIdx)}`}
-                    >
-                      {m.word}
-                    </button>
-                  </div>
-                ))}
-              </div>
+                    {m.word}
+                  </button>
+                  {getPairNumber(wordIdx) !== null && (
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center rounded-full bg-white border text-[10px] font-bold text-gray-600 shadow-sm">
+                      {getPairNumber(wordIdx)}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                <Link className="w-3.5 h-3.5 inline mr-1" />
-                Definiciones
-              </h3>
-              <div className="space-y-2">
-                {shuffledDefinitions.map((def, defIdx) => (
-                  <div
-                    key={defIdx}
-                    ref={(el) => { defRefs[defIdx]!.current = el; }}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <Link className="w-3.5 h-3.5 inline mr-1" />
+              Definiciones
+            </h3>
+            <div className="space-y-2">
+              {shuffledDefinitions.map((def, defIdx) => (
+                <div key={defIdx} className="relative">
+                  <button
+                    onClick={() => handleDefinitionClick(defIdx)}
+                    disabled={[...matchedWords.values()].includes(defIdx)}
+                    className={`w-full text-left px-4 py-3 rounded-lg border-2 font-medium text-sm transition-all cursor-pointer disabled:cursor-default ${getDefinitionClass(defIdx)} ${shakeDefIdx === defIdx ? "animate-shake" : ""}`}
                   >
-                    <button
-                      onClick={() => handleDefinitionClick(defIdx)}
-                      disabled={[...matchedWords.values()].includes(defIdx)}
-                      className={`w-full text-left px-4 py-3 rounded-lg border-2 font-medium text-sm transition-all cursor-pointer disabled:cursor-default ${getDefinitionClass(defIdx)} ${shakeDefIdx === defIdx ? "animate-shake" : ""}`}
-                    >
-                      {def}
-                    </button>
-                  </div>
-                ))}
-              </div>
+                    {def}
+                  </button>
+                  {getDefPairNumber(defIdx) !== null && (
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center rounded-full bg-white border text-[10px] font-bold text-gray-600 shadow-sm">
+                      {getDefPairNumber(defIdx)}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
