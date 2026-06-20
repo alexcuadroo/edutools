@@ -1,5 +1,5 @@
 import type { SentenceOrderResult } from "../puzzles/sentence-order/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
+import { sanitizeFilename } from "../utils";
 
 export async function generateSentenceOrderPDF(
   result: SentenceOrderResult,
@@ -22,7 +22,7 @@ export async function generateSentenceOrderPDF(
   const lineHeight = 8;
 
   for (let i = 0; i < result.sentences.length; i++) {
-    const sentence = result.sentences[i];
+    const sentence = result.sentences[i]!;
 
     if (y > 260) {
       pdf.addPage();

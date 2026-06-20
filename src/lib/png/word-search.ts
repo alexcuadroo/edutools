@@ -1,17 +1,6 @@
 import type { WSGrid } from "../puzzles/word-search/types";
-import { WS_DIRECTIONS, type WSDirection } from "../puzzles/word-search/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
-
-function getSolutionCells(grid: WSGrid): Set<string> {
-  const cells = new Set<string>();
-  for (const w of grid.words) {
-    const d = WS_DIRECTIONS[w.direction as WSDirection];
-    for (let i = 0; i < w.word.length; i++) {
-      cells.add(`${w.startRow + d[0] * i},${w.startCol + d[1] * i}`);
-    }
-  }
-  return cells;
-}
+import { getSolutionCells } from "../puzzles/word-search/solution-cells";
+import { sanitizeFilename } from "../utils";
 
 export function downloadWordSearchPNG(
   grid: WSGrid,
@@ -34,7 +23,8 @@ export function downloadWordSearchPNG(
   const canvas = document.createElement("canvas");
   canvas.width = width * 2;
   canvas.height = height * 2;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
   ctx.scale(2, 2);
 
   ctx.fillStyle = "#ffffff";
@@ -59,7 +49,7 @@ export function downloadWordSearchPNG(
       ctx.strokeRect(x, y, cellSize, cellSize);
 
       ctx.fillStyle = "#000000";
-      ctx.fillText(grid.grid[r][c], x + cellSize / 2, y + cellSize / 2);
+      ctx.fillText(grid.grid[r]![c]!, x + cellSize / 2, y + cellSize / 2);
     }
   }
 
@@ -72,7 +62,7 @@ export function downloadWordSearchPNG(
   for (let i = 0; i < grid.words.length; i++) {
     const col = Math.floor(i / wordsPerColumn);
     const row = i - col * wordsPerColumn;
-    ctx.fillText(grid.words[i].word, padding + col * colWidth, listY + row * 14);
+    ctx.fillText(grid.words[i]!.word, padding + col * colWidth, listY + row * 14);
   }
 
   const base = sanitizeFilename(title || "", "sopa-de-letras");

@@ -46,8 +46,8 @@ interface PuzzleState {
   setLoading: (v: boolean) => void;
   error: string | null;
 
-  activeTab: "word-search" | "crossword" | "fill-blanks";
-  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks") => void;
+  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order";
+  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order") => void;
   setError: (e: string | null) => void;
 }
 
@@ -95,15 +95,4 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setError: (e) => set({ error: e }),
 }));
 
-export function sanitizeFilename(title: string, fallback: string): string {
-  const cleaned = title
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .substring(0, 60);
 
-  return cleaned || fallback;
-}

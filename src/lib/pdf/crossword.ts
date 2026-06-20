@@ -1,5 +1,5 @@
 import type { CWGrid } from "../puzzles/crossword/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
+import { sanitizeFilename } from "../utils";
 
 function drawCrosswordGrid(
   pdf: InstanceType<typeof import("jspdf").default>,
@@ -12,7 +12,7 @@ function drawCrosswordGrid(
     for (let c = 0; c < grid.cols; c++) {
       const px = x + c * cellSize;
       const py = y + r * cellSize;
-      const isBlocked = grid.grid[r][c] === null;
+      const isBlocked = grid.grid[r]?.[c] === null;
 
       if (isBlocked) {
         pdf.setFillColor(220, 220, 220);
@@ -24,7 +24,7 @@ function drawCrosswordGrid(
 
         pdf.setFontSize(cellSize * 0.55);
         pdf.setTextColor(0);
-        pdf.text(grid.grid[r][c]!, px + cellSize / 2, py + cellSize / 2 + cellSize * 0.18, {
+        pdf.text(grid.grid[r]![c]!, px + cellSize / 2, py + cellSize / 2 + cellSize * 0.18, {
           align: "center",
           baseline: "middle",
         });
@@ -101,7 +101,8 @@ export async function generateCrosswordPDF(
       const y = startY + 5 + row * lineHeight;
       
       pdf.setFontSize(8);
-      const text = showClue ? `${words[i].number}. ${words[i].clue}` : `${words[i].number}. ${words[i].word}`;
+      const w = words[i]!;
+      const text = showClue ? `${w.number}. ${w.clue}` : `${w.number}. ${w.word}`;
       pdf.text(text, x, y);
     }
   };
