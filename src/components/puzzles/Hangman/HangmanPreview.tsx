@@ -162,7 +162,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
+            <span className="text-sm font-medium text-gray-700 min-w-20 text-center">
               Palabra {currentWordIndex + 1} / {words.length}
             </span>
             <button

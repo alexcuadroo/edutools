@@ -129,7 +129,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
         </div>
 
         <div className="flex justify-center mb-5">
-          <div className="bg-white rounded-xl border-2 border-gray-100 w-[250px] h-[250px] flex items-center justify-center overflow-hidden">
+          <div className="bg-white rounded-xl border-2 border-gray-100 w-62.5 h-62.5 flex items-center justify-center overflow-hidden">
             <QRCodeSVG
               id="share-qr-code"
               value={url}

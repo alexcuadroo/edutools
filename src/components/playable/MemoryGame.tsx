@@ -110,7 +110,7 @@ export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemp
       </div>
 
       {isComplete && (
-        <div className="text-center py-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+        <div className="text-center py-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
           <Trophy className="w-8 h-8 text-amber-500 mx-auto mb-2" />
           <p className="text-lg font-bold text-green-700">Felicidades!</p>
           <p className="text-sm text-green-600 mb-3">
@@ -147,7 +147,7 @@ export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemp
                 }}
               >
                 <div
-                  className="absolute inset-0 rounded-xl flex items-center justify-center border-2 border-indigo-300 bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-sm"
+                  className="absolute inset-0 rounded-xl flex items-center justify-center border-2 border-indigo-300 bg-linear-to-br from-indigo-600 to-indigo-700 text-white shadow-sm"
                   style={{ backfaceVisibility: "hidden" }}
                 >
                   <Layers className="w-6 h-6 opacity-30" />

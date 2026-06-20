@@ -111,7 +111,7 @@ export default function FillBlanksPreview() {
                 <button
                   key={token.index}
                   onClick={() => handleToggleBlank(token.index)}
-                  className="inline-block min-w-[3rem] px-2 py-0.5 mx-0.5 bg-indigo-100 border-2 border-dashed border-indigo-400 rounded text-indigo-600 font-medium cursor-pointer hover:bg-indigo-200 transition-colors"
+                  className="inline-block min-w-12 px-2 py-0.5 mx-0.5 bg-indigo-100 border-2 border-dashed border-indigo-400 rounded text-indigo-600 font-medium cursor-pointer hover:bg-indigo-200 transition-colors"
                 >
                   _____
                 </button>
