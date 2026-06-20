@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
-import WordSearchGame from "../../components/playable/WordSearchGame";
-import { type WSPlayData, playDataToWSWords } from "../../lib/share/types";
-import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
-import { useAttemptCounter } from "../../hooks/useAttemptCounter";
+import WordSearchGame from "@/components/playable/WordSearchGame";
+import { type WSPlayData, playDataToWSWords } from "@/lib/share/types";
+import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
+import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 
 export default function PlayWordSearchPage() {
   const { id } = useParams<{ id: string }>();

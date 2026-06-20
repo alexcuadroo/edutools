@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { memoryResultToPlayData } from "../lib/share/types";
+import { memoryResultToPlayData } from "@/lib/share/types";
 
 describe("memoryResultToPlayData", () => {
   it("maps memory pairs to the play-data shape used by the game", () => {

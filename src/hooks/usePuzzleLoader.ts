@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { loadPuzzle } from "../lib/share/api";
+import { loadPuzzle } from "@/lib/share/api";
 
 export function usePuzzleLoader<T>(
   id: string | undefined,

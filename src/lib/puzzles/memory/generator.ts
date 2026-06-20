@@ -1,6 +1,6 @@
-import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "../types";
-import type { MemoryCard, MemoryResult } from "./types";
-import { shuffle } from "../../utils";
+import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
+import type { MemoryCard, MemoryResult } from "@/lib/puzzles/memory/types";
+import { shuffle } from "@/lib/utils";
 
 class MemoryGenerator implements IPuzzleGenerator {
   id = "memory" as const;

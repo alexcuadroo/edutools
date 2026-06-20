@@ -1,13 +1,13 @@
 import { useState } from "react";
-import Card from "../../ui/Card";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateMemoryPDF } from "../../../lib/pdf/memory.ts";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { memoryResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateMemoryPDF } from "@/lib/pdf/memory.ts";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { memoryResultToPlayData } from "@/lib/share/types";
 import { Eye, Share2, Loader2 } from "lucide-react";
-import MemoryGame from "../../playable/MemoryGame";
+import MemoryGame from "@/components/playable/MemoryGame";
 import { toast } from "react-toastify";
 
 export default function MemoryPreview() {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { shuffle } from "../lib/utils/shuffle";
+import { shuffle } from "@/lib/utils/shuffle";
 
 describe("shuffle", () => {
   it("should return an array of the same length", () => {

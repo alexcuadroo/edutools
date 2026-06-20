@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import PageHeader from "../ui/PageHeader";
-import Spinner from "../ui/Spinner";
-import { usePuzzleStore } from "../../store/puzzle-store";
+import PageHeader from "@/components/ui/PageHeader";
+import Spinner from "@/components/ui/Spinner";
+import { usePuzzleStore } from "@/store/puzzle-store";
 
 interface PuzzlePageLayoutProps {
   title: string;

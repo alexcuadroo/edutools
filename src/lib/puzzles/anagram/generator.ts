@@ -1,6 +1,6 @@
-import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "../types";
-import type { AnagramResult } from "./types";
-import { shuffle } from "../../utils";
+import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
+import type { AnagramResult } from "@/lib/puzzles/anagram/types";
+import { shuffle } from "@/lib/utils";
 
 class AnagramGenerator implements IPuzzleGenerator {
   id = "anagram" as const;

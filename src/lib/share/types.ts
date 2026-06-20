@@ -1,11 +1,11 @@
-import type { WSWordPlacement } from "../puzzles/word-search/types";
-import type { CWWord } from "../puzzles/crossword/types";
-import type { FillBlanksResult } from "../puzzles/fill-blanks/types";
-import type { HangmanResult } from "../puzzles/hangman/types";
-import type { AnagramResult } from "../puzzles/anagram/types";
-import type { SentenceOrderResult } from "../puzzles/sentence-order/types";
-import type { MCResult } from "../puzzles/match-columns/types";
-import type { MemoryResult } from "../puzzles/memory/types";
+import type { WSWordPlacement } from "@/lib/puzzles/word-search/types";
+import type { CWWord } from "@/lib/puzzles/crossword/types";
+import type { FillBlanksResult } from "@/lib/puzzles/fill-blanks/types";
+import type { HangmanResult } from "@/lib/puzzles/hangman/types";
+import type { AnagramResult } from "@/lib/puzzles/anagram/types";
+import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
+import type { MCResult } from "@/lib/puzzles/match-columns/types";
+import type { MemoryResult } from "@/lib/puzzles/memory/types";
 
 export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
 

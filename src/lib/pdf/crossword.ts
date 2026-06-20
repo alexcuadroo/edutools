@@ -1,5 +1,5 @@
-import type { CWGrid } from "../puzzles/crossword/types";
-import { sanitizeFilename } from "../utils";
+import type { CWGrid } from "@/lib/puzzles/crossword/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 function drawCrosswordGrid(
   pdf: InstanceType<typeof import("jspdf").default>,

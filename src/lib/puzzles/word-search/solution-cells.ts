@@ -1,5 +1,5 @@
-import { WS_DIRECTIONS, type WSDirection } from "./types";
-import type { WSGrid } from "./types";
+import { WS_DIRECTIONS, type WSDirection } from "@/lib/puzzles/word-search/types";
+import type { WSGrid } from "@/lib/puzzles/word-search/types";
 
 export function getSolutionCells(grid: WSGrid): Set<string> {
   const cells = new Set<string>();

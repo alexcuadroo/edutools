@@ -166,7 +166,7 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
       )}
 
       {celebration && (
-        <div className="text-center py-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="text-center py-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
           <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
           <p className="text-lg font-bold text-green-700">Felicidades!</p>
           <p className="text-sm text-green-600">
@@ -230,7 +230,7 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
           </p>
         )}
 
-        <div className="flex justify-center gap-2 mb-6 min-h-[3rem]">
+        <div className="flex justify-center gap-2 mb-6 min-h-12">
           {currentWord.word.split("").map((_, idx) => (
             <div
               key={idx}

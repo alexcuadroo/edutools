@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
-import MatchColumnsGame from "../../components/playable/MatchColumnsGame";
-import type { MCPlayData } from "../../lib/share/types";
-import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
-import { useAttemptCounter } from "../../hooks/useAttemptCounter";
+import MatchColumnsGame from "@/components/playable/MatchColumnsGame";
+import type { MCPlayData } from "@/lib/share/types";
+import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
+import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 
 export default function PlayMatchColumnsPage() {
   const { id } = useParams<{ id: string }>();

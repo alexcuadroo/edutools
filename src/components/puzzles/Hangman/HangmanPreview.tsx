@@ -1,13 +1,13 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import Card from "../../ui/Card";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateHangmanPDF } from "../../../lib/pdf/hangman";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { hangmanResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateHangmanPDF } from "@/lib/pdf/hangman";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { hangmanResultToPlayData } from "@/lib/share/types";
 import { Eye, RotateCcw, ChevronLeft, ChevronRight, Share2, Loader2 } from "lucide-react";
-import type { HangmanWord, HangmanResult } from "../../../lib/puzzles/hangman/types";
+import type { HangmanWord, HangmanResult } from "@/lib/puzzles/hangman/types";
 import { toast } from "react-toastify";
 
 const LETTERS = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789".split("");
@@ -162,7 +162,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm font-medium text-gray-700 min-w-[80px] text-center">
+            <span className="text-sm font-medium text-gray-700 min-w-20 text-center">
               Palabra {currentWordIndex + 1} / {words.length}
             </span>
             <button

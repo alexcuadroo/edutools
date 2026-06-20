@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
-import FillBlanksGame from "../../components/playable/FillBlanksGame";
-import type { FBPlayData } from "../../lib/share/types";
-import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
-import { useAttemptCounter } from "../../hooks/useAttemptCounter";
+import FillBlanksGame from "@/components/playable/FillBlanksGame";
+import type { FBPlayData } from "@/lib/share/types";
+import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
+import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 
 export default function PlayFillBlanksPage() {
   const { id } = useParams<{ id: string }>();

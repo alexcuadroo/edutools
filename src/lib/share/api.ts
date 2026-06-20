@@ -1,4 +1,4 @@
-import type { PlayablePuzzleType } from "./types";
+import type { PlayablePuzzleType } from "@/lib/share/types";
 
 export interface PuzzlePayload {
   type: PlayablePuzzleType;

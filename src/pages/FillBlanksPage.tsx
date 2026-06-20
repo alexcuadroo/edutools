@@ -1,7 +1,7 @@
 import { TextCursorInput } from "lucide-react";
-import FillBlanksInput from "../components/puzzles/FillBlanks/FillBlanksInput";
-import FillBlanksPreview from "../components/puzzles/FillBlanks/FillBlanksPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import FillBlanksInput from "@/components/puzzles/FillBlanks/FillBlanksInput";
+import FillBlanksPreview from "@/components/puzzles/FillBlanks/FillBlanksPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function FillBlanksPage() {
   return (

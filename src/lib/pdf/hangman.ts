@@ -1,5 +1,5 @@
-import type { HangmanResult } from "../puzzles/hangman/types";
-import { sanitizeFilename } from "../utils";
+import type { HangmanResult } from "@/lib/puzzles/hangman/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 export async function generateHangmanPDF(
   result: HangmanResult,

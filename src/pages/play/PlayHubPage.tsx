@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
-import AnagramGame from "../../components/playable/AnagramGame";
-import { loadPuzzle } from "../../lib/share/api";
+import AnagramGame from "@/components/playable/AnagramGame";
+import { loadPuzzle } from "@/lib/share/api";
 
 const DEMO_ANAGRAM = {
   words: [

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { wordSearchGenerator } from "../../../lib/puzzles/word-search/generator";
-import type { WSGrid } from "../../../lib/puzzles/word-search/types";
-import Button from "../../ui/Button";
-import ExampleButton from "../../ui/ExampleButton";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
+import type { WSGrid } from "@/lib/puzzles/word-search/types";
+import Button from "@/components/ui/Button";
+import ExampleButton from "@/components/ui/ExampleButton";
 
 export default function WordSearchInput() {
   const { setWordSearchWords, setWordSearchResult, setWordSearchTitle, setLoading } =

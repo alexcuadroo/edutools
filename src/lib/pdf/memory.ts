@@ -1,5 +1,5 @@
-import type { MemoryResult } from "../puzzles/memory/types";
-import { sanitizeFilename } from "../utils";
+import type { MemoryResult } from "@/lib/puzzles/memory/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 export async function generateMemoryPDF(
   result: MemoryResult,

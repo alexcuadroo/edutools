@@ -1,7 +1,7 @@
 import { Layers } from "lucide-react";
-import MemoryInput from "../components/puzzles/Memory/MemoryInput";
-import MemoryPreview from "../components/puzzles/Memory/MemoryPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import MemoryInput from "@/components/puzzles/Memory/MemoryInput";
+import MemoryPreview from "@/components/puzzles/Memory/MemoryPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function MemoryPage() {
   return (

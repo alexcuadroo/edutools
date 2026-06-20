@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { sentenceOrderGenerator } from "../../../lib/puzzles/sentence-order/generator";
-import Button from "../../ui/Button";
-import ExampleButton from "../../ui/ExampleButton";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { sentenceOrderGenerator } from "@/lib/puzzles/sentence-order/generator";
+import Button from "@/components/ui/Button";
+import ExampleButton from "@/components/ui/ExampleButton";
 
 export default function SentenceOrderInput() {
   const { setSentenceOrderResult, setSentenceOrderTitle, setLoading } = usePuzzleStore();

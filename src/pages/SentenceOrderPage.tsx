@@ -1,7 +1,7 @@
 import { ListOrdered } from "lucide-react";
-import SentenceOrderInput from "../components/puzzles/SentenceOrder/SentenceOrderInput";
-import SentenceOrderPreview from "../components/puzzles/SentenceOrder/SentenceOrderPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import SentenceOrderInput from "@/components/puzzles/SentenceOrder/SentenceOrderInput";
+import SentenceOrderPreview from "@/components/puzzles/SentenceOrder/SentenceOrderPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function SentenceOrderPage() {
   return (

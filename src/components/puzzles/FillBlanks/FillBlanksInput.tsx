@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
-import Button from "../../ui/Button";
-import ExampleButton from "../../ui/ExampleButton";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { fillBlanksGenerator } from "@/lib/puzzles/fill-blanks/generator";
+import Button from "@/components/ui/Button";
+import ExampleButton from "@/components/ui/ExampleButton";
 
 const EXAMPLE_TEXT = `México es un país ubicado en América del Norte. Su capital es la Ciudad de México, una de las ciudades más grandes del mundo. El país tiene una rica historia que incluye civilizaciones antiguas como los aztecas y los mayas. La gastronomía mexicana es famosa mundialmente por sus sabores intensos y variados. Algunos platillos típicos son los tacos, el mole y las enchiladas.`;
 
