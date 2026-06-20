@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { ButtonHTMLAttributes, ReactNode, MouseEvent } from "react";
 
 type Variant = "primary" | "ghost" | "link";
@@ -29,6 +29,17 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      for (const timer of timers.values()) {
+        clearTimeout(timer);
+      }
+      timers.clear();
+    };
+  }, []);
 
   const handleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     if (variant !== "primary") {
@@ -43,9 +54,11 @@ export default function Button({
 
     setRipples((prev) => [...prev, { x, y, id }]);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setRipples((prev) => prev.filter((r) => r.id !== id));
+      timersRef.current.delete(id);
     }, 600);
+    timersRef.current.set(id, timer);
 
     onClick?.(e);
   }, [variant, onClick]);

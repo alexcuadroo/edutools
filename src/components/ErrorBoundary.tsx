@@ -27,16 +27,24 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="text-center py-20">
-          <p className="text-5xl mb-4">⚠️</p>
+        <div className="text-center py-20" role="alert" aria-live="assertive">
+          <p className="text-5xl mb-4" aria-hidden="true">⚠️</p>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Algo salió mal</h1>
           <p className="text-gray-500 mb-6">{this.state.message}</p>
-          <button
-            onClick={() => this.setState({ hasError: false, message: "" })}
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
-          >
-            Reintentar
-          </button>
+          <div className="flex justify-center gap-3">
+            <button
+              onClick={() => this.setState({ hasError: false, message: "" })}
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+            >
+              Reintentar
+            </button>
+            <a
+              href="/"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300 transition-colors"
+            >
+              Volver al inicio
+            </a>
+          </div>
         </div>
       );
     }
