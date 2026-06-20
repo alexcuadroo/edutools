@@ -6,6 +6,8 @@ import type { FillBlanksResult } from "../lib/puzzles/fill-blanks/types";
 import type { HangmanResult } from "../lib/puzzles/hangman/types";
 import type { AnagramResult } from "../lib/puzzles/anagram/types";
 import type { SentenceOrderResult } from "../lib/puzzles/sentence-order/types";
+import type { MCResult } from "../lib/puzzles/match-columns/types";
+import type { MemoryResult } from "../lib/puzzles/memory/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -42,12 +44,22 @@ interface PuzzleState {
   sentenceOrderResult: SentenceOrderResult | null;
   setSentenceOrderResult: (result: SentenceOrderResult | null) => void;
 
+  matchColumnsTitle: string;
+  setMatchColumnsTitle: (t: string) => void;
+  matchColumnsResult: MCResult | null;
+  setMatchColumnsResult: (result: MCResult | null) => void;
+
+  memoryTitle: string;
+  setMemoryTitle: (t: string) => void;
+  memoryResult: MemoryResult | null;
+  setMemoryResult: (result: MemoryResult | null) => void;
+
   loading: boolean;
   setLoading: (v: boolean) => void;
   error: string | null;
 
-  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order";
-  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order") => void;
+  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
+  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory") => void;
   setError: (e: string | null) => void;
 }
 
@@ -85,6 +97,16 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setSentenceOrderTitle: (title) => set({ sentenceOrderTitle: title }),
   sentenceOrderResult: null,
   setSentenceOrderResult: (result) => set({ sentenceOrderResult: result }),
+
+  matchColumnsTitle: "",
+  setMatchColumnsTitle: (title) => set({ matchColumnsTitle: title }),
+  matchColumnsResult: null,
+  setMatchColumnsResult: (result) => set({ matchColumnsResult: result }),
+
+  memoryTitle: "",
+  setMemoryTitle: (title) => set({ memoryTitle: title }),
+  memoryResult: null,
+  setMemoryResult: (result) => set({ memoryResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),

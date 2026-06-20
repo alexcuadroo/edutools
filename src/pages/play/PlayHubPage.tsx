@@ -22,6 +22,8 @@ const PUZZLE_TYPE_ROUTES: Record<string, string> = {
   "hangman": "adivina-la-palabra",
   "anagram": "anagrama",
   "sentence-order": "ordenar-oracion",
+  "match-columns": "relacionar-columnas",
+  "memory": "memoria",
 };
 
 export default function PlayHubPage() {
