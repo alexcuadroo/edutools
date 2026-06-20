@@ -73,7 +73,7 @@ export default function CrosswordGame({
     const dc = direction === "across" ? 1 : 0;
     const nr = row + dr;
     const nc = col + dc;
-    if (nr < rows && nc < cols && grid[nr][nc] !== null) {
+    if (nr < rows && nc < cols && grid[nr]![nc] !== null) {
       setActiveCell({ row: nr, col: nc });
     }
   };
@@ -83,7 +83,7 @@ export default function CrosswordGame({
     const dc = direction === "across" ? -1 : 0;
     const nr = row + dr;
     const nc = col + dc;
-    if (nr >= 0 && nc >= 0 && grid[nr][nc] !== null) {
+    if (nr >= 0 && nc >= 0 && grid[nr]![nc] !== null) {
       setActiveCell({ row: nr, col: nc });
     }
   };
@@ -97,11 +97,11 @@ export default function CrosswordGame({
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        if (grid[r][c] === null) continue;
-        if (userGrid[r][c] === grid[r][c]) {
-          newStatus[r][c] = "correct";
+        if (grid[r]![c] === null) continue;
+        if (userGrid[r]![c] === grid[r]![c]) {
+          newStatus[r]![c] = "correct";
         } else {
-          newStatus[r][c] = "incorrect";
+          newStatus[r]![c] = "incorrect";
           allCorrect = false;
         }
       }
@@ -116,7 +116,7 @@ export default function CrosswordGame({
   };
 
   const handleCellClick = (row: number, col: number) => {
-    if (grid[row][col] === null) return;
+    if (grid[row]![col] === null) return;
 
     if (activeCell && activeCell.row === row && activeCell.col === col) {
       setDirection((d) => (d === "across" ? "down" : "across"));
@@ -148,7 +148,7 @@ export default function CrosswordGame({
     if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/.test(e.key)) {
       e.preventDefault();
       const newGrid = userGrid.map((r) => [...r]);
-      newGrid[row][col] = e.key.toUpperCase();
+      newGrid[row]![col] = e.key.toUpperCase();
       setUserGrid(newGrid);
       moveToNext(row, col);
       return;
@@ -156,9 +156,9 @@ export default function CrosswordGame({
 
     if (e.key === "Backspace") {
       e.preventDefault();
-      if (userGrid[row][col] !== "") {
+      if (userGrid[row]![col] !== "") {
         const newGrid = userGrid.map((r) => [...r]);
-        newGrid[row][col] = "";
+        newGrid[row]![col] = "";
         setUserGrid(newGrid);
       } else {
         moveToPrev(row, col);
@@ -168,25 +168,25 @@ export default function CrosswordGame({
 
     if (e.key === "ArrowRight") {
       e.preventDefault();
-      if (col + 1 < cols && grid[row][col + 1] !== null) {
+      if (col + 1 < cols && grid[row]![col + 1] !== null) {
         setActiveCell({ row, col: col + 1 });
         setDirection("across");
       }
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      if (col - 1 >= 0 && grid[row][col - 1] !== null) {
+      if (col - 1 >= 0 && grid[row]![col - 1] !== null) {
         setActiveCell({ row, col: col - 1 });
         setDirection("across");
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (row + 1 < rows && grid[row + 1][col] !== null) {
+      if (row + 1 < rows && grid[row + 1]![col] !== null) {
         setActiveCell({ row: row + 1, col });
         setDirection("down");
       }
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (row - 1 >= 0 && grid[row - 1][col] !== null) {
+      if (row - 1 >= 0 && grid[row - 1]![col] !== null) {
         setActiveCell({ row: row - 1, col });
         setDirection("down");
       }
@@ -194,7 +194,7 @@ export default function CrosswordGame({
   };
 
   const handleClueClick = (wordIdx: number) => {
-    const word = words[wordIdx];
+    const word = words[wordIdx]!;
     setActiveWordIdx(wordIdx);
     setDirection(word.direction);
     setActiveCell({ row: word.startRow, col: word.startCol });
@@ -212,7 +212,7 @@ export default function CrosswordGame({
 
   const activeWordCells = new Set<string>();
   if (activeWordIdx !== null) {
-    const word = words[activeWordIdx];
+    const word = words[activeWordIdx]!;
     for (const cell of getWordCells(word)) {
       activeWordCells.add(cellKey(cell.row, cell.col));
     }
@@ -309,13 +309,13 @@ export default function CrosswordGame({
                         className="font-mono font-bold text-gray-800"
                         style={{ fontSize: cellSize * 0.5 }}
                       >
-                        {userGrid[r][c]}
+                        {userGrid[r]![c]}
                       </span>
                     )}
                     {status === "incorrect" && !isBlack && (
                       <XCircle className="absolute -top-1 -right-1 w-3 h-3 text-red-500" />
                     )}
-                    {status === "correct" && !isBlack && userGrid[r][c] && (
+                    {status === "correct" && !isBlack && userGrid[r]![c] && (
                       <CheckCircle className="absolute -top-1 -right-1 w-3 h-3 text-green-500" />
                     )}
                   </div>
@@ -342,7 +342,7 @@ export default function CrosswordGame({
               if (char && /^[A-ZÑÁÉÍÓÚ]$/.test(char)) {
                 const { row, col } = activeCell;
                 const newGrid = userGrid.map((r) => [...r]);
-                newGrid[row][col] = char;
+                newGrid[row]![col] = char;
                 setUserGrid(newGrid);
                 moveToNext(row, col);
               }
@@ -353,9 +353,9 @@ export default function CrosswordGame({
               const { row, col } = activeCell;
               if (e.key === "Backspace") {
                 e.preventDefault();
-                if (userGrid[row][col] !== "") {
+                if (userGrid[row]![col] !== "") {
                   const newGrid = userGrid.map((r) => [...r]);
-                  newGrid[row][col] = "";
+                  newGrid[row]![col] = "";
                   setUserGrid(newGrid);
                 } else {
                   moveToPrev(row, col);

@@ -66,7 +66,7 @@ export default function FillBlanksGame({ text, blanks, options, title, attemptCo
         allCorrect = false;
         continue;
       }
-      if (selected === blanks[i].word) {
+      if (selected === blanks[i]!.word) {
         newStatus[i] = "correct";
       } else {
         newStatus[i] = "incorrect";

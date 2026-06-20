@@ -7,7 +7,7 @@ class AnagramGenerator implements IPuzzleGenerator {
   name = "Anagrama";
   description = "Genera anagramas con las palabras ingresadas";
 
-  generate(input: PuzzleInput): PuzzleResult & { grid: AnagramResult } {
+  generate(input: PuzzleInput): PuzzleResult<AnagramResult> {
     const words = input.words
       .map((w) => ({
         word: w.word.toUpperCase().replace(/\s/g, ""),

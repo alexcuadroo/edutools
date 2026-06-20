@@ -12,6 +12,8 @@ import {
   ListOrdered,
   Smartphone,
   Sparkles,
+  Link2,
+  Layers,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -56,6 +58,20 @@ const PUZZLES = [
     description:
       "Genera oraciones desordenadas para que los estudiantes las ordenen correctamente.",
     icon: ListOrdered,
+  },
+  {
+    path: "/relacionar-columnas",
+    title: "Relacionar Columnas",
+    description:
+      "Genera juegos de relacionar palabras con sus definiciones. Dos columnas para emparejar por连线.",
+    icon: Link2,
+  },
+  {
+    path: "/memoria",
+    title: "Memoria",
+    description:
+      "Genera juegos de memoria con pares de palabras y definiciones. Juega online o imprime las cards.",
+    icon: Layers,
   },
 ];
 

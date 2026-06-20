@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { X, Copy, Check, Share2, Hash } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "react-toastify";
@@ -12,6 +12,16 @@ interface ShareModalProps {
 export default function ShareModal({ url, title, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const copiedCodeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      if (copiedCodeTimerRef.current) clearTimeout(copiedCodeTimerRef.current);
+    };
+  }, []);
 
   const puzzleCode = useMemo(() => {
     const parts = url.split("/");
@@ -23,7 +33,8 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       toast.success("Link copiado al portapapeles");
-      setTimeout(() => setCopied(false), 2000);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("No se pudo copiar el link");
     }
@@ -34,7 +45,8 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
       await navigator.clipboard.writeText(puzzleCode.toUpperCase());
       setCopiedCode(true);
       toast.success("Código copiado al portapapeles");
-      setTimeout(() => setCopiedCode(false), 2000);
+      if (copiedCodeTimerRef.current) clearTimeout(copiedCodeTimerRef.current);
+      copiedCodeTimerRef.current = setTimeout(() => setCopiedCode(false), 2000);
     } catch {
       toast.error("No se pudo copiar el código");
     }
@@ -48,16 +60,61 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement;
+
+    const focusable = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    );
+    const firstFocusable = focusable[0] ?? null;
+    const lastFocusable = focusable.length > 0 ? focusable[focusable.length - 1] as HTMLElement : null;
+
+    firstFocusable?.focus();
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      if (e.shiftKey) {
+        if (document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable?.focus();
+        }
+      } else {
+        if (document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable?.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleTab);
+    return () => {
+      document.removeEventListener("keydown", handleTab);
+      previouslyFocused?.focus();
+    };
+  }, []);
+
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Compartir puzzle"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in-95 duration-200">
+      <div
+        ref={dialogRef}
+        className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in-95 duration-200"
+      >
         <button
           onClick={onClose}
+          aria-label="Cerrar"
           className="absolute top-4 right-4 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
         >
           <X className="w-5 h-5" />
@@ -95,6 +152,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
               </span>
               <button
                 onClick={handleCopyCode}
+                aria-label="Copiar código del puzzle"
                 className="shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
               >
                 {copiedCode ? (
@@ -120,11 +178,13 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
               <input
                 readOnly
                 value={url}
+                aria-label="Link completo del puzzle"
                 className="flex-1 bg-transparent text-xs text-gray-600 outline-none px-2 truncate"
                 onClick={(e) => (e.target as HTMLInputElement).select()}
               />
               <button
                 onClick={handleCopy}
+                aria-label="Copiar link"
                 className="shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
               >
                 {copied ? (

@@ -4,8 +4,10 @@ import type { FillBlanksResult } from "../puzzles/fill-blanks/types";
 import type { HangmanResult } from "../puzzles/hangman/types";
 import type { AnagramResult } from "../puzzles/anagram/types";
 import type { SentenceOrderResult } from "../puzzles/sentence-order/types";
+import type { MCResult } from "../puzzles/match-columns/types";
+import type { MemoryResult } from "../puzzles/memory/types";
 
-export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order";
+export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
 
 export interface WSPlayData {
   g: string[][];
@@ -170,5 +172,33 @@ export function sentenceOrderResultToPlayData(result: SentenceOrderResult, title
   return {
     t: title || undefined,
     s: result.sentences.map((s) => ({ o: s.original, w: s.shuffled })),
+  };
+}
+
+export interface MCPlayData {
+  t?: string;
+  m: { w: string; d: string }[];
+  sd: string[];
+}
+
+export function matchColumnsResultToPlayData(result: MCResult, title?: string): MCPlayData {
+  return {
+    t: title || undefined,
+    m: result.matches.map((p) => ({ w: p.word, d: p.definition })),
+    sd: result.shuffledDefinitions,
+  };
+}
+
+export interface MemPlayData {
+  t?: string;
+  c: { id: string; p: number; ct: string; ty: "w" | "d" }[];
+  p: { w: string; d: string }[];
+}
+
+export function memoryResultToPlayData(result: MemoryResult, title?: string): MemPlayData {
+  return {
+    t: title || undefined,
+    c: result.cards.map((card) => ({ id: card.id, p: card.pairId, ct: card.content, ty: card.type === "word" ? "w" : "d" })),
+    p: result.pairs.map((pair) => ({ w: pair.word, d: pair.definition })),
   };
 }

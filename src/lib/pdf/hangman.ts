@@ -1,5 +1,5 @@
 import type { HangmanResult } from "../puzzles/hangman/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
+import { sanitizeFilename } from "../utils";
 
 export async function generateHangmanPDF(
   result: HangmanResult,
@@ -22,7 +22,7 @@ export async function generateHangmanPDF(
   const lineHeight = 8;
 
   for (let i = 0; i < result.words.length; i++) {
-    const word = result.words[i];
+    const word = result.words[i]!;
 
     if (y > 260) {
       pdf.addPage();

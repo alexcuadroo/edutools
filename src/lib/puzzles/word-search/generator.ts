@@ -7,9 +7,12 @@ class WordSearchGenerator implements IPuzzleGenerator {
   name = "Sopa de Letras";
   description = "Genera una sopa de letras con las palabras ingresadas";
 
-  generate(input: PuzzleInput): PuzzleResult & { grid: WSGrid } {
+  generate(input: PuzzleInput): PuzzleResult<WSGrid> {
     const words = input.words.map((w) => w.word.toUpperCase().replace(/\s/g, ""));
-    const clues = input.words.map((w) => w.clue);
+    const clueMap = new Map<string, string | undefined>();
+    for (const w of input.words) {
+      clueMap.set(w.word.toUpperCase().replace(/\s/g, ""), w.clue);
+    }
     const size = input.size ?? 15;
     const maxAttempts = 100;
 
@@ -48,7 +51,7 @@ class WordSearchGenerator implements IPuzzleGenerator {
       grid: {
         grid,
         size,
-        words: placements.map((p, i) => ({ ...p, clue: clues[i] })),
+        words: placements.map((p) => ({ ...p, clue: clueMap.get(p.word) })),
       },
       words: input.words,
     };
@@ -81,7 +84,7 @@ function tryPlaceWord(
       for (let i = 0; i < word.length; i++) {
         const r = startRow + dr * i;
         const c = startCol + dc * i;
-        if (grid[r][c] !== "" && grid[r][c] !== word[i]) {
+        if (grid[r]![c] !== "" && grid[r]![c] !== word[i]) {
           canPlace = false;
           break;
         }
@@ -91,7 +94,7 @@ function tryPlaceWord(
         for (let i = 0; i < word.length; i++) {
           const r = startRow + dr * i;
           const c = startCol + dc * i;
-          grid[r][c] = word[i];
+          grid[r]![c] = word[i]!;
         }
         return { word, startRow, startCol, direction };
       }
@@ -105,8 +108,8 @@ function fillEmptyCells(grid: string[][], size: number) {
   const letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
-      if (grid[r][c] === "") {
-        grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+      if (grid[r]![c] === "") {
+        grid[r]![c] = letters[Math.floor(Math.random() * letters.length)]!;
       }
     }
   }

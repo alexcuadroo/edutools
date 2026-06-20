@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { RotateCcw, Trophy } from "lucide-react";
 import type { PlayableWSWord } from "../../lib/share/types";
 
@@ -73,7 +73,7 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
       const cells = getCellsInLine(startCell, dir, distance, size);
       setSelectedCells(cells);
 
-      const selected = cells.map((c) => grid[c.row][c.col]).join("");
+      const selected = cells.map((c) => grid[c.row]![c.col]).join("");
       const reversed = selected.split("").reverse().join("");
 
       let matchedWord: string | null = null;
@@ -111,9 +111,12 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
     onAttemptIncrement?.();
   }, [onAttemptIncrement]);
 
-  const selectedSet = new Set(selectedCells.map((c) => cellKey(c.row, c.col)));
+  const selectedSet = useMemo(
+    () => new Set(selectedCells.map((c) => cellKey(c.row, c.col))),
+    [selectedCells]
+  );
 
-  const cellSize = Math.min(40, 360 / size);
+  const cellSize = useMemo(() => Math.min(40, 360 / size), [size]);
 
   return (
     <div className="space-y-6">
@@ -172,14 +175,23 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
                     "#c4b5fd", "#a7f3d0", "#fed7aa", "#99f6e4",
                   ];
                   const idx = words.findIndex((w) => w.word === found);
-                  bgColor = colors[idx % colors.length];
+                  bgColor = colors[idx % colors.length]!;
                   textColor = "text-gray-900";
                 }
 
                 return (
                   <div
                     key={key}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Letra ${letter}, fila ${r + 1}, columna ${c + 1}`}
                     onClick={() => handleCellClick(r, c)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleCellClick(r, c);
+                      }
+                    }}
                     className={`flex items-center justify-center font-mono font-bold border border-gray-200 transition-all duration-100 cursor-pointer ${textColor} ${scale}`}
                     style={{
                       width: cellSize,

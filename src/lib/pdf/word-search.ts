@@ -1,17 +1,6 @@
 import type { WSGrid } from "../puzzles/word-search/types";
-import { WS_DIRECTIONS, type WSDirection } from "../puzzles/word-search/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
-
-function getSolutionCells(grid: WSGrid): Set<string> {
-  const cells = new Set<string>();
-  for (const w of grid.words) {
-    const d = WS_DIRECTIONS[w.direction as WSDirection];
-    for (let i = 0; i < w.word.length; i++) {
-      cells.add(`${w.startRow + d[0] * i},${w.startCol + d[1] * i}`);
-    }
-  }
-  return cells;
-}
+import { getSolutionCells } from "../puzzles/word-search/solution-cells";
+import { sanitizeFilename } from "../utils";
 
 function drawGrid(
   pdf: InstanceType<typeof import("jspdf").default>,
@@ -36,7 +25,8 @@ function drawGrid(
       const fontSize = cellSize * 0.72;
       pdf.setFontSize(fontSize);
       pdf.setTextColor(0);
-      pdf.text(grid[r][c], px + cellSize / 2, py + cellSize / 2 + fontSize * 0.32, {
+      const cellLetter = grid[r]![c]!;
+      pdf.text(cellLetter, px + cellSize / 2, py + cellSize / 2 + fontSize * 0.32, {
         align: "center",
       });
     }
@@ -58,7 +48,7 @@ function drawWordList(
       const row = Math.floor(i / cols);
       const wx = x + col * ((pageWidth - x * 2) / cols);
       const wy = y + row * 8;
-      pdf.text(grid.words[i].word, wx, wy);
+      pdf.text(grid.words[i]!.word, wx, wy);
     }
   } else {
     pdf.setFontSize(8);
@@ -67,7 +57,7 @@ function drawWordList(
       const row = Math.floor(i / 3);
       const wx = x + col * 55;
       const wy = y + row * 7;
-      pdf.text(grid.words[i].word, wx, wy);
+      pdf.text(grid.words[i]!.word, wx, wy);
     }
   }
 }

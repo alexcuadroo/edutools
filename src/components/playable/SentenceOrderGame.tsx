@@ -17,7 +17,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
   const [celebration, setCelebration] = useState(false);
   const [score, setScore] = useState(0);
 
-  const currentSentence = sentences[currentIdx];
+  const currentSentence = sentences[currentIdx]!;
 
   const initializeWords = useCallback(() => {
     setAvailableWords([...currentSentence.shuffled]);
@@ -45,7 +45,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
     (idx: number) => {
       if (checked) return;
 
-      const word = userOrder[idx];
+      const word = userOrder[idx]!;
       const newOrder = userOrder.filter((_, i) => i !== idx);
       setUserOrder(newOrder);
 
@@ -66,7 +66,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
         setTimeout(() => {
           setCurrentIdx(currentIdx + 1);
           setUserOrder([]);
-          setAvailableWords([...sentences[currentIdx + 1].shuffled]);
+          setAvailableWords([...sentences[currentIdx + 1]!.shuffled]);
           setChecked(false);
           setIsCorrect(false);
         }, 1500);
@@ -80,7 +80,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
     if (currentIdx < sentences.length - 1) {
       setCurrentIdx(currentIdx + 1);
       setUserOrder([]);
-      setAvailableWords([...sentences[currentIdx + 1].shuffled]);
+      setAvailableWords([...sentences[currentIdx + 1]!.shuffled]);
       setChecked(false);
       setIsCorrect(false);
     }
@@ -89,7 +89,7 @@ export default function SentenceOrderGame({ sentences, title, attemptCount, onAt
   const handleReset = useCallback(() => {
     setCurrentIdx(0);
     setUserOrder([]);
-    setAvailableWords([...sentences[0].shuffled]);
+    setAvailableWords([...sentences[0]!.shuffled]);
     setChecked(false);
     setIsCorrect(false);
     setCelebration(false);

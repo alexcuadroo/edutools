@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers } from "lucide-react";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
@@ -10,6 +10,8 @@ const TABS = [
   { path: "/adivina-la-palabra", label: "Adivina la Palabra", icon: Heart },
   { path: "/anagrama", label: "Anagrama", icon: Shuffle },
   { path: "/ordenar-oracion", label: "Ordenar Oración", icon: ListOrdered },
+  { path: "/relacionar-columnas", label: "Relacionar Columnas", icon: Link2 },
+  { path: "/memoria", label: "Memoria", icon: Layers },
 ];
 
 export default function Header() {

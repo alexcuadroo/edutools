@@ -1,5 +1,5 @@
 import type { AnagramResult } from "../puzzles/anagram/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
+import { sanitizeFilename } from "../utils";
 
 export async function generateAnagramPDF(
   result: AnagramResult,
@@ -22,7 +22,7 @@ export async function generateAnagramPDF(
   const lineHeight = 8;
 
   for (let i = 0; i < result.words.length; i++) {
-    const word = result.words[i];
+    const word = result.words[i]!;
 
     if (y > 260) {
       pdf.addPage();

@@ -7,7 +7,7 @@ class SentenceOrderGenerator implements IPuzzleGenerator {
   name = "Ordenar Oración";
   description = "Genera oraciones desordenadas para ordenar";
 
-  generate(input: PuzzleInput): PuzzleResult & { grid: SentenceOrderResult } {
+  generate(input: PuzzleInput): PuzzleResult<SentenceOrderResult> {
     const sentences = input.words
       .map((w) => w.word.trim())
       .filter((s) => s.length > 0 && s.split(/\s+/).length >= 3);

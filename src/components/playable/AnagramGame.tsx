@@ -36,8 +36,8 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
   const [celebration, setCelebration] = useState(false);
   const [score, setScore] = useState(0);
 
-  const currentWord = words[currentWordIdx];
-  const currentState = wordStates[currentWordIdx];
+  const currentWord = words[currentWordIdx]!;
+  const currentState = wordStates[currentWordIdx]!;
   const scrambledLetters = currentWord.scrambled.split("");
   const hintsRemaining = MAX_HINTS - currentState.hintsUsed;
 
@@ -60,7 +60,7 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
 
       setWordStates((prev) => {
         const next = [...prev];
-        const state = next[currentWordIdx];
+        const state = next[currentWordIdx]!;
         const emptyIdx = state.answer.findIndex((l) => !l);
         if (emptyIdx === -1) return prev;
         const newAnswer = [...state.answer];
@@ -81,9 +81,9 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
       if (checked) return;
       setWordStates((prev) => {
         const next = [...prev];
-        const state = next[currentWordIdx];
+        const state = next[currentWordIdx]!;
         if (!state.answer[idx]) return prev;
-        const scrambledIdx = state.answerSource[idx];
+        const scrambledIdx = state.answerSource[idx]!;
         const newAnswer = [...state.answer];
         const newSource = [...state.answerSource];
         newAnswer[idx] = "";
@@ -144,11 +144,11 @@ export default function AnagramGame({ words, title, attemptCount, onAttemptIncre
 
     setWordStates((prev) => {
       const next = [...prev];
-      const state = next[currentWordIdx];
+      const state = next[currentWordIdx]!;
       const newAnswer = [...state.answer];
-      newAnswer[pos] = currentWord.word[pos];
+      newAnswer[pos!] = currentWord.word[pos!]!;
       const newHints = new Set(state.hintPositions);
-      newHints.add(pos);
+      newHints.add(pos!);
       next[currentWordIdx] = {
         ...state,
         answer: newAnswer,

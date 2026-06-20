@@ -1,5 +1,5 @@
 import type { CWGrid } from "../puzzles/crossword/types";
-import { sanitizeFilename } from "../../store/puzzle-store";
+import { sanitizeFilename } from "../utils";
 
 export function downloadCrosswordPNG(
   grid: CWGrid,
@@ -23,7 +23,8 @@ export function downloadCrosswordPNG(
   const canvas = document.createElement("canvas");
   canvas.width = width * 2;
   canvas.height = height * 2;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
   ctx.scale(2, 2);
 
   ctx.fillStyle = "#ffffff";
@@ -37,7 +38,7 @@ export function downloadCrosswordPNG(
     for (let c = 0; c < grid.cols; c++) {
       const x = padding + c * cellSize;
       const y = padding + r * cellSize;
-      const letter = grid.grid[r][c];
+      const letter = grid.grid[r]?.[c];
 
       if (letter === null) {
         ctx.fillStyle = "#e5e5e5";

@@ -25,13 +25,13 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
     sentences.map(() => ({ answer: [], status: "pending" as SentenceStatus }))
   );
 
-  const currentSentence = sentences[currentIndex];
-  const currentState = states[currentIndex];
+  const currentSentence = sentences[currentIndex]!;
+  const currentState = states[currentIndex]!;
 
   const handleWordClick = useCallback((word: string) => {
     setStates((prev) => {
       const next = [...prev];
-      const state = next[currentIndex];
+      const state = next[currentIndex]!;
       if (state.status !== "pending") return prev;
 
       next[currentIndex] = {
@@ -46,7 +46,7 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
   const handleRemoveWord = useCallback((index: number) => {
     setStates((prev) => {
       const next = [...prev];
-      const state = next[currentIndex];
+      const state = next[currentIndex]!;
       if (state.status !== "pending") return prev;
 
       next[currentIndex] = {
@@ -60,7 +60,7 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
   const handleVerify = useCallback(() => {
     setStates((prev) => {
       const next = [...prev];
-      const state = next[currentIndex];
+      const state = next[currentIndex]!;
       const isCorrect = state.answer.join(" ") === currentSentence.original;
       next[currentIndex] = {
         ...state,
@@ -78,7 +78,8 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
   const handleResetSentence = useCallback(() => {
     setStates((prev) => {
       const next = [...prev];
-      next[currentIndex] = { answer: [], status: "pending" };
+      const state = next[currentIndex]!;
+      next[currentIndex] = { ...state, answer: [], status: "pending" };
       return next;
     });
   }, [currentIndex]);
@@ -251,7 +252,7 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
         <h2 className="text-lg font-semibold text-gray-900 mb-3">Oraciones</h2>
         <div className="grid gap-2">
           {sentences.map((s: SentenceOrderSentence, i: number) => {
-            const state = states[i];
+            const state = states[i]!;
             return (
               <button
                 key={i}

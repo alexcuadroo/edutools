@@ -9,7 +9,7 @@ export interface WSWordPlacement {
   clue?: string;
   startRow: number;
   startCol: number;
-  direction: string;
+  direction: WSDirection;
 }
 
 export type WSDirection = "right" | "down" | "diag-down-right" | "diag-up-right" | "left" | "up" | "diag-down-left" | "diag-up-left";
