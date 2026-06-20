@@ -1,4 +1,4 @@
-import { useTransition, useCallback } from "react";
+import { useTransition, useCallback, useRef, useEffect } from "react";
 import { usePuzzleStore } from "../store/puzzle-store";
 
 interface UsePuzzleGeneratorOptions<T> {
@@ -13,35 +13,41 @@ interface UsePuzzleGeneratorOptions<T> {
 export function usePuzzleGenerator<T>(options: UsePuzzleGeneratorOptions<T>) {
   const { setError } = usePuzzleStore();
   const [isPending, startTransition] = useTransition();
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  });
 
   const generate = useCallback(
     (text: string, title: string, extra: Record<string, unknown> = {}) => {
-      const words = options.parseWords(text);
+      const { current: opts } = optionsRef;
+      const words = opts.parseWords(text);
       if (!words) {
-        setError(options.validate([]) ?? "Formato inválido");
+        setError(opts.validate([]) ?? "Formato inválido");
         return;
       }
 
-      const validationError = options.validate(words);
+      const validationError = opts.validate(words);
       if (validationError) {
         setError(validationError);
         return;
       }
 
-      options.onWords(words);
-      options.onTitle(title);
+      opts.onWords(words);
+      opts.onTitle(title);
       setError(null);
 
       startTransition(() => {
         try {
-          const result = options.generate(words, extra);
-          options.onResult(result);
+          const result = opts.generate(words, extra);
+          opts.onResult(result);
         } catch (e) {
           setError(e instanceof Error ? e.message : "Error al generar");
         }
       });
     },
-    [options, setError, startTransition],
+    [setError],
   );
 
   return { generate, isPending };
