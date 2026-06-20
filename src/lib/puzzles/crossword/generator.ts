@@ -7,7 +7,7 @@ class CrosswordGenerator implements IPuzzleGenerator {
   name = "Crucigrama";
   description = "Genera un crucigrama con las palabras y pistas ingresadas";
 
-  generate(input: PuzzleInput): PuzzleResult & { grid: CWGrid } {
+  generate(input: PuzzleInput): PuzzleResult<CWGrid> {
     const items = input.words.map((w) => ({
       word: w.word.toUpperCase().replace(/\s/g, ""),
       clue: w.clue ?? "",
@@ -23,12 +23,12 @@ class CrosswordGenerator implements IPuzzleGenerator {
     let nextNumber = 1;
     const cellNumbers = new Map<string, number>();
 
-    const first = items[0];
+    const first = items[0]!;
     const midRow = Math.floor(size / 2);
     const startCol = Math.floor((size - first.word.length) / 2);
 
     for (let i = 0; i < first.word.length; i++) {
-      grid[midRow][startCol + i] = first.word[i];
+      grid[midRow]![startCol + i] = first.word[i] ?? null;
     }
     cellNumbers.set(`${midRow},${startCol}`, nextNumber);
     placed.push({
@@ -78,7 +78,7 @@ class CrosswordGenerator implements IPuzzleGenerator {
       return { grid, placed, numbers: new Map(cellNumbers) };
     }
 
-    const item = remaining[0];
+    const item = remaining[0]!;
     const rest = remaining.slice(1);
     const candidates = this.findIntersections(grid, size, item.word, placed);
 
@@ -90,7 +90,7 @@ class CrosswordGenerator implements IPuzzleGenerator {
       for (let i = 0; i < item.word.length; i++) {
         const r = cand.direction === "across" ? cand.row : cand.row + i;
         const c = cand.direction === "across" ? cand.col + i : cand.col;
-        newGrid[r][c] = item.word[i];
+        newGrid[r]![c] = item.word[i] ?? null;
       }
 
       const key = `${cand.row},${cand.col}`;
@@ -128,7 +128,7 @@ class CrosswordGenerator implements IPuzzleGenerator {
 
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
-        if (grid[r][c] !== null) occupied.add(`${r},${c}`);
+        if (grid[r]?.[c] != null) occupied.add(`${r},${c}`);
       }
     }
 
@@ -137,7 +137,7 @@ class CrosswordGenerator implements IPuzzleGenerator {
 
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
-          if (grid[r][c] !== letter) continue;
+          if (grid[r]?.[c] !== letter) continue;
 
           const wouldCross = placed.some((p) => {
             for (let j = 0; j < p.word.length; j++) {
@@ -196,8 +196,9 @@ class CrosswordGenerator implements IPuzzleGenerator {
     let minCol = Infinity, maxCol = -Infinity;
 
     for (let r = 0; r < grid.length; r++) {
-      for (let c = 0; c < grid[r].length; c++) {
-        if (grid[r][c] !== null) {
+      const row = grid[r]!;
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] !== null) {
           minRow = Math.min(minRow, r);
           maxRow = Math.max(maxRow, r);
           minCol = Math.min(minCol, c);
@@ -215,16 +216,17 @@ class CrosswordGenerator implements IPuzzleGenerator {
 
     for (let r = minRow; r <= maxRow; r++) {
       for (let c = minCol; c <= maxCol; c++) {
-        if (grid[r]?.[c] !== null && grid[r]?.[c] !== undefined) {
-          trimmed[r - minRow][c - minCol] = grid[r][c];
+        const cell = grid[r]?.[c];
+        if (cell !== null && cell !== undefined) {
+          trimmed[r - minRow]![c - minCol] = cell;
         }
       }
     }
 
-    for (const [key, num] of numbers) {
-      const [r, c] = key.split(",").map(Number);
-      newNumbers.set(`${r - minRow},${c - minCol}`, num);
-    }
+  for (const [key, num] of numbers) {
+    const [r, c] = key.split(",").map(Number);
+    newNumbers.set(`${(r)! - minRow},${(c)! - minCol}`, num);
+  }
 
     const adjustedWords = placed.map((w) => ({
       ...w,

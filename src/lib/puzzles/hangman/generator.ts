@@ -6,7 +6,7 @@ class HangmanGenerator implements IPuzzleGenerator {
   name = "Ahorcado";
   description = "Genera un juego de ahorcado con las palabras ingresadas";
 
-  generate(input: PuzzleInput): PuzzleResult & { grid: HangmanResult } {
+  generate(input: PuzzleInput): PuzzleResult<HangmanResult> {
     const words = input.words
       .map((w) => ({
         word: w.word.toUpperCase().replace(/\s/g, ""),
