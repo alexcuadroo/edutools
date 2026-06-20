@@ -31,6 +31,7 @@ export default function MatchColumnsGame({
   const [matchedWords, setMatchedWords] = useState<Map<number, number>>(new Map());
   const [wrongAttempt, setWrongAttempt] = useState<{ wordIdx: number; defIdx: number } | null>(null);
   const [shakeDefIdx, setShakeDefIdx] = useState<number | null>(null);
+  const [errors, setErrors] = useState(0);
 
   const isComplete = matchedWords.size === matches.length;
 
@@ -54,6 +55,7 @@ export default function MatchColumnsGame({
       } else {
         setWrongAttempt({ wordIdx: selectedWord, defIdx });
         setShakeDefIdx(defIdx);
+        setErrors((e) => e + 1);
         setTimeout(() => {
           setWrongAttempt(null);
           setShakeDefIdx(null);
@@ -68,6 +70,7 @@ export default function MatchColumnsGame({
     setMatchedWords(new Map());
     setWrongAttempt(null);
     setShakeDefIdx(null);
+    setErrors(0);
     onAttemptIncrement?.();
   }, [onAttemptIncrement]);
 
@@ -150,6 +153,11 @@ export default function MatchColumnsGame({
         <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
           {matchedWords.size}/{matches.length} emparejados
         </span>
+        {errors > 0 && (
+          <span className="text-xs font-medium text-red-600 bg-red-50 px-2.5 py-1 rounded-full">
+            {errors} {errors === 1 ? "error" : "errores"}
+          </span>
+        )}
         {attemptCount !== undefined && (
           <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
             Intento #{attemptCount}
