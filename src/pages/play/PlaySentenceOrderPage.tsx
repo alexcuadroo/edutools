@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
-import SentenceOrderGame from "../../components/playable/SentenceOrderGame";
-import type { SOPlayData } from "../../lib/share/types";
-import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
-import { useAttemptCounter } from "../../hooks/useAttemptCounter";
+import SentenceOrderGame from "@/components/playable/SentenceOrderGame";
+import type { SOPlayData } from "@/lib/share/types";
+import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
+import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 
 export default function PlaySentenceOrderPage() {
   const { id } = useParams<{ id: string }>();

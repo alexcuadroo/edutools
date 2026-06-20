@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Download, ChevronDown, FileText, Image, Eye } from "lucide-react";
-import type { DownloadGroup } from "./DownloadDropdown.types";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import type { DownloadGroup } from "@/components/ui/DownloadDropdown.types";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface DownloadDropdownProps {
   groups: DownloadGroup[];

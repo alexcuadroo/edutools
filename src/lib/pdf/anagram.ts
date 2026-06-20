@@ -1,5 +1,5 @@
-import type { AnagramResult } from "../puzzles/anagram/types";
-import { sanitizeFilename } from "../utils";
+import type { AnagramResult } from "@/lib/puzzles/anagram/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 export async function generateAnagramPDF(
   result: AnagramResult,

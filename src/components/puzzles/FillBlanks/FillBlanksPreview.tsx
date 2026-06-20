@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Card from "../../ui/Card";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { fillBlanksGenerator } from "../../../lib/puzzles/fill-blanks/generator";
-import { generateFillBlanksPDF } from "../../../lib/pdf/fill-blanks";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { fillBlanksResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { fillBlanksGenerator } from "@/lib/puzzles/fill-blanks/generator";
+import { generateFillBlanksPDF } from "@/lib/pdf/fill-blanks";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { fillBlanksResultToPlayData } from "@/lib/share/types";
 import { Eye, Share2, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 

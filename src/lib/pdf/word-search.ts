@@ -1,6 +1,6 @@
-import type { WSGrid } from "../puzzles/word-search/types";
-import { getSolutionCells } from "../puzzles/word-search/solution-cells";
-import { sanitizeFilename } from "../utils";
+import type { WSGrid } from "@/lib/puzzles/word-search/types";
+import { getSolutionCells } from "@/lib/puzzles/word-search/solution-cells";
+import { sanitizeFilename } from "@/lib/utils";
 
 function drawGrid(
   pdf: InstanceType<typeof import("jspdf").default>,

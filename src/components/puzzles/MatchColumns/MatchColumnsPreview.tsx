@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Card from "../../ui/Card";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateMatchColumnsPDF } from "../../../lib/pdf/match-columns.ts";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { matchColumnsResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateMatchColumnsPDF } from "@/lib/pdf/match-columns.ts";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { matchColumnsResultToPlayData } from "@/lib/share/types";
 import { Eye, Share2, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-import MatchColumnsGame from "../../playable/MatchColumnsGame";
+import MatchColumnsGame from "@/components/playable/MatchColumnsGame";
 
 export default function MatchColumnsPreview() {
   const { matchColumnsResult, matchColumnsTitle } = usePuzzleStore();

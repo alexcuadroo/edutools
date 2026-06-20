@@ -1,7 +1,7 @@
 import { Heart } from "lucide-react";
-import HangmanInput from "../components/puzzles/Hangman/HangmanInput";
-import HangmanPreview from "../components/puzzles/Hangman/HangmanPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import HangmanInput from "@/components/puzzles/Hangman/HangmanInput";
+import HangmanPreview from "@/components/puzzles/Hangman/HangmanPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function HangmanPage() {
   return (

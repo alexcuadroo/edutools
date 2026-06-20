@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { RotateCcw, Trophy } from "lucide-react";
-import type { PlayableWSWord } from "../../lib/share/types";
+import type { PlayableWSWord } from "@/lib/share/types";
 
 interface WordSearchGameProps {
   grid: string[][];

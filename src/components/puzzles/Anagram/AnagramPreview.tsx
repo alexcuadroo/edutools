@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo } from "react";
-import Card from "../../ui/Card";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateAnagramPDF } from "../../../lib/pdf/anagram";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { anagramResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateAnagramPDF } from "@/lib/pdf/anagram";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { anagramResultToPlayData } from "@/lib/share/types";
 import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2, Loader2 } from "lucide-react";
-import type { AnagramWord, AnagramResult } from "../../../lib/puzzles/anagram/types";
+import type { AnagramWord, AnagramResult } from "@/lib/puzzles/anagram/types";
 import { toast } from "react-toastify";
 
 type WordStatus = "pending" | "correct" | "incorrect";

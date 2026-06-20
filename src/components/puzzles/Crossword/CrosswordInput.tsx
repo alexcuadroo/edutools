@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { crosswordGenerator } from "../../../lib/puzzles/crossword/generator";
-import type { CWGrid } from "../../../lib/puzzles/crossword/types";
-import Button from "../../ui/Button";
-import ExampleButton from "../../ui/ExampleButton";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { crosswordGenerator } from "@/lib/puzzles/crossword/generator";
+import type { CWGrid } from "@/lib/puzzles/crossword/types";
+import Button from "@/components/ui/Button";
+import ExampleButton from "@/components/ui/ExampleButton";
 
 export default function CrosswordInput() {
   const {

@@ -1,5 +1,5 @@
 import { useTransition, useCallback, useRef, useEffect } from "react";
-import { usePuzzleStore } from "../store/puzzle-store";
+import { usePuzzleStore } from "@/store/puzzle-store";
 
 interface UsePuzzleGeneratorOptions<T> {
   parseWords: (text: string) => { word: string; clue: string }[] | null;

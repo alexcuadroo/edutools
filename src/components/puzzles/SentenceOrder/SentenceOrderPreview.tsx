@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo } from "react";
-import Card from "../../ui/Card";
-import ShareModal from "../../ui/ShareModal";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateSentenceOrderPDF } from "../../../lib/pdf/sentence-order";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { sentenceOrderResultToPlayData } from "../../../lib/share/types";
+import Card from "@/components/ui/Card";
+import ShareModal from "@/components/ui/ShareModal";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateSentenceOrderPDF } from "@/lib/pdf/sentence-order";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { sentenceOrderResultToPlayData } from "@/lib/share/types";
 import { Eye, RotateCcw, ChevronLeft, ChevronRight, Check, X, Share2, Loader2 } from "lucide-react";
-import type { SentenceOrderSentence, SentenceOrderResult } from "../../../lib/puzzles/sentence-order/types";
+import type { SentenceOrderSentence, SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import { toast } from "react-toastify";
 
 type SentenceStatus = "pending" | "correct" | "incorrect";

@@ -1,6 +1,6 @@
-import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "../types";
-import type { SentenceOrderResult } from "./types";
-import { shuffle } from "../../utils";
+import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
+import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
+import { shuffle } from "@/lib/utils";
 
 class SentenceOrderGenerator implements IPuzzleGenerator {
   id = "sentence-order" as const;

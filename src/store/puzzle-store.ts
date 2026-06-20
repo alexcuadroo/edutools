@@ -1,13 +1,13 @@
 import { create } from "zustand";
-import type { WordItem } from "../lib/puzzles/shared-types";
-import type { WSGrid } from "../lib/puzzles/word-search/types";
-import type { CWGrid } from "../lib/puzzles/crossword/types";
-import type { FillBlanksResult } from "../lib/puzzles/fill-blanks/types";
-import type { HangmanResult } from "../lib/puzzles/hangman/types";
-import type { AnagramResult } from "../lib/puzzles/anagram/types";
-import type { SentenceOrderResult } from "../lib/puzzles/sentence-order/types";
-import type { MCResult } from "../lib/puzzles/match-columns/types";
-import type { MemoryResult } from "../lib/puzzles/memory/types";
+import type { WordItem } from "@/lib/puzzles/shared-types";
+import type { WSGrid } from "@/lib/puzzles/word-search/types";
+import type { CWGrid } from "@/lib/puzzles/crossword/types";
+import type { FillBlanksResult } from "@/lib/puzzles/fill-blanks/types";
+import type { HangmanResult } from "@/lib/puzzles/hangman/types";
+import type { AnagramResult } from "@/lib/puzzles/anagram/types";
+import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
+import type { MCResult } from "@/lib/puzzles/match-columns/types";
+import type { MemoryResult } from "@/lib/puzzles/memory/types";
 
 interface PuzzleState {
   wordSearchTitle: string;

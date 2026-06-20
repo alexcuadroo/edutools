@@ -1,5 +1,5 @@
-import type { MCResult } from "../puzzles/match-columns/types";
-import { sanitizeFilename } from "../utils";
+import type { MCResult } from "@/lib/puzzles/match-columns/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 export async function generateMatchColumnsPDF(
   result: MCResult,

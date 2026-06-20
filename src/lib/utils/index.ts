@@ -1,2 +1,2 @@
-export { shuffle } from "./shuffle";
-export { sanitizeFilename } from "./sanitize-filename";
+export { shuffle } from "@/lib/utils/shuffle";
+export { sanitizeFilename } from "@/lib/utils/sanitize-filename";

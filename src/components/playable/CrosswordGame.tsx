@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { RotateCcw, CheckCircle, XCircle } from "lucide-react";
-import type { PlayableCWWord } from "../../lib/share/types";
+import type { PlayableCWWord } from "@/lib/share/types";
 
 interface CrosswordGameProps {
   grid: (string | null)[][];

@@ -1,4 +1,4 @@
-import type { IPuzzleGenerator, PuzzleType } from "./types";
+import type { IPuzzleGenerator, PuzzleType } from "@/lib/puzzles/types";
 
 const registry = new Map<PuzzleType, IPuzzleGenerator>();
 

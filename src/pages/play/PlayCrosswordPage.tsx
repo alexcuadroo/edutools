@@ -1,13 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
-import CrosswordGame from "../../components/playable/CrosswordGame";
+import CrosswordGame from "@/components/playable/CrosswordGame";
 import {
   type CWPlayData,
   playDataToCWWords,
   playDataToCWNumbers,
-} from "../../lib/share/types";
-import { usePuzzleLoader } from "../../hooks/usePuzzleLoader";
-import { useAttemptCounter } from "../../hooks/useAttemptCounter";
+} from "@/lib/share/types";
+import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
+import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 
 export default function PlayCrosswordPage() {
   const { id } = useParams<{ id: string }>();

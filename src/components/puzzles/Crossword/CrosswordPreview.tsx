@@ -1,13 +1,13 @@
 import { useState } from "react";
-import Card from "../../ui/Card";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateCrosswordPDF } from "../../../lib/pdf/crossword";
-import { downloadCrosswordPNG } from "../../../lib/png/crossword";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import ShareModal from "../../ui/ShareModal";
+import Card from "@/components/ui/Card";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateCrosswordPDF } from "@/lib/pdf/crossword";
+import { downloadCrosswordPNG } from "@/lib/png/crossword";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import ShareModal from "@/components/ui/ShareModal";
 import { Eye, Share2, Loader2 } from "lucide-react";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { cwGridToPlayData } from "../../../lib/share/types";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { cwGridToPlayData } from "@/lib/share/types";
 import { toast } from "react-toastify";
 
 export default function CrosswordPreview() {

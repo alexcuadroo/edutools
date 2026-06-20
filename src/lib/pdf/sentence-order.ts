@@ -1,5 +1,5 @@
-import type { SentenceOrderResult } from "../puzzles/sentence-order/types";
-import { sanitizeFilename } from "../utils";
+import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 export async function generateSentenceOrderPDF(
   result: SentenceOrderResult,

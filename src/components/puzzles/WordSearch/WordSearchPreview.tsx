@@ -1,15 +1,15 @@
 import { useState } from "react";
-import Card from "../../ui/Card";
-import type { WSGrid, WSWordPlacement } from "../../../lib/puzzles/word-search/types";
-import { WS_DIRECTION_LABELS, type WSDirection } from "../../../lib/puzzles/word-search/types";
-import { usePuzzleStore } from "../../../store/puzzle-store";
-import { generateWordSearchPDF } from "../../../lib/pdf/word-search";
-import { downloadWordSearchPNG } from "../../../lib/png/word-search";
-import DownloadDropdown from "../../ui/DownloadDropdown";
-import ShareModal from "../../ui/ShareModal";
+import Card from "@/components/ui/Card";
+import type { WSGrid, WSWordPlacement } from "@/lib/puzzles/word-search/types";
+import { WS_DIRECTION_LABELS, type WSDirection } from "@/lib/puzzles/word-search/types";
+import { usePuzzleStore } from "@/store/puzzle-store";
+import { generateWordSearchPDF } from "@/lib/pdf/word-search";
+import { downloadWordSearchPNG } from "@/lib/png/word-search";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
+import ShareModal from "@/components/ui/ShareModal";
 import { Eye, Share2, Loader2 } from "lucide-react";
-import { savePuzzle, buildPlayUrl } from "../../../lib/share/api";
-import { wsGridToPlayData } from "../../../lib/share/types";
+import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
+import { wsGridToPlayData } from "@/lib/share/types";
 import { toast } from "react-toastify";
 
 function getSolutionCells(grid: WSGrid): Set<string> {

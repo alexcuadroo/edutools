@@ -1,7 +1,7 @@
 import { Link } from "lucide-react";
-import MatchColumnsInput from "../components/puzzles/MatchColumns/MatchColumnsInput";
-import MatchColumnsPreview from "../components/puzzles/MatchColumns/MatchColumnsPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import MatchColumnsInput from "@/components/puzzles/MatchColumns/MatchColumnsInput";
+import MatchColumnsPreview from "@/components/puzzles/MatchColumns/MatchColumnsPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function MatchColumnsPage() {
   return (

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
-import WordSearchInput from "../components/puzzles/WordSearch/WordSearchInput";
-import WordSearchPreview from "../components/puzzles/WordSearch/WordSearchPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import WordSearchInput from "@/components/puzzles/WordSearch/WordSearchInput";
+import WordSearchPreview from "@/components/puzzles/WordSearch/WordSearchPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function WordSearchPage() {
   return (

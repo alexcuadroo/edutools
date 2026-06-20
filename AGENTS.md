@@ -57,6 +57,7 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 - Archivos de páginas: `*Page.tsx` en `src/pages/`
 - Archivos de componentes: PascalCase en `src/components/`
 - Lógica de puzzles: `src/lib/puzzles/<nombre>/generator.ts`
+- **Imports con alias `@/`**: usar `@/` en vez de rutas relativas (`../../../`). Ej: `import { foo } from "@/lib/utils"` en lugar de `import { foo } from "../../../lib/utils"`. Configurado en `tsconfig.app.json` (paths) y `vite.config.ts` (resolve.alias).
 
 ## Estructura
 

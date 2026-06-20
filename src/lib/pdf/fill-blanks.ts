@@ -1,5 +1,5 @@
-import type { FillBlanksResult } from "../puzzles/fill-blanks/types";
-import { sanitizeFilename } from "../utils";
+import type { FillBlanksResult } from "@/lib/puzzles/fill-blanks/types";
+import { sanitizeFilename } from "@/lib/utils";
 
 function drawText(
   pdf: InstanceType<typeof import("jspdf").default>,

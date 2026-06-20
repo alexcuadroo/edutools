@@ -1,7 +1,7 @@
 import { Shuffle } from "lucide-react";
-import AnagramInput from "../components/puzzles/Anagram/AnagramInput";
-import AnagramPreview from "../components/puzzles/Anagram/AnagramPreview";
-import PuzzlePageLayout from "../components/layout/PuzzlePageLayout";
+import AnagramInput from "@/components/puzzles/Anagram/AnagramInput";
+import AnagramPreview from "@/components/puzzles/Anagram/AnagramPreview";
+import PuzzlePageLayout from "@/components/layout/PuzzlePageLayout";
 
 export default function AnagramPage() {
   return (
