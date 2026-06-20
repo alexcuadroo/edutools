@@ -16,13 +16,24 @@ interface MemoryGameProps {
   onAttemptIncrement?: () => void;
 }
 
-export default function MemoryGame({ cards, pairs, onAttemptIncrement }: MemoryGameProps) {
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j]!, a[i]!];
+  }
+  return a;
+}
+
+export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemptIncrement }: MemoryGameProps) {
+  const [shuffledCards, setShuffledCards] = useState(() => shuffleArray(cards));
   const [flipped, setFlipped] = useState<Set<string>>(new Set());
   const [matched, setMatched] = useState<Set<number>>(new Set());
   const [firstCard, setFirstCard] = useState<MemoryCard | null>(null);
   const [moves, setMoves] = useState(0);
   const [disabled, setDisabled] = useState(false);
-  const [celebration, setCelebration] = useState(false);
+
+  const isComplete = matched.size === pairs.length;
 
   const handleCardClick = useCallback((card: MemoryCard) => {
     if (disabled) return;
@@ -44,10 +55,6 @@ export default function MemoryGame({ cards, pairs, onAttemptIncrement }: MemoryG
       newMatched.add(card.pairId);
       setMatched(newMatched);
       setFirstCard(null);
-
-      if (newMatched.size === pairs.length) {
-        setTimeout(() => setCelebration(true), 500);
-      }
     } else {
       setDisabled(true);
       const firstId = firstCard.id;
@@ -63,31 +70,63 @@ export default function MemoryGame({ cards, pairs, onAttemptIncrement }: MemoryG
         setDisabled(false);
       }, 800);
     }
-  }, [disabled, flipped, matched, firstCard, pairs.length]);
+  }, [disabled, flipped, matched, firstCard]);
 
   const handleReset = useCallback(() => {
+    setShuffledCards(shuffleArray(cards));
     setFlipped(new Set());
     setMatched(new Set());
     setFirstCard(null);
     setMoves(0);
     setDisabled(false);
-    setCelebration(false);
     onAttemptIncrement?.();
-  }, [onAttemptIncrement]);
+  }, [cards, onAttemptIncrement]);
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-sm font-medium">
+      {title && (
+        <h1 className="text-xl font-bold text-gray-900 text-center">{title}</h1>
+      )}
+
+      <div className="flex flex-wrap justify-center items-center gap-3 mb-2">
+        <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
           Movimientos: {moves}
-        </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium">
+        </span>
+        <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
           Pares: {matched.size}/{pairs.length}
-        </div>
+        </span>
+        {attemptCount !== undefined && (
+          <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+            Intento #{attemptCount}
+          </span>
+        )}
+        <button
+          onClick={handleReset}
+          className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Reiniciar
+        </button>
       </div>
 
+      {isComplete && (
+        <div className="text-center py-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+          <Trophy className="w-8 h-8 text-amber-500 mx-auto mb-2" />
+          <p className="text-lg font-bold text-green-700">Felicidades!</p>
+          <p className="text-sm text-green-600 mb-3">
+            Encontraste todos los pares en {moves} movimientos
+          </p>
+          <button
+            onClick={handleReset}
+            className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+          >
+            Jugar de nuevo
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {cards.map((card) => {
+        {shuffledCards.map((card) => {
           const isFlipped = flipped.has(card.id) || matched.has(card.pairId);
           const isMatched = matched.has(card.pairId);
 
@@ -134,36 +173,6 @@ export default function MemoryGame({ cards, pairs, onAttemptIncrement }: MemoryG
           );
         })}
       </div>
-
-      {celebration && (
-        <div className="text-center space-y-3 py-4">
-          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-50 text-emerald-700 font-medium">
-            <Trophy className="w-5 h-5" />
-            Felicidades!
-          </div>
-          <p className="text-sm text-gray-600">
-            Encontraste todos los pares en {moves} movimientos
-          </p>
-          <button
-            onClick={handleReset}
-            className="text-sm text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
-          >
-            Jugar de nuevo
-          </button>
-        </div>
-      )}
-
-      {!celebration && (
-        <div className="text-center">
-          <button
-            onClick={handleReset}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Reiniciar
-          </button>
-        </div>
-      )}
     </div>
   );
 }
