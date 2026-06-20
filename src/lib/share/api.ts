@@ -36,9 +36,11 @@ export async function loadPuzzle(id: string): Promise<PuzzlePayload> {
     throw new Error(error.error || `Error ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  return data as PuzzlePayload;
 }
 
-export function buildPlayUrl(puzzleType: string, id: string): string {
-  return `${window.location.origin}/jugar/${puzzleType}/${id}`;
+export function buildPlayUrl(puzzleType: string, id: string, origin?: string): string {
+  const base = origin ?? window.location.origin;
+  return `${base}/jugar/${puzzleType}/${id}`;
 }
