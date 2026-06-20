@@ -43,7 +43,7 @@ function getDistractors(wordLength: number, exclude: string[], count: number): s
   const pool = DISTRACTORS[normalizedLength] || DISTRACTORS[5];
   const excludeLower = exclude.map((w) => w.toLowerCase());
 
-  const available = pool.filter((w) => !excludeLower.includes(w.toLowerCase()));
+  const available = (pool ?? []).filter((w) => !excludeLower.includes(w.toLowerCase()));
   return shuffle(available).slice(0, count);
 }
 

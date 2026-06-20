@@ -7,7 +7,7 @@ export function useAttemptCounter(puzzleType: string, hash: string) {
     let current = 0;
     try {
       const stored = localStorage.getItem(key);
-      current = stored ? parseInt(stored, 10) : 0;
+      current = stored ? (Number(stored) || 0) : 0;
     } catch {
       // ignore
     }
