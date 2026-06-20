@@ -29,6 +29,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
+    const contentLength = context.request.headers.get("Content-Length");
+    if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_SIZE) {
+      return Response.json(
+        { error: "Payload demasiado grande (max 100KB)" },
+        { status: 413, headers: corsHeaders }
+      );
+    }
+
     let body: unknown;
     try {
       body = await context.request.json();
