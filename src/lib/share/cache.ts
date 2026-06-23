@@ -1,4 +1,4 @@
-const CACHE_PREFIX = "puzzle-id:";
+  const CACHE_PREFIX = "puzzle-id:";
 const MAX_ENTRIES = 200;
 
 interface CacheEntry {
