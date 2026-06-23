@@ -68,7 +68,7 @@ export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemp
         });
         setFirstCard(null);
         setDisabled(false);
-      }, 800);
+      }, 1200);
     }
   }, [disabled, flipped, matched, firstCard]);
 
