@@ -12,6 +12,7 @@ const ALLOWED_TYPES = [
   "match-columns",
   "memory",
 ] as const;
+const ID_PATTERN = /^[a-f0-9]{8}$/;
 
 function generateShortId(): string {
   return crypto.randomUUID().replace(/-/g, "").substring(0, 8);
@@ -87,13 +88,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const id = generateShortId();
+    const clientId = typeof data.id === "string" ? data.id : "";
+    const id = clientId && ID_PATTERN.test(clientId) ? clientId : generateShortId();
+
+    const existing = await context.env.PUZZLES.get(id);
+    if (existing) {
+      return Response.json({ id, cached: true }, { status: 200, headers: corsHeaders });
+    }
 
     await context.env.PUZZLES.put(id, jsonString, {
       expirationTtl: 60 * 60 * 24,
     });
 
-    return Response.json({ id }, { status: 201, headers: corsHeaders });
+    return Response.json({ id, cached: false }, { status: 201, headers: corsHeaders });
   } catch (err) {
     console.error("Error creating puzzle:", err);
     return Response.json(
