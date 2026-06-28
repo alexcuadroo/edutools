@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers } from "lucide-react";
+import UserMenu from "@/components/auth/UserMenu";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
@@ -101,6 +102,8 @@ export default function Header() {
                 </div>
               </div>
             )}
+
+            <UserMenu />
           </div>
 
           <button
@@ -178,6 +181,12 @@ export default function Header() {
                 </Link>
               );
             })}
+
+            <div className="border-t border-gray-100 my-2" />
+
+            <div className="px-4 py-3">
+              <UserMenu variant="mobile" />
+            </div>
           </div>
         </nav>
       </div>

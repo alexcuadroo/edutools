@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import Card from "@/components/ui/Card";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { generateSentenceOrderPDF } from "@/lib/pdf/sentence-order";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
@@ -17,7 +18,7 @@ interface SentenceState {
   status: SentenceStatus;
 }
 
-function SentenceOrderGame({ result, title, onShare, sharing }: { result: SentenceOrderResult; title: string; onShare?: () => void; sharing?: boolean }) {
+function SentenceOrderGame({ result, title, onShare, sharing, saveButton }: { result: SentenceOrderResult; title: string; onShare?: () => void; sharing?: boolean; saveButton?: React.ReactNode }) {
   const { sentences } = result;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -110,6 +111,7 @@ function SentenceOrderGame({ result, title, onShare, sharing }: { result: Senten
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
           <div className="flex items-center gap-3">
+            {saveButton}
             {onShare && (
               <button
                 onClick={onShare}
@@ -337,6 +339,13 @@ export default function SentenceOrderPreview() {
         title={sentenceOrderTitle}
         onShare={handleShare}
         sharing={sharing}
+        saveButton={
+          <SavePuzzleButton
+            type="sentence-order"
+            title={sentenceOrderTitle || "Ordenar Oración"}
+            data={sentenceOrderResultToPlayData(sentenceOrderResult, sentenceOrderTitle)}
+          />
+        }
       />
       {shareOpen && shareUrl && (
         <ShareModal

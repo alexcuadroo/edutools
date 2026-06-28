@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X, Copy, Check, Share2, Hash } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "react-toastify";
@@ -98,7 +99,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
     };
   }, []);
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -110,7 +111,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
     >
       <div
         ref={dialogRef}
-        className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-zoom-in animate-duration-200"
       >
         <button
           onClick={onClose}
@@ -207,6 +208,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
           Compartí el código o el link para jugar
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

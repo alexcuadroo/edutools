@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Card from "@/components/ui/Card";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { generateMatchColumnsPDF } from "@/lib/pdf/match-columns.ts";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
@@ -40,6 +41,11 @@ export default function MatchColumnsPreview() {
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
           <div className="flex items-center gap-3">
+            <SavePuzzleButton
+              type="match-columns"
+              title={matchColumnsTitle || "Relacionar Columnas"}
+              data={matchColumnsResultToPlayData(matchColumnsResult, matchColumnsTitle)}
+            />
             <button
               onClick={handleShare}
               disabled={sharing}

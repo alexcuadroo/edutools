@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import AnagramGame from "@/components/playable/AnagramGame";
 import { loadPuzzle } from "@/lib/share/api";
+import { slugToPuzzleType, puzzleTypeSlug } from "@/lib/puzzles/slugs";
 
 const DEMO_ANAGRAM = {
   words: [
@@ -13,17 +14,6 @@ const DEMO_ANAGRAM = {
     },
   ],
   title: "Ejemplo de Anagrama",
-};
-
-const PUZZLE_TYPE_ROUTES: Record<string, string> = {
-  "word-search": "sopa-de-letras",
-  "crossword": "crucigrama",
-  "fill-blanks": "rellenar-huecos",
-  "hangman": "adivina-la-palabra",
-  "anagram": "anagrama",
-  "sentence-order": "ordenar-oracion",
-  "match-columns": "relacionar-columnas",
-  "memory": "memoria",
 };
 
 export default function PlayHubPage() {
@@ -50,11 +40,11 @@ export default function PlayHubPage() {
     setLoading(true);
     try {
       const data = await loadPuzzle(normalizedCode);
-      const route = PUZZLE_TYPE_ROUTES[data.type];
-      if (!route) {
+      if (!slugToPuzzleType(data.type)) {
         setError("Tipo de puzzle no reconocido");
         return;
       }
+      const route = puzzleTypeSlug(data.type);
       navigate(`/jugar/${route}/${normalizedCode}`);
     } catch {
       setError("Puzzle no encontrado. Verificá el código e intentá de nuevo.");

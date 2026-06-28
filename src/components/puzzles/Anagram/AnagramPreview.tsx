@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import Card from "@/components/ui/Card";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { generateAnagramPDF } from "@/lib/pdf/anagram";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
@@ -17,7 +18,7 @@ interface WordState {
   status: WordStatus;
 }
 
-function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResult; title: string; onShare?: () => void; sharing?: boolean }) {
+function AnagramGame({ result, title, onShare, sharing, saveButton }: { result: AnagramResult; title: string; onShare?: () => void; sharing?: boolean; saveButton?: React.ReactNode }) {
   const { words } = result;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -89,6 +90,7 @@ function AnagramGame({ result, title, onShare, sharing }: { result: AnagramResul
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
           <div className="flex items-center gap-3">
+            {saveButton}
             {onShare && (
               <button
                 onClick={onShare}
@@ -314,6 +316,13 @@ export default function AnagramPreview() {
         title={anagramTitle}
         onShare={handleShare}
         sharing={sharing}
+        saveButton={
+          <SavePuzzleButton
+            type="anagram"
+            title={anagramTitle || "Anagrama"}
+            data={anagramResultToPlayData(anagramResult, anagramTitle)}
+          />
+        }
       />
       {shareOpen && shareUrl && (
         <ShareModal

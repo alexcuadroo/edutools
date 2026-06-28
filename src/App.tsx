@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import PlayableLayout from "@/components/layout/PlayableLayout";
@@ -10,6 +11,12 @@ import AnagramPage from "@/pages/AnagramPage";
 import SentenceOrderPage from "@/pages/SentenceOrderPage";
 import MatchColumnsPage from "@/pages/MatchColumnsPage";
 import MemoryPage from "@/pages/MemoryPage";
+import LoginPage from "@/pages/LoginPage";
+import SignupPage from "@/pages/SignupPage";
+import VerifyPage from "@/pages/VerifyPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import MyPuzzlesPage from "@/pages/MyPuzzlesPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import PlayHubPage from "@/pages/play/PlayHubPage";
 import PlayWordSearchPage from "@/pages/play/PlayWordSearchPage";
@@ -22,6 +29,7 @@ import PlayMatchColumnsPage from "@/pages/play/PlayMatchColumnsPage";
 import PlayMemoryPage from "@/pages/play/PlayMemoryPage";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
+import { useAuthStore } from "@/store/auth-store";
 import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "@/lib/puzzles/crossword/generator";
 import { fillBlanksGenerator } from "@/lib/puzzles/fill-blanks/generator";
@@ -50,6 +58,12 @@ function initPuzzles() {
 initPuzzles();
 
 export default function App() {
+  const checkSession = useAuthStore((s) => s.checkSession);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
   return (
     <ErrorBoundary>
       <BrowserRouter>
@@ -65,6 +79,12 @@ export default function App() {
             <Route path="/ordenar-oracion" element={<SentenceOrderPage />} />
             <Route path="/relacionar-columnas" element={<MatchColumnsPage />} />
             <Route path="/memoria" element={<MemoryPage />} />
+            <Route path="/iniciar-sesion" element={<LoginPage />} />
+            <Route path="/crear-cuenta" element={<SignupPage />} />
+            <Route path="/verificar" element={<VerifyPage />} />
+            <Route path="/recuperar-cuenta" element={<ForgotPasswordPage />} />
+            <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
+            <Route path="/mis-puzzles" element={<MyPuzzlesPage />} />
           </Route>
           <Route element={<PlayableLayout />}>
             <Route path="/jugar" element={<PlayHubPage />} />
