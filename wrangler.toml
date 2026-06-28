@@ -4,7 +4,6 @@ pages_build_output_dir = "dist"
 
 [vars]
 ENVIRONMENT = "production"
-RESEND_API_KEY = ""
 
 [[kv_namespaces]]
 binding = "PUZZLES"
