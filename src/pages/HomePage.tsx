@@ -3,7 +3,6 @@ import {
   LetterText,
   Crosshair,
   Zap,
-  Lock,
   FileDown,
   Heart,
   ArrowRight,
@@ -11,9 +10,12 @@ import {
   Shuffle,
   ListOrdered,
   Smartphone,
-  Sparkles,
+  Gamepad2,
   Link2,
   Layers,
+  Bookmark,
+  Share2,
+  Puzzle,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -63,7 +65,7 @@ const PUZZLES = [
     path: "/relacionar-columnas",
     title: "Relacionar Columnas",
     description:
-      "Genera juegos de relacionar palabras con sus definiciones. Dos columnas para emparejar por连线.",
+      "Genera juegos de relacionar palabras con sus definiciones. Dos columnas para emparejar correctamente.",
     icon: Link2,
   },
   {
@@ -82,19 +84,19 @@ const FEATURES = [
     description: "Genera puzzles en segundos, sin esperas.",
   },
   {
-    icon: Lock,
-    title: "Sin registro",
-    description: "Usa la herramienta directamente, sin crear cuenta.",
+    icon: Bookmark,
+    title: "Guarda tus puzzles",
+    description: "Con una cuenta gratuita, conservá tus puzzles para reutilizarlos.",
   },
   {
     icon: FileDown,
     title: "Descarga en PDF",
-    description: "Exporta listo para imprimir y usar en clase.",
+    description: "Exportá listo para imprimir y usar en clase.",
   },
   {
     icon: Smartphone,
     title: "Jugar online",
-    description: "Comparte un link para jugar desde cualquier dispositivo.",
+    description: "Compartí un link para jugar desde cualquier dispositivo.",
   },
 ];
 
@@ -108,8 +110,8 @@ export default function HomePage() {
           <span className="gradient-text">Educativos</span>
         </h1>
         <p className="text-gray-500 text-lg max-w-md mx-auto mb-8">
-          Crea puzzles educativos e imprímelos en PDF o compártelos como juegos digitales interactivos. Sin
-          registro, sin limites.
+          Creá puzzles educativos, imprimilos en PDF o compartilos como juegos interactivos.{" "}
+          <span className="font-medium text-gray-700">100% gratis</span>, registro opcional para guardar tus puzzles.
         </p>
         <Link
           to="/sopa-de-letras"
@@ -148,18 +150,27 @@ export default function HomePage() {
 
       <div className="max-w-4xl mx-auto mb-20">
         <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-indigo-50 to-white border border-indigo-200 p-8 sm:p-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span>Nuevo</span>
-            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
+              <Gamepad2 className="w-4 h-4" />
+              <span>Puzzles digitales</span>
+            </div>
+            <span className="animate-beta-pulse px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
               BETA
             </span>
+            <Link
+              to="/mis-puzzles"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium border border-emerald-200 hover:bg-emerald-100 transition-colors no-underline"
+            >
+              <Bookmark className="w-3.5 h-3.5" />
+              Guarda tus puzzles
+            </Link>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Puzzles Digitales para Jugar
           </h2>
           <p className="text-gray-500 mb-6 max-w-2xl">
-            Comparte un link con tus estudiantes y permite que jueguen desde su celular o computadora.
+            Compartí un link con tus estudiantes y permití que jueguen desde su celular o computadora. Sin instalar nada.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -172,6 +183,47 @@ export default function HomePage() {
             <span className="text-xs text-gray-400">
               Función en desarrollo · Puede contener errores
             </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto mb-20">
+        <h2 className="text-center text-sm font-semibold text-gray-400 uppercase tracking-wider mb-8">
+          ¿Cómo funciona?
+        </h2>
+        <div className="grid sm:grid-cols-3 gap-5 stagger-children">
+          <div className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-200">
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-4">
+              <Puzzle className="w-6 h-6 text-indigo-600" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-900 mb-1">
+              1. Generá
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Elegí el tipo de puzzle y completá los datos. Todo en segundos.
+            </p>
+          </div>
+          <div className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-200">
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-4">
+              <Bookmark className="w-6 h-6 text-indigo-600" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-900 mb-1">
+              2. Guardá
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Con tu cuenta gratuita, conservá el puzzle para volver cuando quieras.
+            </p>
+          </div>
+          <div className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-200">
+            <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-4">
+              <Share2 className="w-6 h-6 text-indigo-600" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-900 mb-1">
+              3. Compartí
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Enviá el link o descargá el PDF listo para imprimir y usar en clase.
+            </p>
           </div>
         </div>
       </div>
