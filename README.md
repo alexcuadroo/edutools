@@ -27,6 +27,8 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 | Adivina la palabra | `/adivina-la-palabra` | `/jugar/adivina-la-palabra/:id` |
 | Anagrama | `/anagrama` | `/jugar/anagrama/:id` |
 | Ordenar oración | `/ordenar-oracion` | `/jugar/ordenar-oracion/:id` |
+| Relacionar columnas | `/relacionar-columnas` | `/jugar/relacionar-columnas/:id` |
+| Memoria | `/memoria` | `/jugar/memoria/:id` |
 
 ## Instalación
 
@@ -47,10 +49,16 @@ Levanta el servidor en `http://localhost:5173`.
 ### Frontend + API local (con KV)
 
 ```bash
-pnpm build && pnpx wrangler pages dev dist --kv=PUZZLES
+pnpm build && pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
-Levanta el servidor en `http://127.0.0.1:8788` con las Pages Functions y KV namespace local.
+Levanta el servidor en `http://127.0.0.1:8788` con las Pages Functions y KV namespaces locales.
+
+Para probar el flujo completo de autenticación (envío de emails), necesitás configurar `RESEND_API_KEY` como variable de entorno:
+
+```bash
+pnpm build && RESEND_API_KEY=tu_key_aqui pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+```
 
 ## Build
 
@@ -70,15 +78,16 @@ pnpm lint
 
 ```
 src/
-├── App.tsx                    # Router y registro de puzzles
+├── App.tsx                    # Router, registro de puzzles y checkSession
 ├── main.tsx                   # Entry point
 ├── index.css                  # Estilos globales (Tailwind)
 ├── components/
 │   ├── layout/                # Header, Layout, PuzzlePageLayout, PlayableLayout
 │   ├── playable/              # Componentes de juegos interactivos
 │   ├── puzzles/               # Previews y inputs de cada puzzle
+│   ├── auth/                  # UserMenu, SavePuzzleButton
 │   └── ui/                    # Button, PageHeader, DownloadDropdown, ShareModal
-├── hooks/                     # Custom hooks (useAttemptCounter)
+├── hooks/                     # Custom hooks (useAuth, usePuzzleLoader, etc.)
 ├── lib/
 │   ├── puzzles/               # Generadores de cada puzzle
 │   ├── pdf/                   # Generación de PDFs
@@ -86,14 +95,25 @@ src/
 │   └── share/                 # api.ts (savePuzzle/loadPuzzle) + types.ts
 ├── pages/
 │   ├── HomePage.tsx           # Landing page
+│   ├── LoginPage.tsx          # Inicio de sesión
+│   ├── SignupPage.tsx         # Registro de cuenta
+│   ├── VerifyPage.tsx         # Verificación de email
+│   ├── ForgotPasswordPage.tsx # Recuperar contraseña
+│   ├── ResetPasswordPage.tsx  # Nueva contraseña
+│   ├── MyPuzzlesPage.tsx      # Mis puzzles guardados
 │   ├── play/                  # Páginas jugables (/jugar/*)
 │   └── NotFoundPage.tsx
-└── store/                     # Zustand stores
+└── store/                     # Zustand stores (auth-store, saved-puzzles-store, puzzle-store)
 
 functions/
-└── api/puzzles/
-    ├── index.ts               # POST /api/puzzles (crear puzzle)
-    └── [id].ts                # GET /api/puzzles/:id (obtener puzzle)
+├── api/
+│   ├── auth/                  # signup, login, logout, me, verify, forgot, reset
+│   └── puzzles/
+│       ├── index.ts           # POST /api/puzzles (crear puzzle)
+│       ├── [id].ts            # GET /api/puzzles/:id (obtener puzzle)
+│       ├── saved.ts           # GET /api/puzzles/saved, POST /api/puzzles/save
+│       └── saved/[id].ts      # GET/DELETE /api/puzzles/saved/:id, POST share
+└── lib/                       # Helpers (auth, email, rate-limit, types, validation, puzzle-id)
 
 public/
 ├── _redirects                 # SPA routing (/* → /index.html 200)
@@ -114,6 +134,18 @@ public/
 | `/adivina-la-palabra` | Generador de ahorcado |
 | `/anagrama` | Generador de anagrama |
 | `/ordenar-oracion` | Generador de ordenar oración |
+| `/relacionar-columnas` | Generador de relacionar columnas |
+| `/memoria` | Generador de memoria |
+
+### Autenticación
+| Ruta | Página |
+|------|--------|
+| `/login` | Inicio de sesión |
+| `/signup` | Registro de cuenta |
+| `/verificar` | Verificación de email |
+| `/forgot` | Recuperar contraseña |
+| `/reset-password` | Nueva contraseña |
+| `/mis-puzzles` | Mis puzzles guardados |
 
 ### Juegos digitales
 | Ruta | Descripción |
@@ -125,13 +157,36 @@ public/
 | `/jugar/adivina-la-palabra/:id` | Ahorcado jugable |
 | `/jugar/anagrama/:id` | Anagrama jugable |
 | `/jugar/ordenar-oracion/:id` | Ordenar oración jugable |
+| `/jugar/relacionar-columnas/:id` | Relacionar columnas jugable |
+| `/jugar/memoria/:id` | Memoria jugable |
 
 ## API Endpoints (Pages Functions)
 
+### Puzzles compartidos (anónimos)
 | Method | Path | Descripción |
 |--------|------|-------------|
 | POST | `/api/puzzles` | Crear puzzle (body: `{ type, puzzle }`) → retorna `{ id }` |
 | GET | `/api/puzzles/:id` | Obtener puzzle → retorna `{ type, puzzle }` o 404 |
+
+### Autenticación
+| Method | Path | Descripción |
+|--------|------|-------------|
+| POST | `/api/auth/signup` | Crear cuenta (body: `{ email, password, displayName? }`) |
+| POST | `/api/auth/login` | Iniciar sesión (body: `{ email, password }`) |
+| POST | `/api/auth/logout` | Cerrar sesión |
+| GET | `/api/auth/me` | Obtener usuario autenticado |
+| GET | `/api/auth/verify` | Verificar email (query: `?token=xxx`) |
+| POST | `/api/auth/forgot` | Solicitar reset de contraseña (body: `{ email }`) |
+| POST | `/api/auth/reset` | Resetear contraseña (body: `{ token, newPassword }`) |
+
+### Puzzles guardados (requiere autenticación)
+| Method | Path | Descripción |
+|--------|------|-------------|
+| POST | `/api/puzzles/save` | Guardar puzzle (body: `{ type, title, data }`) |
+| GET | `/api/puzzles/saved` | Listar puzzles guardados del usuario |
+| GET | `/api/puzzles/saved/:id` | Obtener puzzle guardado |
+| DELETE | `/api/puzzles/saved/:id` | Eliminar puzzle guardado |
+| POST | `/api/puzzles/saved/:id/share` | Compartir puzzle guardado |
 
 ## Funcionalidades
 
@@ -141,6 +196,13 @@ public/
 - Exportación a PNG
 - Previsualización interactiva antes de descargar
 
+### Cuentas de usuario
+- Registro con verificación por email
+- Inicio/cierre de sesión
+- Recuperación de contraseña
+- Puzzles guardados persistentes en la cuenta del usuario
+- Listado y gestión de puzzles guardados
+
 ### Juegos digitales compartibles
 - **IDs cortos** (8 caracteres) para URLs limpias y compartibles
 - **Backend en Cloudflare**: Pages Functions + KV para almacenamiento
@@ -148,7 +210,7 @@ public/
 - **Código de puzzle**: los alumnos pueden ingresar solo el código en `/jugar`
 - **Expiración automática**: los puzzles expiran en 1 día (24 horas)
 - Contador de intentos por puzzle en localStorage
-- Sin login ni almacenamiento de datos de estudiantes
+- Sin datos personales de estudiantes
 - Case-insensitive: `F3D78213` y `f3d78213` funcionan igual
 
 ### Flujo de compartir
@@ -159,6 +221,12 @@ public/
    - Escanear el QR
    - Copiar el link completo
    - Ingresar solo el código en `/jugar`
+
+### Flujo de guardar puzzles (usuarios autenticados)
+1. El docente genera el puzzle y hace clic en "Guardar"
+2. El puzzle se guarda en su cuenta (persistente)
+3. Puede acceder a sus puzzles desde `/mis-puzzles`
+4. Puede jugarlos, compartirlos o eliminarlos
 
 ## Agregar un nuevo puzzle
 

@@ -45,8 +45,10 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 - **jsPDF** + **html2canvas** para exportación PDF
 - **React Toastify** para notificaciones
 - **nanoid** para IDs cortos de puzzles
+- **@noble/hashes** para Argon2id (hashing de contraseñas en Workers)
 - **qrcode.react** para generación local de QR
 - **Cloudflare Pages** + **Pages Functions** + **KV** para deploy y API
+- **Resend** para emails transaccionales (verificación, reset de contraseña)
 
 ### Convenciones de código
 
@@ -63,14 +65,15 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 
 ```
 src/
-├── App.tsx              # Router + registro de puzzles (initPuzzles)
+├── App.tsx              # Router + registro de puzzles (initPuzzles) + checkSession
 ├── main.tsx             # Entry point (ReactDOM)
 ├── index.css            # Tailwind imports
 ├── components/
 │   ├── layout/          # Header, Layout, PuzzlePageLayout
 │   ├── ui/              # Button, PageHeader, DownloadDropdown
+│   ├── auth/            # UserMenu, SavePuzzleButton
 │   └── ErrorBoundary.tsx
-├── hooks/               # Custom hooks
+├── hooks/               # Custom hooks (useAuth, usePuzzleLoader, etc.)
 ├── lib/
 │   ├── puzzles/         # Generadores de puzzles
 │   ├── share/           # api.ts (savePuzzle/loadPuzzle) + types.ts
@@ -78,12 +81,17 @@ src/
 │   └── png/             # Exportación PNG
 ├── pages/               # Páginas de la app
 │   └── play/            # Páginas de juego (Play*Page.tsx)
-└── store/               # Zustand stores
+└── store/               # Zustand stores (auth-store, saved-puzzles-store, puzzle-store)
 
 functions/
-└── api/puzzles/
-    ├── index.ts         # POST /api/puzzles (crear puzzle)
-    └── [id].ts          # GET /api/puzzles/:id (obtener puzzle)
+├── api/
+│   ├── auth/            # signup, login, logout, me, verify, forgot, reset
+│   └── puzzles/
+│       ├── index.ts     # POST /api/puzzles (crear puzzle)
+│       ├── [id].ts      # GET /api/puzzles/:id (obtener puzzle)
+│       ├── saved.ts     # GET /api/puzzles/saved (listar), POST /api/puzzles/save
+│       └── saved/[id].ts # GET/DELETE /api/puzzles/saved/:id, POST share
+└── lib/                 # Helpers compartidos (auth, email, rate-limit, types, validation, puzzle-id)
 ```
 
 ## Rutas
@@ -97,12 +105,22 @@ functions/
 | `/adivina-la-palabra` | `HangmanPage` |
 | `/anagrama` | `AnagramPage` |
 | `/ordenar-oracion` | `SentenceOrderPage` |
+| `/relacionar-columnas` | `MatchColumnsPage` |
+| `/memoria` | `MemoryPage` |
+| `/iniciar-sesion` | `LoginPage` |
+| `/crear-cuenta` | `SignupPage` |
+| `/verificar` | `VerifyPage` |
+| `/recuperar-cuenta` | `ForgotPasswordPage` |
+| `/restablecer-contrasena` | `ResetPasswordPage` |
+| `/mis-puzzles` | `MyPuzzlesPage` |
 | `/jugar/sopa-de-letras/:id` | `PlayWordSearchPage` |
 | `/jugar/crucigrama/:id` | `PlayCrosswordPage` |
 | `/jugar/rellenar-huecos/:id` | `PlayFillBlanksPage` |
 | `/jugar/adivina-la-palabra/:id` | `PlayHangmanPage` |
 | `/jugar/anagrama/:id` | `PlayAnagramPage` |
 | `/jugar/ordenar-oracion/:id` | `PlaySentenceOrderPage` |
+| `/jugar/relacionar-columnas/:id` | `PlayMatchColumnsPage` |
+| `/jugar/memoria/:id` | `PlayMemoryPage` |
 | `*` | `NotFoundPage` |
 
 ## API Endpoints (Pages Functions)
@@ -111,6 +129,19 @@ functions/
 |--------|------|-------------|
 | POST | `/api/puzzles` | Crear puzzle (body: `{ type, puzzle }`) → retorna `{ id }` |
 | GET | `/api/puzzles/:id` | Obtener puzzle → retorna `{ type, puzzle }` o 404 |
+| POST | `/api/auth/signup` | Crear cuenta (body: `{ email, password, displayName? }`) |
+| POST | `/api/auth/login` | Iniciar sesión (body: `{ email, password }`) |
+| POST | `/api/auth/logout` | Cerrar sesión |
+| GET | `/api/auth/me` | Obtener usuario autenticado |
+| GET | `/api/auth/verify` | Verificar email (query: `?token=xxx`) |
+| POST | `/api/auth/forgot` | Solicitar reset de contraseña (body: `{ email }`) |
+| POST | `/api/auth/reset` | Resetear contraseña (body: `{ token, newPassword }`) |
+| DELETE | `/api/account` | Eliminar cuenta autenticada (body: `{ confirm: email }`) |
+| POST | `/api/puzzles/save` | Guardar puzzle (body: `{ type, title, data }`) |
+| GET | `/api/puzzles/saved` | Listar puzzles guardados del usuario |
+| GET | `/api/puzzles/saved/:id` | Obtener puzzle guardado |
+| DELETE | `/api/puzzles/saved/:id` | Eliminar puzzle guardado |
+| POST | `/api/puzzles/saved/:id/share` | Compartir puzzle guardado |
 
 ## Agregar un nuevo puzzle
 
@@ -128,7 +159,8 @@ functions/
 - **Build command:** `pnpm build`
 - **Output directory:** `dist`
 - **SPA routing:** `public/_redirects` con `/* /index.html 200`
-- **API:** Pages Functions en `functions/` con KV binding `PUZZLES`
+- **API:** Pages Functions en `functions/` con KV bindings `PUZZLES`, `USERS`, `SESSIONS`
+- **Secrets:** `RESEND_API_KEY` (vía `wrangler secret put`)
 - **SEO:** `robots.txt`, `sitemap.xml`, OpenGraph y Twitter Cards en `index.html`
 - **OG image:** `https://res.cloudinary.com/drfdwvrzc/image/upload/v1780247505/tools-og_tx3eya.png`
 
@@ -136,7 +168,7 @@ functions/
 
 ```bash
 pnpm dev          # Vite dev server (frontend)
-wrangler pages dev dist --binding PUZZLES=puzzles-dev  # Con API + KV local
+wrangler pages dev dist --binding PUZZLES=puzzles-dev --binding USERS=users-dev --binding SESSIONS=sessions-dev  # Con API + KV local
 ```
 
 ### Deploy
