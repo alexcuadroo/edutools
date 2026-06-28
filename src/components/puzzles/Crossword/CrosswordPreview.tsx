@@ -5,6 +5,7 @@ import { generateCrosswordPDF } from "@/lib/pdf/crossword";
 import { downloadCrosswordPNG } from "@/lib/png/crossword";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { Eye, Share2, Loader2 } from "lucide-react";
 import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
 import { cwGridToPlayData } from "@/lib/share/types";
@@ -45,6 +46,11 @@ export default function CrosswordPreview() {
         <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Previsualización</h2>
           <div className="flex items-center gap-2">
+            <SavePuzzleButton
+              type="crossword"
+              title={crosswordTitle || "Crucigrama"}
+              data={cwGridToPlayData(grid, crosswordTitle)}
+            />
             <button
               onClick={handleShare}
               disabled={sharing}

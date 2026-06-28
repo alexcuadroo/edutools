@@ -125,7 +125,7 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
       )}
 
       {celebration && (
-        <div className="text-center py-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="text-center py-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 animate-slide-in-top animate-duration-300">
           <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
           <p className="text-lg font-bold text-green-700">Felicidades!</p>
           <p className="text-sm text-green-600">Encontraste todas las palabras</p>

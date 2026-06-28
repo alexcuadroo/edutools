@@ -4,8 +4,19 @@ pages_build_output_dir = "dist"
 
 [vars]
 ENVIRONMENT = "production"
+RESEND_API_KEY = ""
 
 [[kv_namespaces]]
 binding = "PUZZLES"
 id = "ae8d3daa2607494f8e0cd33095867c09"
 preview_id = "ae8d3daa2607494f8e0cd33095867c09"
+
+[[kv_namespaces]]
+binding = "USERS"
+id = "394346e67119405eabf54b33b4f14f0b"
+preview_id = "8818cc934ad34663aec10ea0482e7200"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "cbe6504466944ce7adfb4c1517922991"
+preview_id = "e2277881bc264c049b2ccea6062cdea9"

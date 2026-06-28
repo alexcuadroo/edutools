@@ -2,6 +2,7 @@ import { useState } from "react";
 import Card from "@/components/ui/Card";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { fillBlanksGenerator } from "@/lib/puzzles/fill-blanks/generator";
 import { generateFillBlanksPDF } from "@/lib/pdf/fill-blanks";
@@ -53,6 +54,11 @@ export default function FillBlanksPreview() {
             <span className="text-sm text-gray-600">
               <span className="font-medium text-indigo-600">{fillBlanksResult.blanks.length}</span> huecos
             </span>
+            <SavePuzzleButton
+              type="fill-blanks"
+              title={fillBlanksTitle || "Rellenar Huecos"}
+              data={fillBlanksResultToPlayData(fillBlanksResult, fillBlanksTitle)}
+            />
             <button
               onClick={handleShare}
               disabled={sharing}

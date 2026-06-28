@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import Card from "@/components/ui/Card";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { generateHangmanPDF } from "@/lib/pdf/hangman";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
@@ -38,7 +39,7 @@ function createInitialStates(words: HangmanWord[]): WordGameState[] {
   }));
 }
 
-function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResult; title: string; onShare?: () => void; sharing?: boolean }) {
+function HangmanGame({ result, title, onShare, sharing, saveButton }: { result: HangmanResult; title: string; onShare?: () => void; sharing?: boolean; saveButton?: React.ReactNode }) {
   const { words, maxAttempts } = result;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -128,6 +129,7 @@ function HangmanGame({ result, title, onShare, sharing }: { result: HangmanResul
         <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Juego interactivo</h2>
           <div className="flex items-center gap-3">
+            {saveButton}
             {onShare && (
               <button
                 onClick={onShare}
@@ -356,6 +358,13 @@ export default function HangmanPreview() {
         title={hangmanTitle}
         onShare={handleShare}
         sharing={sharing}
+        saveButton={
+          <SavePuzzleButton
+            type="hangman"
+            title={hangmanTitle || "Adivina la Palabra"}
+            data={hangmanResultToPlayData(hangmanResult, hangmanTitle)}
+          />
+        }
       />
       {shareOpen && shareUrl && (
         <ShareModal

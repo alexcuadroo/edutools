@@ -7,6 +7,7 @@ import { generateWordSearchPDF } from "@/lib/pdf/word-search";
 import { downloadWordSearchPNG } from "@/lib/png/word-search";
 import DownloadDropdown from "@/components/ui/DownloadDropdown";
 import ShareModal from "@/components/ui/ShareModal";
+import SavePuzzleButton from "@/components/auth/SavePuzzleButton";
 import { Eye, Share2, Loader2 } from "lucide-react";
 import { savePuzzle, buildPlayUrl } from "@/lib/share/api";
 import { wsGridToPlayData } from "@/lib/share/types";
@@ -70,6 +71,11 @@ export default function WordSearchPreview() {
         <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Previsualización</h2>
           <div className="flex items-center gap-2">
+            <SavePuzzleButton
+              type="word-search"
+              title={wordSearchTitle || "Sopa de Letras"}
+              data={wsGridToPlayData(grid, wordSearchTitle)}
+            />
             <button
               onClick={handleShare}
               disabled={sharing}
