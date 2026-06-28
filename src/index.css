@@ -237,6 +237,16 @@ body {
 .animate-delay-300 { animation-delay: 300ms; }
 .animate-delay-400 { animation-delay: 400ms; }
 
+/* BETA badge pulse */
+@keyframes beta-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.animate-beta-pulse {
+  animation: beta-pulse 2.2s ease-in-out infinite;
+}
+
 /* Stagger children animation */
 .stagger-children > * {
   opacity: 0;

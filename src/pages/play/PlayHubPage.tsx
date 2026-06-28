@@ -58,6 +58,16 @@ export default function PlayHubPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start px-4 py-2">
       <div className="w-full max-w-3xl mx-auto space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors no-underline"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver al inicio
+          </Link>
+        </div>
+
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-gray-900">Jugar un puzzle</h1>
           <p className="text-gray-500 text-sm sm:text-base">
@@ -129,16 +139,6 @@ export default function PlayHubPage() {
             words={DEMO_ANAGRAM.words}
             title={DEMO_ANAGRAM.title}
           />
-        </div>
-
-        <div className="text-center">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 transition-colors no-underline cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Volver al inicio
-          </Link>
         </div>
       </div>
     </div>
