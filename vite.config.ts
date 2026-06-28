@@ -28,7 +28,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/(login|signup|verificar|forgot|reset-password|mis-puzzles)/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,

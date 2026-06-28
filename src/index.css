@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tailwind-animations";
 @import "react-toastify/dist/ReactToastify.css";
 
 html {
