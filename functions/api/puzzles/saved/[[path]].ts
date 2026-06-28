@@ -122,6 +122,13 @@ async function handleSave(context: Parameters<PagesFunction<Env>>[0]): Promise<R
     await context.env.USERS.put(puzzleKey, JSON.stringify(puzzle));
     await context.env.USERS.put(`puzzle-idx:${userId}:${now}:${puzzleId}`, puzzleId);
 
+    const publicPayload = JSON.stringify({
+      type,
+      puzzle: data,
+      id: puzzleId,
+    });
+    await context.env.PUZZLES.put(puzzleId, publicPayload);
+
     return jsonResponse({ id: puzzleId, existing: false }, 201);
   } catch (err) {
     return errorResponse(err, "Error en saved save");
