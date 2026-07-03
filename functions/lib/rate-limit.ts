@@ -12,6 +12,10 @@ export async function checkRateLimit(
   maxAttempts: number,
   windowSeconds: number
 ): Promise<RateLimitResult> {
+  if (env.ENVIRONMENT !== "production") {
+    return { allowed: true, remaining: maxAttempts, resetAt: Date.now() + windowSeconds * 1000 };
+  }
+
   const now = Date.now();
   const resetAt = now + windowSeconds * 1000;
   const storageKey = `rl:${key}`;

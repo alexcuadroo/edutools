@@ -1,13 +1,14 @@
 import { corsHeaders } from "./utils";
 import { checkRateLimit } from "./rate-limiter";
 
-export const onRequest: PagesFunction = async (context) => {
+export const onRequest: PagesFunction<{ ENVIRONMENT?: string }> = async (context) => {
   if (context.request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
+  const isProduction = context.env.ENVIRONMENT === "production";
   const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
-  const { allowed, remaining, resetAt } = checkRateLimit(ip);
+  const { allowed, remaining, resetAt } = checkRateLimit(ip, isProduction ? 30 : 10_000);
 
   if (!allowed) {
     return Response.json(
