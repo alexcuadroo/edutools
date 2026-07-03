@@ -15,6 +15,10 @@ pnpm dev       # Iniciar servidor de desarrollo
 pnpm build     # Compilar para producción (tsc + vite build)
 pnpm lint      # Ejecutar ESLint
 pnpm preview   # Previsualizar build de producción
+pnpm test      # Tests unitarios (vitest run)
+pnpm test:unit # Igual que test
+pnpm test:integration  # Tests de integración (levanta wrangler + API)
+pnpm test:all  # Unit + Integration
 ```
 
 ### Agregar dependencias
@@ -31,9 +35,51 @@ Después de cualquier modificación al código, ejecutar:
 ```bash
 pnpm lint
 pnpm build
+pnpm test
 ```
 
-Ambos deben pasar sin errores antes de considerar el trabajo terminado.
+Los tres deben pasar sin errores antes de considerar el trabajo terminado.
+
+Para verificar la API completa:
+
+```bash
+pnpm test:integration
+```
+
+## Testing
+
+### Tests unitarios
+
+Ubicados junto al código que prueban (`src/lib/puzzles/*/generator.test.ts`) o en `src/__tests__/`. Usan **Vitest** con entorno Node.
+
+```bash
+pnpm test         # Todos los tests unitarios
+pnpm test:unit    # Igual que arriba
+pnpm test:watch   # Watch mode
+```
+
+Configuración en `vite.config.ts` (campo `test`), excluye el directorio `src/__tests__/integration/`.
+
+### Tests de integración
+
+Ubicados en `src/__tests__/integration/`. Prueban la API completa contra un servidor wrangler pages dev local con KV namespaces.
+
+```bash
+pnpm test:integration   # Build + wrangler pages dev + vitest
+```
+
+El script `scripts/run-integration-tests.sh`:
+1. Ejecuta `pnpm build`
+2. Levanta `wrangler pages dev dist` con KV local y `ENVIRONMENT=development` (sin rate limits)
+3. Espera a que el servidor responda
+4. Ejecuta vitest con `vitest.integration.config.ts`
+5. Detiene wrangler al terminar
+
+### Todos los tests
+
+```bash
+pnpm test:all   # Unit + Integration
+```
 
 ## Stack y convenciones
 
@@ -46,6 +92,7 @@ Ambos deben pasar sin errores antes de considerar el trabajo terminado.
 - **React Toastify** para notificaciones
 - **nanoid** para IDs cortos de puzzles
 - **@noble/hashes** para Argon2id (hashing de contraseñas en Workers)
+- **Vitest** para tests unitarios y de integración
 - **qrcode.react** para generación local de QR
 - **Cloudflare Pages** + **Pages Functions** + **KV** para deploy y API
 - **Resend** para emails transaccionales (verificación, reset de contraseña)
@@ -79,6 +126,10 @@ src/
 │   ├── share/           # api.ts (savePuzzle/loadPuzzle) + types.ts
 │   ├── pdf/             # Exportación PDF
 │   └── png/             # Exportación PNG
+├── __tests__/
+│   ├── shuffle.test.ts
+│   ├── share-types.test.ts
+│   └── integration/     # Tests de integración (API)
 ├── pages/               # Páginas de la app
 │   └── play/            # Páginas de juego (Play*Page.tsx)
 └── store/               # Zustand stores (auth-store, saved-puzzles-store, puzzle-store)

@@ -13,10 +13,15 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "src"),
     },
+    dedupe: ["react", "react-dom"],
+  },
+  optimizeDeps: {
+    exclude: ["zustand", "lucide-react", "react-router-dom"],
   },
   test: {
     environment: "node",
     include: ["src/**/*.test.ts"],
+    exclude: ["src/__tests__/integration/**"],
   },
   plugins: [
     react(),

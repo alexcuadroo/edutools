@@ -53,7 +53,7 @@ export default function UserMenu({ variant = "desktop" }: UserMenuProps) {
     return (
       <Link
         to="/iniciar-sesion"
-        className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+        className="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
       >
         Iniciar sesión
       </Link>
