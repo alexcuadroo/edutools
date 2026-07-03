@@ -69,10 +69,21 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const emailMessage = renderVerificationEmail(cleanDisplayName, verifyUrl);
     emailMessage.to = normalizedEmail;
 
-    await sendEmail(emailMessage, context.env);
+    if (context.env.RESEND_API_KEY) {
+      await sendEmail(emailMessage, context.env);
+      return jsonResponse(
+        { ok: true, message: "Te enviamos un email de verificación" },
+        201
+      );
+    }
+
+    user.verified = true;
+    user.verifiedAt = now;
+    await context.env.USERS.put(`user:${userId}`, JSON.stringify(user));
+    await context.env.USERS.delete(`verify-token:${verifyToken}`);
 
     return jsonResponse(
-      { ok: true, message: "Te enviamos un email de verificación" },
+      { ok: true, message: "Cuenta creada exitosamente" },
       201
     );
   } catch (err) {
