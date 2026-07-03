@@ -74,6 +74,38 @@ Compila TypeScript y genera el bundle de producción en `dist/`.
 pnpm lint
 ```
 
+## Tests
+
+### Tests unitarios
+
+Testean generadores de puzzles y utilidades. Corren con Vitest en entorno Node, sin dependencias externas.
+
+```bash
+pnpm test       # Todos los tests unitarios
+pnpm test:unit  # Igual que arriba
+```
+
+### Tests de integración
+
+Levantan un servidor wrangler pages dev local con KV namespaces y prueban la API completa (crear/recuperar puzzles, auth, puzzles guardados, flujo de juego).
+
+```bash
+pnpm test:integration
+```
+
+El script `scripts/run-integration-tests.sh`:
+1. Ejecuta `pnpm build`
+2. Levanta `wrangler pages dev dist` con KV namespaces locales y `ENVIRONMENT=development`
+3. Espera a que el servidor responda
+4. Ejecuta vitest con `vitest.integration.config.ts`
+5. Detiene wrangler al terminar
+
+### Todos los tests
+
+```bash
+pnpm test:all    # Unit + Integration
+```
+
 ## Estructura del proyecto
 
 ```
@@ -289,8 +321,10 @@ pnpx wrangler pages deploy dist
 ### Desarrollo local con KV
 
 ```bash
-pnpm build && pnpx wrangler pages dev dist --kv=PUZZLES
+pnpm build && pnpx wrangler pages dev dist --kv PUZZLES --kv USERS --kv SESSIONS
 ```
+
+Para tests de integración, ver sección "Tests".
 
 ## Autor
 
