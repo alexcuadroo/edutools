@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useNoIndexMeta } from "@/hooks/useNoIndexMeta";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
+import { clearPendingPuzzleSave, getPendingPuzzleSave } from "@/lib/share/pending-puzzle-save";
+import { useSavedPuzzlesStore } from "@/store/saved-puzzles-store";
 
 export default function LoginPage() {
   const { user, status, login } = useAuth();
+  const { save } = useSavedPuzzlesStore();
   const navigate = useNavigate();
+  const pendingSaveHandled = useRef(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,10 +24,26 @@ export default function LoginPage() {
   useNoIndexMeta("Iniciar sesión");
 
   useEffect(() => {
-    if (status === "auth" && user) {
+    if (status !== "auth" || !user || pendingSaveHandled.current) return;
+    pendingSaveHandled.current = true;
+    const pending = getPendingPuzzleSave();
+    if (!pending) {
       navigate("/");
+      return;
     }
-  }, [status, user, navigate]);
+
+    void (async () => {
+      try {
+        await save(pending.type, pending.title, pending.data);
+        clearPendingPuzzleSave();
+        toast.success("Puzzle guardado en Mis puzzles");
+        navigate("/mis-puzzles");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "No se pudo guardar el puzzle pendiente");
+        navigate("/");
+      }
+    })();
+  }, [status, user, save, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +55,6 @@ export default function LoginPage() {
     try {
       await login(email, password);
       toast.success("Sesión iniciada");
-      navigate("/");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Error al iniciar sesión";
       setError(message);

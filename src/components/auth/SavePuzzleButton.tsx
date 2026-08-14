@@ -5,6 +5,7 @@ import { useSavedPuzzlesStore } from "@/store/saved-puzzles-store";
 import type { PlayablePuzzleType } from "@/lib/share/types";
 import { Bookmark, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { setPendingPuzzleSave } from "@/lib/share/pending-puzzle-save";
 
 interface SavePuzzleButtonProps {
   type: PlayablePuzzleType;
@@ -20,6 +21,7 @@ export default function SavePuzzleButton({ type, title, data }: SavePuzzleButton
 
   const handleClick = async () => {
     if (status === "anon") {
+      setPendingPuzzleSave({ type, title: title || "Sin título", data });
       toast.info("Iniciá sesión para guardar puzzles");
       navigate("/iniciar-sesion");
       return;
