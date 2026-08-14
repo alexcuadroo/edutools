@@ -186,11 +186,8 @@ export default function HomePage() {
               className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium no-underline text-sm"
             >
               <Smartphone className="w-4 h-4" />
-              Ver demostración
+              Jugar con un código
             </Link>
-            <span className="text-xs text-gray-400">
-              Función en desarrollo · Puede contener errores
-            </span>
           </div>
         </div>
       </div>
