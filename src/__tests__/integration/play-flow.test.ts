@@ -27,6 +27,9 @@ import type { AnagramResult } from "@/lib/puzzles/anagram/types";
 import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import type { MCResult } from "@/lib/puzzles/match-columns/types";
 import type { MemoryResult } from "@/lib/puzzles/memory/types";
+import { roscoGenerator } from "@/lib/puzzles/rosco/generator";
+import { ROSCO_LETTERS } from "@/lib/puzzles/rosco/types";
+import { roscoResultToPlayData } from "@/lib/share/types";
 
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:8788";
 const TEST_TITLE = "Integration Test";
@@ -192,5 +195,26 @@ describe("Flujo completo: generar -> serializar -> API -> deserializar", () => {
     const rp = retrievedPuzzle as { c: { id: string; p: number; ct: string; ty: string }[]; p: { w: string; d: string }[] };
     expect(rp.c).toHaveLength(4);
     expect(rp.p).toHaveLength(2);
+  });
+
+  it("rosco: roundtrip generar + PlayData + API", async () => {
+    const result = roscoGenerator.generate({
+      words: [],
+      durationSeconds: 180,
+      entries: ROSCO_LETTERS.map((letter) => ({
+        letter,
+        answer: `${letter}respuesta`,
+        clue: `Pista ${letter}`,
+        rule: "starts-with" as const,
+      })),
+    });
+
+    const pd = roscoResultToPlayData(result.grid, TEST_TITLE);
+    const retrievedPuzzle = await createAndRetrieve("rosco", pd);
+    expect(retrievedPuzzle).toHaveProperty("d", 180);
+    expect(retrievedPuzzle).toHaveProperty("t", TEST_TITLE);
+    const rp = retrievedPuzzle as { e: { l: string; a: string; c: string; r: string }[] };
+    expect(rp.e).toHaveLength(26);
+    expect(rp.e[0]).toMatchObject({ l: "A", a: "Arespuesta", r: "starts-with" });
   });
 });

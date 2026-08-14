@@ -19,3 +19,8 @@ preview_id = "8818cc934ad34663aec10ea0482e7200"
 binding = "SESSIONS"
 id = "cbe6504466944ce7adfb4c1517922991"
 preview_id = "e2277881bc264c049b2ccea6062cdea9"
+
+[[durable_objects.bindings]]
+name = "PROGRESS"
+class_name = "PuzzleProgress"
+script_name = "edutools-progress"

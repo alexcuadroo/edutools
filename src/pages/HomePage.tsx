@@ -16,6 +16,8 @@ import {
   Bookmark,
   Share2,
   Puzzle,
+  CircleHelp,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -74,6 +76,13 @@ const PUZZLES = [
     description:
       "Genera juegos de memoria con pares de palabras y definiciones. Juega online o imprime las cards.",
     icon: Layers,
+  },
+  {
+    path: "/rosco",
+    title: "Rosco",
+    description:
+      "Creá un rosco digital de 26 preguntas con cronómetro, pasapalabra y vueltas automáticas.",
+    icon: CircleHelp,
   },
 ];
 
@@ -155,9 +164,6 @@ export default function HomePage() {
               <Gamepad2 className="w-4 h-4" />
               <span>Puzzles digitales</span>
             </div>
-            <span className="animate-beta-pulse px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
-              BETA
-            </span>
             <Link
               to="/mis-puzzles"
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium border border-emerald-200 hover:bg-emerald-100 transition-colors no-underline"
@@ -165,6 +171,13 @@ export default function HomePage() {
               <Bookmark className="w-3.5 h-3.5" />
               Guarda tus puzzles
             </Link>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 text-sm font-medium border border-violet-200">
+              <ChartNoAxesCombined className="w-3.5 h-3.5" />
+              Progreso
+            </div>
+            <span className="animate-beta-pulse px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+              BETA
+            </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Puzzles Digitales para Jugar
@@ -178,11 +191,8 @@ export default function HomePage() {
               className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium no-underline text-sm"
             >
               <Smartphone className="w-4 h-4" />
-              Ver demostración
+              Jugar con un código
             </Link>
-            <span className="text-xs text-gray-400">
-              Función en desarrollo · Puede contener errores
-            </span>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ export interface Env {
   PUZZLES: KVNamespace;
   USERS: KVNamespace;
   SESSIONS: KVNamespace;
+  PROGRESS?: DurableObjectNamespace;
   RESEND_API_KEY?: string;
   ENVIRONMENT?: string;
 }
@@ -20,6 +21,7 @@ export const ALLOWED_PUZZLE_TYPES = [
   "sentence-order",
   "match-columns",
   "memory",
+  "rosco",
 ] as const;
 
 export type AllowedPuzzleType = (typeof ALLOWED_PUZZLE_TYPES)[number];

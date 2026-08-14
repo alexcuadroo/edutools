@@ -9,6 +9,7 @@ export const PUZZLE_TYPE_TO_SLUG: Record<PlayablePuzzleType, string> = {
   "sentence-order": "ordenar-oracion",
   "match-columns": "relacionar-columnas",
   "memory": "memoria",
+  "rosco": "rosco",
 };
 
 export const SLUG_TO_PUZZLE_TYPE: Record<string, PlayablePuzzleType> = Object.fromEntries(
@@ -24,6 +25,7 @@ export const PUZZLE_TYPE_LABELS: Record<PlayablePuzzleType, string> = {
   "sentence-order": "Ordenar Oración",
   "match-columns": "Relacionar Columnas",
   "memory": "Memoria",
+  "rosco": "Rosco",
 };
 
 export function puzzleTypeSlug(type: PlayablePuzzleType): string {

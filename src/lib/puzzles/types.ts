@@ -1,8 +1,10 @@
-export type PuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
+export type PuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
 
 export interface PuzzleInput {
   words: { word: string; clue?: string }[];
   size?: number;
+  entries?: RoscoEntry[];
+  durationSeconds?: number;
 }
 
 export interface PuzzleResult<GridType = unknown> {
@@ -17,3 +19,4 @@ export interface IPuzzleGenerator<GridType = unknown> {
   description: string;
   generate(input: PuzzleInput): PuzzleResult<GridType>;
 }
+import type { RoscoEntry } from "@/lib/puzzles/rosco/types";

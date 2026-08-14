@@ -8,6 +8,7 @@ import type { AnagramResult } from "@/lib/puzzles/anagram/types";
 import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import type { MCResult } from "@/lib/puzzles/match-columns/types";
 import type { MemoryResult } from "@/lib/puzzles/memory/types";
+import type { RoscoResult } from "@/lib/puzzles/rosco/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -54,12 +55,17 @@ interface PuzzleState {
   memoryResult: MemoryResult | null;
   setMemoryResult: (result: MemoryResult | null) => void;
 
+  roscoTitle: string;
+  setRoscoTitle: (t: string) => void;
+  roscoResult: RoscoResult | null;
+  setRoscoResult: (result: RoscoResult | null) => void;
+
   loading: boolean;
   setLoading: (v: boolean) => void;
   error: string | null;
 
-  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
-  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory") => void;
+  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
+  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco") => void;
   setError: (e: string | null) => void;
 }
 
@@ -107,6 +113,11 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setMemoryTitle: (title) => set({ memoryTitle: title }),
   memoryResult: null,
   setMemoryResult: (result) => set({ memoryResult: result }),
+
+  roscoTitle: "",
+  setRoscoTitle: (title) => set({ roscoTitle: title }),
+  roscoResult: null,
+  setRoscoResult: (result) => set({ roscoResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),
