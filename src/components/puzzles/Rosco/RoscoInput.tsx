@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { Bot, Clipboard, FileUp, Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import ExampleButton from "@/components/ui/ExampleButton";
 import { roscoGenerator } from "@/lib/puzzles/rosco/generator";
 import { ROSCO_LETTERS, type RoscoEntry, type RoscoRule } from "@/lib/puzzles/rosco/types";
+import { parseRoscoCsv, ROSCO_LLM_PROMPT } from "@/lib/puzzles/rosco/csv";
 import { usePuzzleStore } from "@/store/puzzle-store";
 
 const EXAMPLE_ANSWERS: Record<string, [string, string, RoscoRule]> = {
@@ -20,6 +22,9 @@ export default function RoscoInput() {
   const [title, setTitle] = useState("");
   const [minutes, setMinutes] = useState("3");
   const [seconds, setSeconds] = useState("0");
+  const [csvText, setCsvText] = useState("");
+  const [importOpen, setImportOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateEntry = (index: number, field: keyof Omit<RoscoEntry, "letter">, value: string) => {
     setEntries((current) => current.map((entry, entryIndex) => entryIndex === index ? { ...entry, [field]: value } : entry));
@@ -56,6 +61,37 @@ export default function RoscoInput() {
     setSeconds("0");
   };
 
+  const importCsv = (csv: string) => {
+    try {
+      setEntries(parseRoscoCsv(csv));
+      setImportOpen(false);
+      setCsvText("");
+      toast.success("Se cargaron las 26 entradas del rosco.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo importar el CSV.");
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      importCsv(await file.text());
+    } catch {
+      toast.error("No se pudo leer el archivo CSV.");
+    }
+  };
+
+  const copyLlmPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(ROSCO_LLM_PROMPT);
+      toast.success("Prompt copiado. Reemplazá [TEMÁTICA] en tu LLM.");
+    } catch {
+      toast.error("No se pudo copiar el prompt. Probá nuevamente.");
+    }
+  };
+
   return (
     <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-6" aria-labelledby="rosco-config-title">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -63,8 +99,21 @@ export default function RoscoInput() {
           <h2 id="rosco-config-title" className="text-lg font-semibold text-gray-900">Configuración del rosco</h2>
           <p className="text-sm text-gray-500 mt-1">Completá una pregunta por cada letra, de la A a la Z.</p>
         </div>
-        <ExampleButton onClick={handleExample} />
+        <div className="flex flex-wrap gap-2">
+          <input ref={fileInputRef} type="file" accept=".csv,text/csv" onChange={handleFileChange} className="sr-only" aria-label="Seleccionar archivo CSV" />
+          <button type="button" onClick={() => fileInputRef.current?.click()} className="cursor-pointer inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-indigo-200 bg-white px-3 text-xs font-semibold text-indigo-700 hover:bg-indigo-50"><FileUp className="h-4 w-4" aria-hidden="true" /> Cargar CSV</button>
+          <button type="button" onClick={() => setImportOpen((open) => !open)} aria-expanded={importOpen} aria-controls="rosco-csv-import" className="cursor-pointer inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 hover:bg-gray-50"><Clipboard className="h-4 w-4" aria-hidden="true" /> Pegar CSV</button>
+          <button type="button" onClick={copyLlmPrompt} className="cursor-pointer inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-violet-600 px-3 text-xs font-semibold text-white hover:bg-violet-700"><Sparkles className="h-4 w-4" aria-hidden="true" /> Prompt para LLM</button>
+          <ExampleButton onClick={handleExample} />
+        </div>
       </div>
+
+      {importOpen && <section id="rosco-csv-import" className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-4" aria-labelledby="rosco-csv-title">
+        <div className="mb-3 flex items-start gap-2"><Bot className="mt-0.5 h-5 w-5 text-indigo-600" aria-hidden="true" /><div><h3 id="rosco-csv-title" className="font-semibold text-indigo-950">Importar desde CSV</h3><p className="mt-0.5 text-xs leading-relaxed text-indigo-800">Pegá el CSV generado o cargá un archivo. Columnas requeridas: <code>letra,respuesta,regla,pista</code>.</p></div></div>
+        <label htmlFor="rosco-csv-text" className="block text-sm font-medium text-gray-800">Contenido CSV</label>
+        <textarea id="rosco-csv-text" value={csvText} onChange={(event) => setCsvText(event.target.value)} rows={7} spellCheck={false} placeholder={'letra,respuesta,regla,pista\nA,ÁRBOL,empieza con,Planta de tronco leñoso'} className="input-field mt-1.5 w-full resize-y rounded-lg border border-indigo-200 bg-white px-3 py-2.5 font-mono text-xs outline-none" />
+        <div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={() => importCsv(csvText)} disabled={!csvText.trim()} className="cursor-pointer inline-flex min-h-10 items-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50">Importar entradas</button><button type="button" onClick={() => setImportOpen(false)} className="cursor-pointer min-h-10 rounded-lg px-3 text-sm font-medium text-gray-600 hover:bg-white">Cancelar</button></div>
+      </section>}
 
       <div className="grid sm:grid-cols-[1fr_auto_auto] gap-4 items-end">
         <label className="block text-sm font-medium text-gray-700">Título (opcional)
