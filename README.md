@@ -54,10 +54,25 @@ pnpm build && pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 
 Levanta el servidor en `http://127.0.0.1:8788` con las Pages Functions y KV namespaces locales.
 
-Para probar el flujo completo de autenticación (envío de emails), necesitás configurar `RESEND_API_KEY` como variable de entorno:
+Para probar el flujo completo de autenticación (envío de emails), creá un archivo `.dev.vars` junto a `wrangler.toml` con tu clave. Este archivo no se versiona:
 
 ```bash
-pnpm build && RESEND_API_KEY=tu_key_aqui pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+RESEND_API_KEY="tu_key_aqui"
+```
+
+Luego iniciá Pages Functions normalmente:
+
+```bash
+pnpm build
+pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+```
+
+Alternativamente, para una única sesión de **PowerShell**:
+
+```powershell
+$env:RESEND_API_KEY = "tu_key_aqui"
+pnpm build
+pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
 ## Build
