@@ -129,11 +129,6 @@ export default function MyPuzzlesPage() {
                 <h3 className="font-semibold text-gray-900 truncate">{puzzle.title}</h3>
                 <p className="text-sm text-gray-500">
                   {puzzleTypeLabel(puzzle.type)} · {formatRelativeTime(puzzle.createdAt)}
-                  {puzzle.shareCount > 0 && (
-                    <span className="ml-2 text-indigo-600">
-                      · {puzzle.shareCount} compartido{puzzle.shareCount !== 1 ? "s" : ""}
-                    </span>
-                  )}
                 </p>
               </div>
 
