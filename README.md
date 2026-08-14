@@ -16,6 +16,7 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 - **React Toastify** para notificaciones
 - **qrcode.react** para generación local de QR
 - **Cloudflare Pages** + **Pages Functions** + **KV** para backend y almacenamiento
+- **Cloudflare Durable Objects** para seguimiento de progreso en vivo
 
 ## Puzzles disponibles
 
@@ -29,6 +30,7 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 | Ordenar oración | `/ordenar-oracion` | `/jugar/ordenar-oracion/:id` |
 | Relacionar columnas | `/relacionar-columnas` | `/jugar/relacionar-columnas/:id` |
 | Memoria | `/memoria` | `/jugar/memoria/:id` |
+| Rosco | `/rosco` | `/jugar/rosco/:id` |
 
 ## Instalación
 
@@ -49,7 +51,8 @@ Levanta el servidor en `http://localhost:5173`.
 ### Frontend + API local (con KV)
 
 ```bash
-pnpm build && pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+pnpm build
+pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
 Levanta el servidor en `http://127.0.0.1:8788` con las Pages Functions y KV namespaces locales.
@@ -64,7 +67,7 @@ Luego iniciá Pages Functions normalmente:
 
 ```bash
 pnpm build
-pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
 Alternativamente, para una única sesión de **PowerShell**:
@@ -72,7 +75,7 @@ Alternativamente, para una única sesión de **PowerShell**:
 ```powershell
 $env:RESEND_API_KEY = "tu_key_aqui"
 pnpm build
-pnpx wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
+pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
 ## Build
@@ -234,6 +237,13 @@ public/
 | GET | `/api/puzzles/saved/:id` | Obtener puzzle guardado |
 | DELETE | `/api/puzzles/saved/:id` | Eliminar puzzle guardado |
 | POST | `/api/puzzles/saved/:id/share` | Compartir puzzle guardado |
+| GET | `/api/puzzles/saved/:id/progreso` | Ver progreso en vivo del docente |
+| DELETE | `/api/puzzles/saved/:id/progreso` | Borrar el progreso de la actividad |
+
+### Progreso de estudiantes
+| Method | Path | Descripción |
+|--------|------|-------------|
+| POST | `/api/progress/:id` | Reportar progreso anónimo de Sopa, Crucigrama o Rosco |
 
 ## Funcionalidades
 
@@ -257,7 +267,7 @@ public/
 - **Código de puzzle**: los alumnos pueden ingresar solo el código en `/jugar`
 - **Expiración automática**: los puzzles expiran en 1 día (24 horas)
 - Contador de intentos por puzzle en localStorage
-- Sin datos personales de estudiantes
+- Apodo anónimo y editable por dispositivo para el seguimiento docente
 - Case-insensitive: `F3D78213` y `f3d78213` funcionan igual
 
 ### Flujo de compartir
@@ -274,6 +284,12 @@ public/
 2. El puzzle se guarda en su cuenta (persistente)
 3. Puede acceder a sus puzzles desde `/mis-puzzles`
 4. Puede jugarlos, compartirlos o eliminarlos
+
+### Seguimiento en vivo
+1. El estudiante abre un puzzle compartido compatible y confirma un apodo anónimo.
+2. El juego reporta los aciertos y la presencia cada 10 segundos.
+3. El docente abre **Mis puzzles → Progreso** para ver el avance, actualizado cada 4 segundos.
+4. Sopa de letras, Crucigrama y Rosco están disponibles en esta primera versión.
 
 ## Agregar un nuevo puzzle
 
@@ -301,14 +317,14 @@ El proyecto está desplegado en **Cloudflare Pages** con dominio propio `tools.e
 pnpm build
 
 # Deploy a Cloudflare Pages
-pnpx wrangler pages deploy dist
+pnpm exec wrangler pages deploy dist
 ```
 
 ### Configuración inicial
 
 1. **Crear KV namespace:**
    ```bash
-   pnpx wrangler kv namespace create PUZZLES
+   pnpm exec wrangler kv namespace create PUZZLES
    ```
 
 2. **Configurar `wrangler.toml`:**
@@ -336,10 +352,22 @@ pnpx wrangler pages deploy dist
 ### Desarrollo local con KV
 
 ```bash
-pnpm build && pnpx wrangler pages dev dist --kv PUZZLES --kv USERS --kv SESSIONS
+pnpm build
+pnpm exec wrangler dev --config progress-worker/wrangler.jsonc --port 8787
+pnpm exec wrangler pages dev dist --port 8788 --kv PUZZLES --kv USERS --kv SESSIONS --do PROGRESS=PuzzleProgress@edutools-progress
 ```
 
 Para tests de integración, ver sección "Tests".
+
+### Worker de progreso
+
+El Worker separado `progress-worker/` usa un Durable Object por puzzle para conservar el estado en tiempo real.
+
+```powershell
+pnpm exec wrangler deploy --config progress-worker/wrangler.jsonc
+```
+
+Después verificá que `wrangler.toml` incluya el binding `PROGRESS` con `class_name = "PuzzleProgress"` y `script_name = "edutools-progress"`. Los deploys automáticos de Pages en `test` y `main` usan ese binding; si cambia código dentro de `progress-worker/`, desplegalo nuevamente con el comando anterior.
 
 ## Autor
 

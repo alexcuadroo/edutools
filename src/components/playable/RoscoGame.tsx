@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, CirclePause, CirclePlay, Clock3, RotateCcw, SkipForward, XCircle } from "lucide-react";
 import { answerRoscoEntry, createRoscoGameState, isRoscoComplete, passRoscoEntry, type RoscoEntryStatus } from "@/lib/puzzles/rosco/game";
 import type { RoscoEntry } from "@/lib/puzzles/rosco/types";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface RoscoGameProps {
   entries: RoscoEntry[];
@@ -9,6 +10,7 @@ interface RoscoGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 const STATUS_STYLES: Record<RoscoEntryStatus, string> = {
@@ -29,7 +31,7 @@ function formatTime(total: number): string {
   return `${Math.floor(total / 60).toString().padStart(2, "0")}:${(total % 60).toString().padStart(2, "0")}`;
 }
 
-export default function RoscoGame({ entries, durationSeconds, title, attemptCount, onAttemptIncrement }: RoscoGameProps) {
+export default function RoscoGame({ entries, durationSeconds, title, attemptCount, onAttemptIncrement, onProgress }: RoscoGameProps) {
   const [game, setGame] = useState(() => createRoscoGameState(entries));
   const [remainingSeconds, setRemainingSeconds] = useState(durationSeconds);
   const [paused, setPaused] = useState(false);
@@ -56,6 +58,7 @@ export default function RoscoGame({ entries, durationSeconds, title, attemptCoun
     incorrect: game.statuses.filter((status) => status === "incorrect").length,
     pending: game.statuses.filter((status) => status === "pending" || status === "passed").length,
   }), [game.statuses]);
+  useEffect(() => { onProgress?.({ correctItems: entries.filter((_, index) => game.statuses[index] === "correct").map((entry) => entry.letter), incorrectItems: entries.filter((_, index) => game.statuses[index] === "incorrect").map((entry) => entry.letter), total: entries.length, completed: ended }); }, [ended, entries, game.statuses, onProgress]);
 
   const submitAnswer = (event: React.FormEvent) => {
     event.preventDefault();

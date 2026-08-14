@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import WordSearchGame from "@/components/playable/WordSearchGame";
 import { type WSPlayData, playDataToWSWords } from "@/lib/share/types";
 import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
+import { useLiveProgress } from "@/hooks/useLiveProgress";
+import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayWordSearchPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +22,8 @@ export default function PlayWordSearchPage() {
   });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("sopa_de_letras", id || "");
+  const [progress, setProgress] = useState<ProgressSnapshot>({ correctItems: [], total: 0, completed: false });
+  const live = useLiveProgress(id, "word-search", progress);
 
   if (loading) {
     return (
@@ -64,7 +70,9 @@ export default function PlayWordSearchPage() {
         title={decoded.title}
         attemptCount={attemptCount}
         onAttemptIncrement={onAttemptIncrement}
+        onProgress={setProgress}
       />
+      {!live.confirmed && <StudentIdentityModal alias={live.alias} onConfirm={live.confirm} />}
     </div>
   );
 }

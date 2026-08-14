@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { RotateCcw, Trophy } from "lucide-react";
 import type { PlayableWSWord } from "@/lib/share/types";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface WordSearchGameProps {
   grid: string[][];
@@ -9,6 +10,7 @@ interface WordSearchGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 interface Cell {
@@ -42,7 +44,7 @@ function cellKey(r: number, c: number): string {
   return `${r},${c}`;
 }
 
-export default function WordSearchGame({ grid, size, words, title, attemptCount, onAttemptIncrement }: WordSearchGameProps) {
+export default function WordSearchGame({ grid, size, words, title, attemptCount, onAttemptIncrement, onProgress }: WordSearchGameProps) {
   const [foundWords, setFoundWords] = useState<Set<string>>(new Set());
   const [foundCells, setFoundCells] = useState<Map<string, string>>(new Map());
   const [startCell, setStartCell] = useState<Cell | null>(null);
@@ -50,6 +52,7 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
 
   const allFound = foundWords.size === words.length;
   const celebration = allFound && foundWords.size > 0;
+  useEffect(() => { onProgress?.({ correctItems: [...foundWords], total: words.length, completed: allFound }); }, [allFound, foundWords, onProgress, words.length]);
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {

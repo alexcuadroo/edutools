@@ -2,6 +2,7 @@ export interface Env {
   PUZZLES: KVNamespace;
   USERS: KVNamespace;
   SESSIONS: KVNamespace;
+  PROGRESS?: DurableObjectNamespace;
   RESEND_API_KEY?: string;
   ENVIRONMENT?: string;
 }

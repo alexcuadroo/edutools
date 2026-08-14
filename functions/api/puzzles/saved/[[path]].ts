@@ -37,6 +37,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     return jsonResponse({ error: "Method Not Allowed" }, 405);
   }
 
+  if (action === "progreso") {
+    if (method === "GET") return handleProgress(context, id);
+    if (method === "DELETE") return handleClearProgress(context, id);
+    return jsonResponse({ error: "Method Not Allowed" }, 405);
+  }
+
   if (action) {
     return jsonResponse({ error: "Not Found" }, 404);
   }
@@ -213,6 +219,32 @@ async function handleShare(
     return jsonResponse({ shareId, url }, 200);
   } catch (err) {
     return errorResponse(err, "Error en saved share");
+  }
+}
+
+async function handleProgress(context: Parameters<PagesFunction<Env>>[0], id: string): Promise<Response> {
+  try {
+    const { userId } = await requireAuth(context.request, context.env);
+    if (!context.env.PROGRESS) return jsonResponse({ error: "Seguimiento no configurado" }, 503);
+    if (!await context.env.USERS.get(`puzzle:${userId}:${id}`)) return jsonResponse({ error: "Puzzle no encontrado" }, 404);
+    const stub = context.env.PROGRESS.get(context.env.PROGRESS.idFromName(`puzzle:${id}`));
+    const response = await stub.fetch("https://progress/participants");
+    return new Response(response.body, { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (err) {
+    return errorResponse(err, "Error en progreso");
+  }
+}
+
+async function handleClearProgress(context: Parameters<PagesFunction<Env>>[0], id: string): Promise<Response> {
+  try {
+    const { userId } = await requireAuth(context.request, context.env);
+    if (!context.env.PROGRESS) return jsonResponse({ error: "Seguimiento no configurado" }, 503);
+    if (!await context.env.USERS.get(`puzzle:${userId}:${id}`)) return jsonResponse({ error: "Puzzle no encontrado" }, 404);
+    const stub = context.env.PROGRESS.get(context.env.PROGRESS.idFromName(`puzzle:${id}`));
+    const response = await stub.fetch("https://progress/participants", { method: "DELETE" });
+    return new Response(null, { status: response.status, headers: corsHeaders });
+  } catch (err) {
+    return errorResponse(err, "Error al borrar progreso");
   }
 }
 

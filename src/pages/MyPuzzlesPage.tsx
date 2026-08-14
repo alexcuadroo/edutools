@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useNoIndexMeta } from "@/hooks/useNoIndexMeta";
 import { useSavedPuzzlesStore } from "@/store/saved-puzzles-store";
-import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle } from "lucide-react";
+import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle, ChartNoAxesCombined } from "lucide-react";
 import { toast } from "react-toastify";
 import ShareModal from "@/components/ui/ShareModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -140,6 +140,11 @@ export default function MyPuzzlesPage() {
                   <Play className="w-4 h-4" />
                   Jugar
                 </Link>
+                {(["word-search", "crossword", "rosco"] as string[]).includes(puzzle.type) && (
+                  <Link to={`/mis-puzzles/${puzzle.id}/progreso`} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors" title="Ver progreso en vivo">
+                    <ChartNoAxesCombined className="w-4 h-4" /> Progreso
+                  </Link>
+                )}
                 <button
                   onClick={() => handleShare(puzzle.id)}
                   disabled={sharing === puzzle.id}

@@ -102,7 +102,7 @@ export default function ConfirmModal({
           onClick={onClose}
           aria-label="Cerrar"
           disabled={loading}
-          className="absolute top-4 right-4 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50"
+          className="cursor-pointer absolute top-4 right-4 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <X className="w-5 h-5" />
         </button>
@@ -118,14 +118,14 @@ export default function ConfirmModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
+            className="cursor-pointer flex-1 py-2 px-4 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             disabled={loading || disabled}
-            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${confirmClasses}`}
+            className={`cursor-pointer flex-1 py-2 px-4 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${confirmClasses}`}
           >
             {confirmLabel}
           </button>

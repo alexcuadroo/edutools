@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { RotateCcw, CheckCircle, XCircle } from "lucide-react";
 import type { PlayableCWWord } from "@/lib/share/types";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface CrosswordGameProps {
   grid: (string | null)[][];
@@ -11,6 +12,7 @@ interface CrosswordGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 interface CellPos {
@@ -31,6 +33,7 @@ export default function CrosswordGame({
   title,
   attemptCount,
   onAttemptIncrement,
+  onProgress,
 }: CrosswordGameProps) {
   const [userGrid, setUserGrid] = useState<(string | null)[][]>(() =>
     grid.map((row) => row.map((cell) => (cell === null ? null : "")))
@@ -108,6 +111,8 @@ export default function CrosswordGame({
     }
 
     setCellStatus(newStatus);
+    const correctWords = words.filter((word) => getWordCells(word).every((cell) => newStatus[cell.row]![cell.col] === "correct")).map((word) => word.word);
+    onProgress?.({ correctItems: correctWords, total: words.length, completed: allCorrect });
 
     if (allCorrect) {
       setCelebration(true);

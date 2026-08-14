@@ -8,7 +8,11 @@ export const onRequest: PagesFunction<{ ENVIRONMENT?: string }> = async (context
 
   const isProduction = context.env.ENVIRONMENT === "production";
   const ip = context.request.headers.get("CF-Connecting-IP") || "unknown";
-  const { allowed, remaining, resetAt } = checkRateLimit(ip, isProduction ? 30 : 10_000);
+  const pathname = new URL(context.request.url).pathname;
+  const isProgressRequest = /^\/api\/(progress\/|puzzles\/saved\/[^/]+\/progreso$)/.test(pathname);
+  const rateLimitKey = isProgressRequest ? `progress:${ip}` : ip;
+  const maxRequests = isProgressRequest ? (isProduction ? 600 : 10_000) : (isProduction ? 30 : 10_000);
+  const { allowed, remaining, resetAt } = checkRateLimit(rateLimitKey, maxRequests);
 
   if (!allowed) {
     return Response.json(

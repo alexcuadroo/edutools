@@ -1,0 +1,8 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "edutools-progress",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-14",
+  "durable_objects": { "bindings": [{ "name": "PROGRESS", "class_name": "PuzzleProgress" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PuzzleProgress"] }]
+}

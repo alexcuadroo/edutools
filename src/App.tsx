@@ -18,6 +18,7 @@ import VerifyPage from "@/pages/VerifyPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import MyPuzzlesPage from "@/pages/MyPuzzlesPage";
+import PuzzleProgressPage from "@/pages/PuzzleProgressPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import PlayHubPage from "@/pages/play/PlayHubPage";
 import PlayWordSearchPage from "@/pages/play/PlayWordSearchPage";
@@ -90,6 +91,7 @@ export default function App() {
             <Route path="/recuperar-cuenta" element={<ForgotPasswordPage />} />
             <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
             <Route path="/mis-puzzles" element={<MyPuzzlesPage />} />
+            <Route path="/mis-puzzles/:id/progreso" element={<PuzzleProgressPage />} />
           </Route>
           <Route element={<PlayableLayout />}>
             <Route path="/jugar" element={<PlayHubPage />} />

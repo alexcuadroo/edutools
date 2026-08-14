@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import CrosswordGame from "@/components/playable/CrosswordGame";
@@ -8,6 +9,9 @@ import {
 } from "@/lib/share/types";
 import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
+import { useLiveProgress } from "@/hooks/useLiveProgress";
+import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayCrosswordPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +28,8 @@ export default function PlayCrosswordPage() {
   });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("crucigrama", id || "");
+  const [progress, setProgress] = useState<ProgressSnapshot>({ correctItems: [], total: 0, completed: false });
+  const live = useLiveProgress(id, "crossword", progress);
 
   if (loading) {
     return (
@@ -72,7 +78,9 @@ export default function PlayCrosswordPage() {
         title={decoded.title}
         attemptCount={attemptCount}
         onAttemptIncrement={onAttemptIncrement}
+        onProgress={setProgress}
       />
+      {!live.confirmed && <StudentIdentityModal alias={live.alias} onConfirm={live.confirm} />}
     </div>
   );
 }
