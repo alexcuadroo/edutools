@@ -6,8 +6,9 @@ import type { AnagramResult } from "@/lib/puzzles/anagram/types";
 import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import type { MCResult } from "@/lib/puzzles/match-columns/types";
 import type { MemoryResult } from "@/lib/puzzles/memory/types";
+import type { RoscoResult } from "@/lib/puzzles/rosco/types";
 
-export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory";
+export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
 
 export interface WSPlayData {
   g: string[][];
@@ -200,5 +201,24 @@ export function memoryResultToPlayData(result: MemoryResult, title?: string): Me
     t: title || undefined,
     c: result.cards.map((card) => ({ id: card.id, p: card.pairId, ct: card.content, ty: card.type === "word" ? "w" : "d" })),
     p: result.pairs.map((pair) => ({ w: pair.word, d: pair.definition })),
+  };
+}
+
+export interface RoscoPlayData {
+  t?: string;
+  d: number;
+  e: { l: string; a: string; c: string; r: "starts-with" | "contains" }[];
+}
+
+export function roscoResultToPlayData(result: RoscoResult, title?: string): RoscoPlayData {
+  return {
+    t: title || undefined,
+    d: result.durationSeconds,
+    e: result.entries.map((entry) => ({
+      l: entry.letter,
+      a: entry.answer,
+      c: entry.clue,
+      r: entry.rule,
+    })),
   };
 }

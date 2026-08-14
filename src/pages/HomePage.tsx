@@ -16,6 +16,7 @@ import {
   Bookmark,
   Share2,
   Puzzle,
+  CircleHelp,
 } from "lucide-react";
 
 const PUZZLES = [
@@ -74,6 +75,13 @@ const PUZZLES = [
     description:
       "Genera juegos de memoria con pares de palabras y definiciones. Juega online o imprime las cards.",
     icon: Layers,
+  },
+  {
+    path: "/rosco",
+    title: "Rosco",
+    description:
+      "Creá un rosco digital de 26 preguntas con cronómetro, pasapalabra y vueltas automáticas.",
+    icon: CircleHelp,
   },
 ];
 

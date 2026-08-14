@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers, CircleHelp } from "lucide-react";
 import UserMenu from "@/components/auth/UserMenu";
 
 const TABS = [
@@ -13,6 +13,7 @@ const TABS = [
   { path: "/ordenar-oracion", label: "Ordenar Oración", icon: ListOrdered },
   { path: "/relacionar-columnas", label: "Relacionar Columnas", icon: Link2 },
   { path: "/memoria", label: "Memoria", icon: Layers },
+  { path: "/rosco", label: "Rosco", icon: CircleHelp },
 ];
 
 export default function Header() {

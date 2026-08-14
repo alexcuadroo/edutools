@@ -20,6 +20,7 @@ export const ALLOWED_PUZZLE_TYPES = [
   "sentence-order",
   "match-columns",
   "memory",
+  "rosco",
 ] as const;
 
 export type AllowedPuzzleType = (typeof ALLOWED_PUZZLE_TYPES)[number];

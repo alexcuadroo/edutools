@@ -11,6 +11,7 @@ const ALLOWED_TYPES = [
   "sentence-order",
   "match-columns",
   "memory",
+  "rosco",
 ] as const;
 const ID_PATTERN = /^[a-f0-9]{8}$/;
 
