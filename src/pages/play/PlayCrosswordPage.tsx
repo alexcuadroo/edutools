@@ -11,6 +11,7 @@ import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
 import { useLiveProgress } from "@/hooks/useLiveProgress";
 import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import { StudentAliasBadge } from "@/components/playable/StudentAliasBadge";
 import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayCrosswordPage() {
@@ -62,13 +63,16 @@ export default function PlayCrosswordPage() {
 
   return (
     <div className="py-4">
-      <Link
-        to="/"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-4 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Volver al inicio
-      </Link>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Volver al inicio
+        </Link>
+        {live.confirmed && <StudentAliasBadge alias={live.alias} />}
+      </div>
       <CrosswordGame
         grid={decoded.grid}
         rows={decoded.rows}
