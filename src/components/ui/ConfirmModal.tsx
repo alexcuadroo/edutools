@@ -1,5 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 
 interface ConfirmModalProps {
@@ -31,107 +30,58 @@ export default function ConfirmModal({
   children,
   ariaLabel,
 }: ConfirmModalProps) {
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
 
   useEffect(() => {
-    if (!open) return;
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape" && !loading) onClose();
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [open, onClose, loading]);
-
-  useEffect(() => {
-    if (!open) return;
     const dialog = dialogRef.current;
     if (!dialog) return;
-    const focusable = Array.from(
-      dialog.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-    );
-    const firstFocusable = focusable[0] ?? null;
-    const lastFocusable = focusable.length > 0 ? focusable[focusable.length - 1] as HTMLElement : null;
-    const previouslyFocused = document.activeElement as HTMLElement;
-    firstFocusable?.focus();
 
-    function handleTab(e: KeyboardEvent) {
-      if (e.key !== "Tab") return;
-      if (e.shiftKey) {
-        if (document.activeElement === firstFocusable) {
-          e.preventDefault();
-          lastFocusable?.focus();
-        }
-      } else {
-        if (document.activeElement === lastFocusable) {
-          e.preventDefault();
-          firstFocusable?.focus();
-        }
-      }
-    }
-    document.addEventListener("keydown", handleTab);
-    return () => {
-      document.removeEventListener("keydown", handleTab);
-      previouslyFocused?.focus();
-    };
+    if (open && !dialog.open) dialog.showModal();
+    if (!open && dialog.open) dialog.close();
   }, [open]);
 
-  if (!open) return null;
-
-  const toneDanger = tone === "danger";
-  const confirmClasses = toneDanger
-    ? "bg-red-600 hover:bg-red-700"
-    : "bg-indigo-600 hover:bg-indigo-700";
-
-  return createPortal(
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={ariaLabel ?? title}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !loading) onClose();
+  return (
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={ariaLabel ? undefined : titleId}
+      aria-label={ariaLabel}
+      aria-describedby={description ? descriptionId : undefined}
+      closedby="any"
+      className="m-auto w-full max-w-md rounded-2xl border-0 bg-transparent p-0 shadow-2xl backdrop:bg-slate-950/45"
+      onCancel={(event) => {
+        event.preventDefault();
+        if (!loading) onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget && !loading) onClose();
+      }}
+      onClose={() => {
+        if (open) onClose();
       }}
     >
-      <div
-        ref={dialogRef}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-zoom-in animate-duration-200"
-      >
-        <button
-          onClick={onClose}
-          aria-label="Cerrar"
-          disabled={loading}
-          className="cursor-pointer absolute top-4 right-4 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <X className="w-5 h-5" />
+      <div className="relative rounded-2xl bg-white p-6">
+        <button type="button" onClick={onClose} aria-label="Cerrar" disabled={loading} className="absolute right-3 top-3 inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50">
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
 
-        <div className="text-center mb-5">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          {description && <div className="text-sm text-gray-500 mt-1">{description}</div>}
+        <div className="mb-5 pr-10">
+          <h2 id={titleId} className="text-lg font-semibold text-gray-950">{title}</h2>
+          {description && <div id={descriptionId} className="mt-1 text-sm text-gray-600">{description}</div>}
         </div>
 
         {children && <div className="mb-5">{children}</div>}
 
-        <div className="flex gap-2">
-          <button
-            onClick={onClose}
-            disabled={loading}
-            className="cursor-pointer flex-1 py-2 px-4 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={onClose} disabled={loading} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50">
             {cancelLabel}
           </button>
-          <button
-            onClick={onConfirm}
-            disabled={loading || disabled}
-            className={`cursor-pointer flex-1 py-2 px-4 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${confirmClasses}`}
-          >
+          <button type="button" onClick={onConfirm} disabled={loading || disabled} className={`inline-flex min-h-11 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${tone === "danger" ? "bg-red-600 hover:bg-red-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
             {confirmLabel}
           </button>
         </div>
       </div>
-    </div>,
-    document.body
+    </dialog>
   );
 }
