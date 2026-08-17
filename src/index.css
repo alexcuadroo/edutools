@@ -108,9 +108,47 @@ body {
 
 .dark .landing-orb { opacity: 0; }
 
-/* El hero se separa del fondo sin convertir su contorno en un acento visual. */
+/* El hero acompaña el tema de la aplicación sin perder su jerarquía visual. */
+.home-hero {
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 58%, #eef2ff 100%);
+  border-color: #dce2ee;
+}
+
+.home-hero-title { color: #0f172a; }
+.home-hero-description { color: #52617a; }
+.home-hero-teacher { border-color: #dce2ee; }
+
+.home-hero-cta {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.home-hero-cta:hover {
+  background: #eef2ff;
+  border-color: #a5b4fc;
+  color: #3730a3;
+}
+
 .dark .home-hero {
+  background: #020617;
   border-color: color-mix(in srgb, var(--primary) 16%, var(--border));
+}
+
+.dark .home-hero-title { color: #ffffff; }
+.dark .home-hero-description { color: #cbd5e1; }
+.dark .home-hero-teacher { border-color: rgb(255 255 255 / 0.15); }
+
+.dark .home-hero-cta {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.2);
+  color: #ffffff;
+}
+
+.dark .home-hero-cta:hover {
+  background: rgb(255 255 255 / 0.15);
+  border-color: #c4b5fd;
+  color: #ffffff;
 }
 
 .student-entry {
