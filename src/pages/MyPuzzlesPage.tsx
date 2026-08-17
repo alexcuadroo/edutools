@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useNoIndexMeta } from "@/hooks/useNoIndexMeta";
 import { useSavedPuzzlesStore } from "@/store/saved-puzzles-store";
-import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle, ChartNoAxesCombined } from "lucide-react";
+import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle, ChartNoAxesCombined, RefreshCw } from "lucide-react";
 import { toast } from "react-toastify";
 import ShareModal from "@/components/ui/ShareModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -86,8 +86,25 @@ export default function MyPuzzlesPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Mis puzzles</h1>
+    <div className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium text-indigo-700">Biblioteca personal - BETA</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-gray-950">Mis puzzles</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            {puzzles.length === 1 ? "1 actividad guardada" : `${puzzles.length} actividades guardadas`}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => void fetch()}
+          disabled={loading}
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} aria-hidden="true" />
+          Actualizar
+        </button>
+      </div>
 
       {error && (
         <div className="mb-6 flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-200">
@@ -102,10 +119,10 @@ export default function MyPuzzlesPage() {
         </div>
       )}
 
-      {puzzles.length === 0 ? (
-        <div className="text-center py-16">
-          <FolderOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+      {!error && puzzles.length === 0 ? (
+        <section className="rounded-2xl border border-dashed border-indigo-200 bg-white px-6 py-16 text-center shadow-sm" aria-labelledby="empty-puzzles-title">
+          <FolderOpen className="mx-auto mb-4 h-14 w-14 text-indigo-300" aria-hidden="true" />
+          <h2 id="empty-puzzles-title" className="mb-2 text-xl font-semibold text-gray-700">
             Todavía no guardaste ningún puzzle
           </h2>
           <p className="text-gray-500 mb-6">
@@ -113,60 +130,67 @@ export default function MyPuzzlesPage() {
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
           >
             Crear puzzle
           </Link>
-        </div>
+        </section>
       ) : (
-        <div className="grid gap-4">
+        <ul className="grid gap-3" aria-label="Puzzles guardados" aria-busy={loading}>
           {puzzles.map((puzzle) => (
-            <div
+            <li
               key={puzzle.id}
-              className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4"
+              className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 truncate">{puzzle.title}</h3>
-                <p className="text-sm text-gray-500">
-                  {puzzleTypeLabel(puzzle.type)} · {formatRelativeTime(puzzle.createdAt)}
-                </p>
-              </div>
+              <article className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-base font-semibold text-gray-950">{puzzle.title}</h2>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {puzzleTypeLabel(puzzle.type)} <span aria-hidden="true">·</span> {formatRelativeTime(puzzle.createdAt)}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                 <Link
                   to={`/jugar/${puzzleTypeSlug(puzzle.type as PlayablePuzzleType)}/${puzzle.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
                 >
-                  <Play className="w-4 h-4" />
+                  <Play className="h-4 w-4" aria-hidden="true" />
                   Jugar
                 </Link>
                 {(["word-search", "crossword", "rosco"] as string[]).includes(puzzle.type) && (
-                  <Link to={`/mis-puzzles/${puzzle.id}/progreso`} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors" title="Ver progreso en vivo">
-                    <ChartNoAxesCombined className="w-4 h-4" /> Progreso
+                  <Link to={`/mis-puzzles/${puzzle.id}/progreso`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-800 transition-colors hover:bg-violet-100">
+                    <ChartNoAxesCombined className="h-4 w-4" aria-hidden="true" /> Progreso
                   </Link>
                 )}
                 <button
+                  type="button"
                   onClick={() => handleShare(puzzle.id)}
-                  disabled={sharing === puzzle.id}
-                  className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                  disabled={sharing !== null || deleting}
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {sharing === puzzle.id ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
-                    <Share2 className="w-4 h-4" />
+                    <Share2 className="h-4 w-4" aria-hidden="true" />
                   )}
-                  Compartir
+                  {sharing === puzzle.id ? "Compartiendo..." : "Compartir"}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setDeleteTarget({ id: puzzle.id, title: puzzle.title })}
-                  className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                  disabled={sharing !== null || deleting}
+                  aria-label={`Eliminar ${puzzle.title}`}
+                  title={`Eliminar ${puzzle.title}`}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-red-50 p-2 text-red-700 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                 </button>
-              </div>
-            </div>
+                </div>
+              </article>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       {shareOpen && shareUrl && (
