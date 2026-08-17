@@ -9,7 +9,7 @@ interface CardProps {
 export default function Card({ children, className = "", hover = false }: CardProps) {
   return (
     <div
-      className={`bg-white rounded-2xl border border-gray-200 p-6 ${hover ? "card-hover" : ""} ${className}`}
+      className={`rounded-2xl border border-border bg-surface p-6 text-foreground shadow-[var(--shadow-card)] ${hover ? "card-hover" : ""} ${className}`}
     >
       {children}
     </div>

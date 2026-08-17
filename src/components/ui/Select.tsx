@@ -13,13 +13,13 @@ export default function Select({ id, label, className = "", children, ...props }
   return (
     <div>
       {label && (
-        <label htmlFor={selectId} className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor={selectId} className="mb-1.5 block text-sm font-semibold text-foreground">
           {label}
         </label>
       )}
       <select
         id={selectId}
-        className={`select-field border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none appearance-none bg-white ${className}`}
+        className={`select-field appearance-none rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none ${className}`}
         {...props}
       >
         {children}

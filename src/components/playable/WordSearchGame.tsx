@@ -151,7 +151,7 @@ export default function WordSearchGame({ grid, size, words, title, attemptCount,
       </div>
 
       <div className="flex justify-center">
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 overflow-x-auto">
+        <div className="play-board rounded-xl p-3 border border-gray-100 overflow-x-auto">
           <div
             className="inline-grid select-none"
             style={{

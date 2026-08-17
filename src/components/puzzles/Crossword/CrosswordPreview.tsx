@@ -81,7 +81,7 @@ export default function CrosswordPreview() {
           </div>
         </div>
 
-        <div className="flex justify-center bg-white">
+        <div className="preview-document flex justify-center bg-white">
           <div
             style={{
               display: "grid",
