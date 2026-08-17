@@ -13,16 +13,16 @@ export default function Textarea({ id, label, hint, className = "", ...props }: 
   return (
     <div>
       {label && (
-        <label htmlFor={textareaId} className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor={textareaId} className="mb-1.5 block text-sm font-semibold text-foreground">
           {label}
         </label>
       )}
       <textarea
         id={textareaId}
-        className={`input-field w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm outline-none resize-y ${className}`}
+        className={`input-field w-full resize-y rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-subtle ${className}`}
         {...props}
       />
-      {hint && <p className="text-xs text-gray-400 mt-1.5">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-muted-subtle">{hint}</p>}
     </div>
   );
 }

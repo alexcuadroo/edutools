@@ -65,7 +65,9 @@ export const useSavedPuzzlesStore = create<SavedPuzzlesState>((set, get) => ({
     if (!response.ok) {
       throw new Error("Error al eliminar el puzzle");
     }
-    await get().fetch();
+    set((state) => ({
+      puzzles: state.puzzles.filter((puzzle) => puzzle.id !== id),
+    }));
   },
 
   share: async (id) => {
@@ -74,7 +76,13 @@ export const useSavedPuzzlesStore = create<SavedPuzzlesState>((set, get) => ({
       throw new Error("Error al compartir el puzzle");
     }
     const result = await response.json();
-    await get().fetch();
+    set((state) => ({
+      puzzles: state.puzzles.map((puzzle) =>
+        puzzle.id === id
+          ? { ...puzzle, shareCount: puzzle.shareCount + 1 }
+          : puzzle
+      ),
+    }));
     return result;
   },
 

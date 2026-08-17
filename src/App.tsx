@@ -1,35 +1,7 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import PlayableLayout from "@/components/layout/PlayableLayout";
-import HomePage from "@/pages/HomePage";
-import WordSearchPage from "@/pages/WordSearchPage";
-import CrosswordPage from "@/pages/CrosswordPage";
-import FillBlanksPage from "@/pages/FillBlanksPage";
-import HangmanPage from "@/pages/HangmanPage";
-import AnagramPage from "@/pages/AnagramPage";
-import SentenceOrderPage from "@/pages/SentenceOrderPage";
-import MatchColumnsPage from "@/pages/MatchColumnsPage";
-import MemoryPage from "@/pages/MemoryPage";
-import RoscoPage from "@/pages/RoscoPage";
-import LoginPage from "@/pages/LoginPage";
-import SignupPage from "@/pages/SignupPage";
-import VerifyPage from "@/pages/VerifyPage";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
-import MyPuzzlesPage from "@/pages/MyPuzzlesPage";
-import PuzzleProgressPage from "@/pages/PuzzleProgressPage";
-import NotFoundPage from "@/pages/NotFoundPage";
-import PlayHubPage from "@/pages/play/PlayHubPage";
-import PlayWordSearchPage from "@/pages/play/PlayWordSearchPage";
-import PlayCrosswordPage from "@/pages/play/PlayCrosswordPage";
-import PlayFillBlanksPage from "@/pages/play/PlayFillBlanksPage";
-import PlayHangmanPage from "@/pages/play/PlayHangmanPage";
-import PlayAnagramPage from "@/pages/play/PlayAnagramPage";
-import PlaySentenceOrderPage from "@/pages/play/PlaySentenceOrderPage";
-import PlayMatchColumnsPage from "@/pages/play/PlayMatchColumnsPage";
-import PlayMemoryPage from "@/pages/play/PlayMemoryPage";
-import PlayRoscoPage from "@/pages/play/PlayRoscoPage";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useAuthStore } from "@/store/auth-store";
@@ -43,6 +15,35 @@ import { matchColumnsGenerator } from "@/lib/puzzles/match-columns/generator";
 import { memoryGenerator } from "@/lib/puzzles/memory/generator";
 import { roscoGenerator } from "@/lib/puzzles/rosco/generator";
 import { registerPuzzle } from "@/lib/puzzles/registry";
+
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const WordSearchPage = lazy(() => import("@/pages/WordSearchPage"));
+const CrosswordPage = lazy(() => import("@/pages/CrosswordPage"));
+const FillBlanksPage = lazy(() => import("@/pages/FillBlanksPage"));
+const HangmanPage = lazy(() => import("@/pages/HangmanPage"));
+const AnagramPage = lazy(() => import("@/pages/AnagramPage"));
+const SentenceOrderPage = lazy(() => import("@/pages/SentenceOrderPage"));
+const MatchColumnsPage = lazy(() => import("@/pages/MatchColumnsPage"));
+const MemoryPage = lazy(() => import("@/pages/MemoryPage"));
+const RoscoPage = lazy(() => import("@/pages/RoscoPage"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const SignupPage = lazy(() => import("@/pages/SignupPage"));
+const VerifyPage = lazy(() => import("@/pages/VerifyPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
+const MyPuzzlesPage = lazy(() => import("@/pages/MyPuzzlesPage"));
+const PuzzleProgressPage = lazy(() => import("@/pages/PuzzleProgressPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+const PlayHubPage = lazy(() => import("@/pages/play/PlayHubPage"));
+const PlayWordSearchPage = lazy(() => import("@/pages/play/PlayWordSearchPage"));
+const PlayCrosswordPage = lazy(() => import("@/pages/play/PlayCrosswordPage"));
+const PlayFillBlanksPage = lazy(() => import("@/pages/play/PlayFillBlanksPage"));
+const PlayHangmanPage = lazy(() => import("@/pages/play/PlayHangmanPage"));
+const PlayAnagramPage = lazy(() => import("@/pages/play/PlayAnagramPage"));
+const PlaySentenceOrderPage = lazy(() => import("@/pages/play/PlaySentenceOrderPage"));
+const PlayMatchColumnsPage = lazy(() => import("@/pages/play/PlayMatchColumnsPage"));
+const PlayMemoryPage = lazy(() => import("@/pages/play/PlayMemoryPage"));
+const PlayRoscoPage = lazy(() => import("@/pages/play/PlayRoscoPage"));
 
 let didInit = false;
 
@@ -73,7 +74,14 @@ export default function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <ScrollToTop />
-        <Routes>
+        <Suspense
+          fallback={
+            <div className="py-20 text-center text-gray-500" role="status" aria-live="polite">
+              Cargando página…
+            </div>
+          }
+        >
+          <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/sopa-de-letras" element={<WordSearchPage />} />
@@ -106,7 +114,8 @@ export default function App() {
             <Route path="/jugar/rosco/:id" element={<PlayRoscoPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </ErrorBoundary>
   );

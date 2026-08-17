@@ -262,7 +262,7 @@ export default function CrosswordGame({
       </div>
 
       <div className="flex justify-center">
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 overflow-x-auto relative">
+        <div className="play-board relative rounded-xl p-3 border border-gray-100 overflow-x-auto">
           <div
             ref={gridRef}
             className="inline-grid select-none"

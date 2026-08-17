@@ -14,11 +14,12 @@ export default function ExampleButton({
 }: ExampleButtonProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-500 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700 transition-all cursor-pointer"
+      className="group inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-transparent bg-primary-subtle px-3 text-xs font-semibold text-primary transition-colors hover:border-primary/30 hover:bg-primary hover:text-primary-foreground"
     >
       {icon ?? (
-        <Lightbulb className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+        <Lightbulb className="h-3.5 w-3.5" />
       )}
       {label}
     </button>
