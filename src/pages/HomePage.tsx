@@ -40,6 +40,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const isCodeComplete = code.trim().length === 8;
 
   const handlePlay = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -66,31 +67,31 @@ export default function HomePage() {
 
   return (
     <div className="py-6 sm:py-10">
-      <section className="home-hero relative overflow-hidden rounded-3xl border border-indigo-100 bg-white px-5 py-8 shadow-sm sm:px-10 sm:py-12" aria-labelledby="home-title">
+      <section className="home-hero relative overflow-hidden rounded-[2rem] border px-5 py-8 shadow-[0_28px_80px_-42px_rgba(67,56,202,0.45)] sm:px-10 sm:py-12" aria-labelledby="home-title">
         <div className="landing-orb pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-violet-100/70 blur-3xl" aria-hidden="true" />
         <div className="landing-orb pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-sky-100/70 blur-3xl" aria-hidden="true" />
-        <div className="relative mx-auto max-w-3xl text-center">
-          <h1 id="home-title" className="text-balance text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
-            Aprender jugando empieza acá.
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-slate-600 sm:text-lg">
-            Elegí cómo querés continuar: jugá una actividad que te compartieron o creá una nueva para tu clase.
-          </p>
-        </div>
+        <div className="relative mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-12">
+          <div className="max-w-xl">
+            <h1 id="home-title" className="home-hero-title text-balance text-4xl font-bold tracking-[-0.04em] sm:text-6xl">
+              Aprender jugando empieza acá.
+            </h1>
+            <p className="home-hero-description mt-5 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
+              Elegí cómo querés continuar: jugá una actividad que te compartieron o creá una nueva para tu clase.
+            </p>
+          </div>
 
-        <div className="relative mx-auto mt-8 grid max-w-4xl gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="student-entry rounded-2xl bg-indigo-700 p-5 text-white sm:p-7" aria-labelledby="student-title">
+          <section className="student-entry rounded-3xl bg-indigo-600 p-5 text-white shadow-[0_20px_50px_-24px_rgba(129,140,248,0.9)] sm:p-7" aria-labelledby="student-title">
             <div className="flex items-start gap-3">
               <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15"><Gamepad2 className="h-6 w-6" aria-hidden="true" /></span>
               <div>
                 <p className="text-sm font-semibold text-indigo-100">Para estudiantes</p>
-                <h2 id="student-title" className="mt-1 text-2xl font-bold">¿Tenés un código?</h2>
+                <h2 id="student-title" className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">¿Tenés un código?</h2>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-indigo-100">Pegalo acá y entrá directo a tu puzzle. No necesitás cuenta.</p>
-            <form className="mt-5" onSubmit={handlePlay} noValidate>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-indigo-100">Pegalo acá y entrá directo a tu puzzle. No necesitás cuenta.</p>
+            <form className="mt-6" onSubmit={handlePlay} noValidate>
               <label htmlFor="home-puzzle-code" className="sr-only">Código del puzzle</label>
-              <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="flex flex-col gap-2.5 sm:flex-row">
                 <input
                   id="home-puzzle-code"
                   value={code}
@@ -104,9 +105,9 @@ export default function HomePage() {
                   spellCheck={false}
                   enterKeyHint="go"
                   disabled={loading}
-                  className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-surface px-4 text-center font-mono text-base font-bold tracking-[0.14em] text-foreground outline-none placeholder:text-xs placeholder:font-semibold placeholder:tracking-normal placeholder:text-muted-subtle focus:border-indigo-200 disabled:opacity-60 sm:text-left"
+                  className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-slate-950/80 px-4 text-center font-mono text-base font-bold tracking-[0.14em] text-white outline-none placeholder:text-xs placeholder:font-semibold placeholder:tracking-normal placeholder:text-slate-400 focus:border-amber-200 disabled:opacity-60 sm:text-left"
                 />
-                <button type="submit" disabled={loading} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-300 px-5 text-sm font-bold text-amber-950 shadow-sm transition-colors hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-60">
+                <button type="submit" disabled={loading || !isCodeComplete} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-300 px-6 text-sm font-bold text-amber-950 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0">
                   {loading ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Buscando…</> : <>Jugar <ArrowRight className="h-4 w-4" aria-hidden="true" /></>}
                 </button>
               </div>
@@ -115,34 +116,34 @@ export default function HomePage() {
             </form>
           </section>
 
-          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7" aria-labelledby="teacher-title">
+          <section className="home-hero-teacher border-t pt-6 lg:col-span-2 lg:flex lg:items-center lg:justify-between lg:gap-8" aria-labelledby="teacher-title">
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><BookOpenCheck className="h-6 w-6" aria-hidden="true" /></span>
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-300 text-emerald-950"><BookOpenCheck className="h-6 w-6" aria-hidden="true" /></span>
               <div>
-                <p className="text-sm font-semibold text-emerald-800">Para docentes</p>
-                <h2 id="teacher-title" className="mt-1 text-2xl font-bold text-slate-950">Creá una actividad</h2>
+                <p className="text-sm font-semibold text-emerald-700">Para docentes</p>
+                <h2 id="teacher-title" className="home-hero-title mt-1 text-xl font-bold">Creá una actividad</h2>
+                <p className="home-hero-description mt-2 max-w-xl text-sm leading-relaxed">Generá, imprimí o compartí puzzles para tu grupo. Guardar es opcional.</p>
               </div>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">Generá, imprimí o compartí puzzles para tu grupo. Guardar es opcional.</p>
-            <a href="#actividades" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 no-underline shadow-sm transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-800">
+            <a href="#actividades" className="home-hero-cta mt-5 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold no-underline transition-colors lg:mt-0">
               Crear un puzzle <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </section>
         </div>
       </section>
 
-      <section id="actividades" className="mx-auto max-w-5xl scroll-mt-24 py-14 sm:py-20" aria-labelledby="catalog-title">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <section id="actividades" className="mx-auto max-w-5xl scroll-mt-24 py-16 sm:py-24" aria-labelledby="catalog-title">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
             <p className="text-sm font-semibold text-indigo-700">Para docentes</p>
             <h2 id="catalog-title" className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Elegí el tipo de actividad</h2>
           </div>
         </div>
-        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PUZZLES.map((puzzle) => {
             const Icon = puzzle.icon;
             return (
-              <Link key={puzzle.path} to={puzzle.path} className="group rounded-2xl border border-slate-200 bg-white p-5 no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md">
+              <Link key={puzzle.path} to={puzzle.path} className="group rounded-2xl border border-slate-200 bg-white p-5 no-underline shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_18px_35px_-24px_rgba(67,56,202,0.8)] focus-visible:-translate-y-1">
                 <div className="flex items-start gap-3">
                   <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 transition-colors group-hover:bg-indigo-600 group-hover:text-white"><Icon className="h-5 w-5" aria-hidden="true" /></span>
                   <div>
@@ -163,9 +164,21 @@ export default function HomePage() {
           <h2 id="how-title" className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Preparás una actividad. Ellos entran a jugar.</h2>
         </div>
         <ol className="mt-8 grid gap-4 md:grid-cols-3">
-          <li className="rounded-2xl border border-white/10 bg-white/5 p-5"><span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-slate-950">1</span><h3 className="mt-4 font-semibold">Creá</h3><p className="mt-1 text-sm leading-relaxed text-slate-300">Elegí un formato y cargá el contenido de tu clase.</p></li>
-          <li className="rounded-2xl border border-white/10 bg-white/5 p-5"><span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-slate-950">2</span><h3 className="mt-4 font-semibold">Compartí</h3><p className="mt-1 text-sm leading-relaxed text-slate-300">Enviá un enlace o el código de ocho caracteres.</p></li>
-          <li className="rounded-2xl border border-white/10 bg-white/5 p-5"><span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-slate-950">3</span><h3 className="mt-4 font-semibold">Jugá</h3><p className="mt-1 text-sm leading-relaxed text-slate-300">El estudiante entra desde arriba, sin crear una cuenta.</p></li>
+          <li className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-violet-950">1</span>
+            <h3 className="mt-4 font-semibold">Creá</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-300">Elegí un formato y cargá el contenido de tu clase.</p>
+          </li>
+          <li className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-violet-950">2</span>
+            <h3 className="mt-4 font-semibold">Compartí</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-300">Enviá un enlace o el código de ocho caracteres.</p>
+          </li>
+          <li className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-400 font-bold text-violet-950">3</span>
+            <h3 className="mt-4 font-semibold">Jugá</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-300">El estudiante entra desde arriba, sin crear una cuenta.</p>
+          </li>
         </ol>
         <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-300"><span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-emerald-300" aria-hidden="true" /> Sin instalar nada</span><span className="inline-flex items-center gap-2"><FileDown className="h-4 w-4 text-emerald-300" aria-hidden="true" /> PDF listo para imprimir</span><span className="inline-flex items-center gap-2"><Share2 className="h-4 w-4 text-emerald-300" aria-hidden="true" /> Enlace para compartir</span></div>
       </section>
