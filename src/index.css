@@ -2,17 +2,184 @@
 @import "tailwind-animations";
 @import "react-toastify/dist/ReactToastify.css";
 
-html {
+:root {
+  --background: #f6f7fb;
+  --surface: #ffffff;
+  --surface-muted: #f1f3f8;
+  --foreground: #111827;
+  --muted: #52617a;
+  --muted-subtle: #73809a;
+  --border: #dce2ee;
+  --primary: #4338ca;
+  --primary-hover: #3730a3;
+  --primary-foreground: #ffffff;
+  --primary-subtle: #eef2ff;
+  --success: #047857;
+  --success-subtle: #ecfdf5;
+  --danger: #dc2626;
+  --danger-subtle: #fff1f2;
+  --warning: #b45309;
+  --shadow-card: 0 12px 30px -20px rgb(15 23 42 / 0.25);
+  color-scheme: light;
   scrollbar-gutter: stable;
-  scrollbar-color: #4f46e5 transparent;
+  scrollbar-color: var(--primary) transparent;
   scrollbar-width: thin;
+}
+
+html.dark {
+  --background: #111827;
+  --surface: #182235;
+  --surface-muted: #202c42;
+  --foreground: #f8fafc;
+  --muted: #b4c0d3;
+  --muted-subtle: #91a0b9;
+  --border: #334155;
+  --primary: #a5b4fc;
+  --primary-hover: #c7d2fe;
+  --primary-foreground: #1e1b4b;
+  --primary-subtle: #252b4a;
+  --success: #6ee7b7;
+  --success-subtle: #123c35;
+  --danger: #fca5a5;
+  --danger-subtle: #4a1d28;
+  --warning: #fcd34d;
+  --shadow-card: 0 18px 38px -22px rgb(0 0 0 / 0.8);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-subtle: var(--muted-subtle);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(180deg, #fafbff 0%, #f3f4f8 100%);
+  font-family: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
   min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* Semantic dark-mode bridge for the existing Tailwind utility surface. */
+.dark .bg-white { background-color: var(--surface); }
+.dark .bg-white\/80 { background-color: color-mix(in srgb, var(--surface) 80%, transparent); }
+.dark .bg-gray-50, .dark .bg-slate-50 { background-color: var(--background); }
+.dark .bg-gray-100, .dark .bg-slate-100 { background-color: var(--surface-muted); }
+.dark .bg-gray-200, .dark .bg-slate-200 { background-color: #2d3a50; }
+.dark .text-gray-900, .dark .text-gray-950, .dark .text-slate-900, .dark .text-slate-950, .dark .text-gray-800, .dark .text-slate-800 { color: var(--foreground); }
+.dark .text-gray-700, .dark .text-slate-700, .dark .text-gray-600, .dark .text-slate-600 { color: var(--muted); }
+.dark .text-gray-500, .dark .text-slate-500, .dark .text-gray-400, .dark .text-slate-400 { color: var(--muted-subtle); }
+.dark .border-gray-100, .dark .border-gray-200, .dark .border-gray-300, .dark .border-slate-100, .dark .border-slate-200, .dark .border-slate-300 { border-color: var(--border); }
+.dark .bg-indigo-50, .dark .bg-violet-50 { background-color: var(--primary-subtle); }
+.dark .bg-indigo-100, .dark .bg-violet-100 { background-color: var(--primary-subtle); }
+.dark .bg-indigo-50\/60 { background-color: var(--primary-subtle); }
+.dark .bg-indigo-50\/70 { background-color: var(--primary-subtle); }
+.dark .text-indigo-600, .dark .text-indigo-700, .dark .text-indigo-800, .dark .text-violet-700, .dark .text-violet-800 { color: var(--primary); }
+.dark .text-indigo-900, .dark .text-indigo-950 { color: var(--foreground); }
+.dark .border-indigo-100, .dark .border-indigo-200, .dark .border-indigo-300, .dark .border-violet-100, .dark .border-violet-200 { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+.dark .bg-emerald-50 { background-color: var(--success-subtle); }
+.dark .text-emerald-600, .dark .text-emerald-700, .dark .text-emerald-800 { color: var(--success); }
+.dark .bg-red-50 { background-color: var(--danger-subtle); }
+.dark .text-red-600, .dark .text-red-700, .dark .text-red-800 { color: var(--danger); }
+.dark .border-red-100, .dark .border-red-200 { border-color: color-mix(in srgb, var(--danger) 42%, var(--border)); }
+.dark .hover\:bg-gray-50:hover, .dark .hover\:bg-gray-100:hover { background-color: var(--surface-muted); }
+.dark .hover\:bg-white:hover { background-color: var(--surface-muted); }
+.dark .hover\:bg-indigo-50:hover, .dark .hover\:bg-indigo-100:hover { background-color: color-mix(in srgb, var(--primary-subtle) 70%, var(--primary)); }
+.dark .hover\:bg-emerald-50:hover, .dark .hover\:bg-emerald-100:hover { background-color: color-mix(in srgb, var(--success-subtle) 75%, var(--success)); }
+
+.dark .landing-orb { opacity: 0; }
+
+/* El hero se separa del fondo sin convertir su contorno en un acento visual. */
+.dark .home-hero {
+  border-color: color-mix(in srgb, var(--primary) 16%, var(--border));
+}
+
+.student-entry {
+  box-shadow: 0 18px 34px -22px rgb(67 56 202 / 0.8);
+}
+
+.dark .student-entry {
+  box-shadow: 0 16px 30px -22px rgb(0 0 0 / 0.75);
+}
+
+/* Puzzle grids are documents: preserve their deliberate paper contrast in every app theme. */
+.preview-document,
+.preview-document * {
+  color-scheme: light;
+}
+.preview-document { color: #111827; }
+.dark .preview-document,
+.dark .preview-document .bg-white,
+.dark .preview-document [class*="bg-gray-"],
+.dark .preview-document [class*="bg-slate-"] {
+  background-color: #fff !important;
+}
+.dark .preview-document [class*="text-gray-"],
+.dark .preview-document [class*="text-slate-"] {
+  color: #111827 !important;
+}
+.dark .preview-document [class*="border-gray-"],
+.dark .preview-document [class*="border-slate-"] {
+  border-color: #d1d5db !important;
+}
+
+/* Los tableros interactivos son superficies de juego: conservan una paleta de
+ * papel para que letras, casillas y números no pierdan contraste en oscuro. */
+.play-board,
+.play-board * {
+  color-scheme: light;
+}
+
+.play-board {
+  background: #fff;
+  color: #1f2937;
+  box-shadow: 0 8px 18px rgb(15 23 42 / 0.16);
+}
+
+.dark .play-board {
+  background: #fff;
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
+}
+
+.dark .play-board [class*="text-gray-"],
+.dark .play-board [class*="text-slate-"] {
+  color: #1f2937 !important;
+}
+
+.dark .play-board [class*="border-gray-"],
+.dark .play-board [class*="border-slate-"] {
+  border-color: #d1d5db !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ============================================
@@ -23,22 +190,21 @@ body {
 .btn-primary {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
+  background: var(--primary);
+  color: var(--primary-foreground);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #4338ca, #4f46e5);
+  background: var(--primary-hover);
   transform: scale(1.03) translateY(-1px);
-  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.35),
-              0 4px 12px -2px rgba(79, 70, 229, 0.2);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-primary:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 8px -2px rgba(79, 70, 229, 0.3);
+  box-shadow: none;
 }
 
 /* Ripple effect container */
@@ -100,7 +266,7 @@ body {
 }
 
 .btn-ghost:hover {
-  background: rgba(79, 70, 229, 0.08);
+  background: var(--primary-subtle);
 }
 
 .btn-ghost:active {
@@ -113,7 +279,7 @@ body {
 }
 
 .btn-link:hover {
-  color: #4338ca;
+  color: var(--primary-hover);
 }
 
 /* ============================================
@@ -127,9 +293,8 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.08),
-              0 4px 16px -4px rgba(79, 70, 229, 0.06);
-  border-color: rgba(79, 70, 229, 0.2);
+  box-shadow: var(--shadow-card);
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
 }
 
 /* Card icon container hover */
@@ -139,7 +304,7 @@ body {
 
 .card-hover:hover .card-icon {
   transform: scale(1.1) rotate(-3deg);
-  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  background: var(--primary-subtle);
 }
 
 /* ============================================
@@ -151,8 +316,8 @@ body {
 }
 
 .input-field:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15),
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent),
               0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
@@ -167,8 +332,8 @@ body {
 }
 
 .select-field:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
 /* ============================================
@@ -287,7 +452,7 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8);
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, white));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -295,6 +460,6 @@ body {
 
 /* Subtle background pattern */
 .bg-pattern {
-  background-image: radial-gradient(circle at 1px 1px, rgba(99, 102, 241, 0.03) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--primary) 8%, transparent) 1px, transparent 0);
   background-size: 24px 24px;
 }
