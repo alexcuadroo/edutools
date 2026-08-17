@@ -137,7 +137,6 @@ export default function HomePage() {
             <p className="text-sm font-semibold text-indigo-700">Para docentes</p>
             <h2 id="catalog-title" className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Elegí el tipo de actividad</h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-slate-600">Creá una actividad, compartila con un código o descargala para imprimir.</p>
         </div>
         <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {PUZZLES.map((puzzle) => {
