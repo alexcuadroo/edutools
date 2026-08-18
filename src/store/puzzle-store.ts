@@ -9,6 +9,7 @@ import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import type { MCResult } from "@/lib/puzzles/match-columns/types";
 import type { MemoryResult } from "@/lib/puzzles/memory/types";
 import type { RoscoResult } from "@/lib/puzzles/rosco/types";
+import type { WordleResult } from "@/lib/puzzles/wordle/types";
 
 interface PuzzleState {
   wordSearchTitle: string;
@@ -60,12 +61,17 @@ interface PuzzleState {
   roscoResult: RoscoResult | null;
   setRoscoResult: (result: RoscoResult | null) => void;
 
+  wordleTitle: string;
+  setWordleTitle: (t: string) => void;
+  wordleResult: WordleResult | null;
+  setWordleResult: (result: WordleResult | null) => void;
+
   loading: boolean;
   setLoading: (v: boolean) => void;
   error: string | null;
 
-  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
-  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco") => void;
+  activeTab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco" | "wordle";
+  setActiveTab: (tab: "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco" | "wordle") => void;
   setError: (e: string | null) => void;
 }
 
@@ -118,6 +124,11 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setRoscoTitle: (title) => set({ roscoTitle: title }),
   roscoResult: null,
   setRoscoResult: (result) => set({ roscoResult: result }),
+
+  wordleTitle: "",
+  setWordleTitle: (title) => set({ wordleTitle: title }),
+  wordleResult: null,
+  setWordleResult: (result) => set({ wordleResult: result }),
 
   loading: false,
   setLoading: (v) => set({ loading: v }),
