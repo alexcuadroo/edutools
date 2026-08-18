@@ -4,10 +4,11 @@ Herramientas educativas gratuitas para crear materiales de clase.
 
 ## Acerca de
 
-EduTools es una plataforma web que genera actividades educativas imprimibles:
-- Sopa de letras personalizadas
-- Crucigramas con pistas
-- Ejercicios de rellenar huecos
+EduTools es una plataforma web que genera actividades educativas imprimibles y jugables:
+- 10 tipos de puzzle: sopa de letras, crucigramas, rellenar huecos, ahorcado, anagramas, ordenar oraciones, relacionar columnas, memoria, rosco y cadenas de palabras (Wordle)
+- Exportación a PDF y PNG (versión estudiante y solución)
+- Juegos digitales compartibles con código corto y QR
+- Seguimiento de progreso en vivo para docentes
 
 URL: https://tools.edualex.uy
 
@@ -16,6 +17,15 @@ URL: https://tools.edualex.uy
 - [Sopa de Letras](https://tools.edualex.uy/sopa-de-letras): Crea sopas de letras con palabras personalizadas y exporta en PDF o PNG.
 - [Crucigrama](https://tools.edualex.uy/crucigrama): Genera crucigramas con definiciones personalizadas.
 - [Rellenar Huecos](https://tools.edualex.uy/rellenar-huecos): Crea ejercicios de completar texto con palabras faltantes.
+- [Adivina la Palabra](https://tools.edualex.uy/adivina-la-palabra): Genera ejercicios de definiciones para descubrir la respuesta (ahorcado).
+- [Anagrama](https://tools.edualex.uy/anagrama): Crea anagramas a partir de palabras o frases.
+- [Ordenar Oración](https://tools.edualex.uy/ordenar-oracion): Construye oraciones a partir de palabras desordenadas.
+- [Relacionar Columnas](https://tools.edualex.uy/relacionar-columnas): Une conceptos con sus definiciones.
+- [Memoria](https://tools.edualex.uy/memoria): Crea juegos de pares de palabras y definiciones.
+- [Rosco](https://tools.edualex.uy/rosco): Crea un rosco estilo pasapalabra con cronómetro.
+- [Cadenas de Palabras](https://tools.edualex.uy/cadenas-de-palabras): Crea un Wordle temático de 5 letras.
+
+Para jugar, el estudiante ingresa el código de 8 caracteres en https://tools.edualex.uy/jugar
 
 ## Recursos
 
