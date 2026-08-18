@@ -2,6 +2,22 @@
 @import "tailwind-animations";
 @import "react-toastify/dist/ReactToastify.css";
 
+@font-face {
+  font-family: "Nunito Sans";
+  src: url("/fonts/nunito-sans-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  src: url("/fonts/nunito-sans-italic-variable.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
 :root {
   --background: #f6f7fb;
   --surface: #ffffff;
