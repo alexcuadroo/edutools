@@ -2,15 +2,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, RotateCcw } from "lucide-react";
 import { normalizeWordleWord } from "@/lib/puzzles/wordle/generator";
 import type { WordleEntry } from "@/lib/puzzles/wordle/types";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 type LetterState = "correct" | "present" | "absent";
 interface Guess { word: string; states: LetterState[]; }
-interface WordleGameProps { words: WordleEntry[]; title?: string; }
+interface WordleGameProps { words: WordleEntry[]; title?: string; onProgress?: (progress: ProgressSnapshot) => void; }
 const STATE_CLASS: Record<LetterState, string> = { correct: "border-emerald-600 bg-emerald-600 text-white", present: "border-amber-500 bg-amber-500 text-white", absent: "border-slate-500 bg-slate-500 text-white" };
 function evaluateGuess(guess: string, answer: string): LetterState[] { const states: LetterState[] = Array<LetterState>(answer.length).fill("absent"); const remaining = answer.split(""); for (let i = 0; i < answer.length; i++) if (guess[i] === answer[i]) { states[i] = "correct"; remaining[i] = ""; } for (let i = 0; i < answer.length; i++) if (states[i] !== "correct") { const found = remaining.indexOf(guess[i]!); if (found >= 0) { states[i] = "present"; remaining[found] = ""; } } return states; }
-export default function WordleGame({ words, title }: WordleGameProps) {
+export default function WordleGame({ words, title, onProgress }: WordleGameProps) {
   const [round, setRound] = useState(0); const [guesses, setGuesses] = useState<Guess[]>([]); const [value, setValue] = useState(""); const [message, setMessage] = useState(""); const inputRef = useRef<HTMLInputElement>(null);
   const current = words[round]!; const answer = normalizeWordleWord(current.word); const wordLength = answer.length; const won = guesses.some((guess) => guess.word === answer); const roundFinished = won || guesses.length === 6; const allFinished = roundFinished && round === words.length - 1;
   const keyboard = useMemo(() => { const states = new Map<string, LetterState>(); const rank = { absent: 1, present: 2, correct: 3 }; guesses.forEach((guess) => guess.word.split("").forEach((letter, i) => { const next = guess.states[i]!; if (!states.has(letter) || rank[next] > rank[states.get(letter)!]) states.set(letter, next); })); return states; }, [guesses]);
+  useEffect(() => { onProgress?.({ correctItems: words.slice(0, round).map((entry) => entry.word).concat(won ? [current.word] : []), incorrectItems: words.slice(0, round).map((entry) => entry.word).concat(roundFinished && !won ? [current.word] : []), total: words.length, completed: allFinished }); }, [allFinished, current.word, onProgress, round, roundFinished, won, words]);
   useEffect(() => { if (!roundFinished) inputRef.current?.focus(); }, [roundFinished, guesses.length, round]);
   const submit = (event: React.FormEvent) => { event.preventDefault(); const guess = normalizeWordleWord(value); if (roundFinished) return; if (!new RegExp(`^[A-ZÑ]{${wordLength}}$`).test(guess)) { setMessage(`Escribí una palabra de ${wordLength} letras.`); return; } setGuesses((currentGuesses) => [...currentGuesses, { word: guess, states: evaluateGuess(guess, answer) }]); setValue(""); setMessage(guess === answer ? "¡Excelente! Adivinaste la palabra." : guesses.length === 5 ? `La palabra era ${answer}.` : "Pista actualizada. Probá otra palabra."); };
   const next = () => { setRound((currentRound) => currentRound + 1); setGuesses([]); setValue(""); setMessage(`Palabra ${round + 2} de ${words.length}.`); };

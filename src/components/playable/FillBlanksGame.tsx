@@ -1,5 +1,6 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { RotateCcw, CheckCircle } from "lucide-react";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface FillBlanksGameProps {
   text: string;
@@ -8,6 +9,7 @@ interface FillBlanksGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 interface Token {
@@ -35,7 +37,7 @@ function tokenize(text: string): Token[] {
   return tokens;
 }
 
-export default function FillBlanksGame({ text, blanks, options, title, attemptCount, onAttemptIncrement }: FillBlanksGameProps) {
+export default function FillBlanksGame({ text, blanks, options, title, attemptCount, onAttemptIncrement, onProgress }: FillBlanksGameProps) {
   const [selections, setSelections] = useState<Record<number, string>>({});
   const [checked, setChecked] = useState(false);
   const [status, setStatus] = useState<Record<number, "correct" | "incorrect">>({});
@@ -47,6 +49,7 @@ export default function FillBlanksGame({ text, blanks, options, title, attemptCo
     blanks.forEach((b, i) => map.set(b.tokenIndex, i));
     return map;
   }, [blanks]);
+  useEffect(() => { onProgress?.({ correctItems: blanks.filter((_, index) => status[index] === "correct").map((blank) => blank.word), incorrectItems: blanks.filter((_, index) => status[index] === "incorrect").map((blank) => blank.word), total: blanks.length, completed: celebration }); }, [blanks, celebration, onProgress, status]);
 
   const handleSelect = useCallback((blankIndex: number, option: string) => {
     setSelections((prev) => ({ ...prev, [blankIndex]: option }));

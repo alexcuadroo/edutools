@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { RotateCcw, Trophy, Link } from "lucide-react";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface MatchColumnsGameProps {
   matches: { word: string; definition: string }[];
@@ -7,6 +8,7 @@ interface MatchColumnsGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 const PAIR_COLORS = [
@@ -26,6 +28,7 @@ export default function MatchColumnsGame({
   title,
   attemptCount,
   onAttemptIncrement,
+  onProgress,
 }: MatchColumnsGameProps) {
   const [selectedWord, setSelectedWord] = useState<number | null>(null);
   const [matchedWords, setMatchedWords] = useState<Map<number, number>>(new Map());
@@ -34,6 +37,7 @@ export default function MatchColumnsGame({
   const [errors, setErrors] = useState(0);
 
   const isComplete = matchedWords.size === matches.length;
+  useEffect(() => { onProgress?.({ correctItems: [...matchedWords.keys()].map((index) => matches[index]!.word), incorrectItems: [], total: matches.length, completed: isComplete }); }, [isComplete, matchedWords, matches, onProgress]);
 
   const handleWordClick = useCallback(
     (wordIdx: number) => {
