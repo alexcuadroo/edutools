@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import FillBlanksGame from "@/components/playable/FillBlanksGame";
 import type { FBPlayData } from "@/lib/share/types";
 import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
+import { useLiveProgress } from "@/hooks/useLiveProgress";
+import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayFillBlanksPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +22,8 @@ export default function PlayFillBlanksPage() {
   });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("rellenar_huecos", id || "");
+  const [progress, setProgress] = useState<ProgressSnapshot>({ correctItems: [], total: 0, completed: false });
+  const live = useLiveProgress(id, "fill-blanks", progress);
 
   if (loading) {
     return (
@@ -64,7 +70,9 @@ export default function PlayFillBlanksPage() {
         title={decoded.title}
         attemptCount={attemptCount}
         onAttemptIncrement={onAttemptIncrement}
+        onProgress={setProgress}
       />
+      {!live.confirmed && <StudentIdentityModal alias={live.alias} onConfirm={live.confirm} />}
     </div>
   );
 }

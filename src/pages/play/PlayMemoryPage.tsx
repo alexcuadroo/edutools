@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import MemoryGame from "@/components/playable/MemoryGame";
 import type { MemPlayData } from "@/lib/share/types";
 import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
+import { useLiveProgress } from "@/hooks/useLiveProgress";
+import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayMemoryPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +21,8 @@ export default function PlayMemoryPage() {
   });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("memoria", id || "");
+  const [progress, setProgress] = useState<ProgressSnapshot>({ correctItems: [], total: 0, completed: false });
+  const live = useLiveProgress(id, "memory", progress);
 
   if (loading) {
     return (
@@ -56,7 +62,8 @@ export default function PlayMemoryPage() {
         <ArrowLeft className="w-4 h-4" />
         Volver al inicio
       </Link>
-      <MemoryGame cards={decoded.cards} pairs={decoded.pairs} title={decoded.title} attemptCount={attemptCount} onAttemptIncrement={onAttemptIncrement} />
+      <MemoryGame cards={decoded.cards} pairs={decoded.pairs} title={decoded.title} attemptCount={attemptCount} onAttemptIncrement={onAttemptIncrement} onProgress={setProgress} />
+      {!live.confirmed && <StudentIdentityModal alias={live.alias} onConfirm={live.confirm} />}
     </div>
   );
 }
