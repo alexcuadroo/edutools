@@ -7,8 +7,9 @@ import type { SentenceOrderResult } from "@/lib/puzzles/sentence-order/types";
 import type { MCResult } from "@/lib/puzzles/match-columns/types";
 import type { MemoryResult } from "@/lib/puzzles/memory/types";
 import type { RoscoResult } from "@/lib/puzzles/rosco/types";
+import type { WordleResult } from "@/lib/puzzles/wordle/types";
 
-export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
+export type PlayablePuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco" | "wordle";
 
 export interface WSPlayData {
   g: string[][];
@@ -221,4 +222,11 @@ export function roscoResultToPlayData(result: RoscoResult, title?: string): Rosc
       r: entry.rule,
     })),
   };
+}
+
+export interface WordlePlayData { t?: string; w: string; c?: string; p?: { w: string; c?: string }[]; }
+
+export function wordleResultToPlayData(result: WordleResult, title?: string): WordlePlayData {
+  const first = result.words[0]!;
+  return { t: title || undefined, w: first.word, c: first.clue, p: result.words.map((entry) => ({ w: entry.word, c: entry.clue })) };
 }
