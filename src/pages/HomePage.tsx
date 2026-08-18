@@ -34,7 +34,7 @@ const PUZZLES = [
   { path: "/relacionar-columnas", title: "Relacionar Columnas", detail: "Uní conceptos con sus definiciones.", icon: Link2 },
   { path: "/memoria", title: "Memoria", detail: "Pares de palabras y definiciones.", icon: Layers },
   { path: "/rosco", title: "Rosco", detail: "Preguntas, cronómetro y pasapalabra.", icon: CircleHelp },
-  { path: "/cadenas-de-palabras", title: "Cadenas de Palabras", detail: "Un Wordle temático de 5 letras.", icon: Keyboard },
+  { path: "/cadenas-de-palabras", title: "Cadenas de Palabras", detail: "Un Wordle temático de 4 o más letras.", icon: Keyboard },
 ];
 
 export default function HomePage() {
