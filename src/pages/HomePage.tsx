@@ -18,6 +18,7 @@ import {
   TextCursorInput,
   AlertCircle,
   LetterText,
+  Keyboard,
 } from "lucide-react";
 import { loadPuzzle } from "@/lib/share/api";
 import { PUZZLE_TYPE_TO_SLUG } from "@/lib/puzzles/slugs";
@@ -33,6 +34,7 @@ const PUZZLES = [
   { path: "/relacionar-columnas", title: "Relacionar Columnas", detail: "Uní conceptos con sus definiciones.", icon: Link2 },
   { path: "/memoria", title: "Memoria", detail: "Pares de palabras y definiciones.", icon: Layers },
   { path: "/rosco", title: "Rosco", detail: "Preguntas, cronómetro y pasapalabra.", icon: CircleHelp },
+  { path: "/cadenas-de-palabras", title: "Cadenas de Palabras", detail: "Un Wordle temático de 5 letras.", icon: Keyboard },
 ];
 
 export default function HomePage() {
