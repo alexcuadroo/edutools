@@ -5,6 +5,7 @@ import PlayableLayout from "@/components/layout/PlayableLayout";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Spinner from "@/components/ui/Spinner";
 import ScrollToTop from "@/components/ScrollToTop";
+import RouteMeta from "@/components/seo/RouteMeta";
 import { useAuthStore } from "@/store/auth-store";
 import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "@/lib/puzzles/crossword/generator";
@@ -79,6 +80,7 @@ export default function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <ScrollToTop />
+        <RouteMeta />
         <Suspense
           fallback={
             <div className="flex min-h-[50vh] items-center justify-center" aria-live="polite">
