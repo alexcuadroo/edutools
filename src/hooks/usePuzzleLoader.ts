@@ -16,7 +16,9 @@ export function usePuzzleLoader<T>(
   });
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      return;
+    }
 
     let cancelled = false;
     const store = useSavedPuzzlesStore.getState();
@@ -24,9 +26,15 @@ export function usePuzzleLoader<T>(
 
     const applyData = (payload: unknown) => {
       if (cancelled) return;
-      setData(decodeRef.current(payload));
-      setError(false);
-      setLoading(false);
+      try {
+        setData(decodeRef.current(payload));
+        setError(false);
+      } catch {
+        setData(null);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const handleError = () => {

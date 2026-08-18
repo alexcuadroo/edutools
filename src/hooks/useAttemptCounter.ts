@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 
 export function useAttemptCounter(puzzleType: string, hash: string) {
   const key = useMemo(() => `intento_${puzzleType}_${hash}`, [puzzleType, hash]);
 
-  const [count, setCount] = useState(() => {
+  const readAndIncrement = useCallback(() => {
     let current = 0;
     try {
       const stored = localStorage.getItem(key);
@@ -18,7 +18,16 @@ export function useAttemptCounter(puzzleType: string, hash: string) {
       // ignore
     }
     return next;
-  });
+  }, [key]);
+
+  const [count, setCount] = useState(readAndIncrement);
+  const mountedKey = useRef(key);
+
+  useEffect(() => {
+    if (mountedKey.current === key) return;
+    mountedKey.current = key;
+    setCount(readAndIncrement());
+  }, [key, readAndIncrement]);
 
   const increment = useCallback(() => {
     setCount((prev) => {
