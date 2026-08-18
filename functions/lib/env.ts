@@ -22,6 +22,7 @@ export const ALLOWED_PUZZLE_TYPES = [
   "match-columns",
   "memory",
   "rosco",
+  "wordle",
 ] as const;
 
 export type AllowedPuzzleType = (typeof ALLOWED_PUZZLE_TYPES)[number];
