@@ -1,4 +1,4 @@
-export type PuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco";
+export type PuzzleType = "word-search" | "crossword" | "fill-blanks" | "hangman" | "anagram" | "sentence-order" | "match-columns" | "memory" | "rosco" | "wordle";
 
 export interface PuzzleInput {
   words: { word: string; clue?: string }[];
