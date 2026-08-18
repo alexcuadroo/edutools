@@ -10,6 +10,7 @@ export const PUZZLE_TYPE_TO_SLUG: Record<AllowedPuzzleType, string> = {
   "match-columns": "relacionar-columnas",
   "memory": "memoria",
   "rosco": "rosco",
+  "wordle": "cadenas-de-palabras",
 };
 
 export const SLUG_TO_PUZZLE_TYPE: Record<string, AllowedPuzzleType> = Object.fromEntries(

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers, CircleHelp } from "lucide-react";
+import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers, CircleHelp, Keyboard } from "lucide-react";
 import UserMenu from "@/components/auth/UserMenu";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
@@ -15,6 +15,7 @@ const TABS = [
   { path: "/relacionar-columnas", label: "Relacionar Columnas", icon: Link2 },
   { path: "/memoria", label: "Memoria", icon: Layers },
   { path: "/rosco", label: "Rosco", icon: CircleHelp },
+  { path: "/cadenas-de-palabras", label: "Cadenas de Palabras", icon: Keyboard },
 ];
 
 export default function Header() {
@@ -90,7 +91,7 @@ export default function Header() {
             {activePopover === "puzzles" && (
               <div
                 role="menu"
-                className="absolute right-0 top-full z-50 mt-2 w-80 rounded-2xl border border-border bg-surface py-2 shadow-[var(--shadow-card)]"
+                className="absolute right-0 top-full z-50 mt-2 w-[30rem] max-w-[calc(100vw-2rem)] rounded-2xl border border-border bg-surface py-2 shadow-[var(--shadow-card)]"
               >
                 <div className="grid grid-cols-2 gap-1 px-2">
                   {TABS.map((tab) => {
@@ -103,7 +104,7 @@ export default function Header() {
                         onClick={closePopovers}
                         role="menuitem"
                         aria-current={isActive ? "page" : undefined}
-                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all no-underline ${
+                        className={`flex items-center gap-2.5 whitespace-nowrap px-3 py-2.5 rounded-lg text-sm font-medium transition-all no-underline ${
                           isActive
                             ? "bg-primary-subtle text-primary"
                             : "text-muted hover:bg-surface-muted hover:text-foreground"

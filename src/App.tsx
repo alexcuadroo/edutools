@@ -5,6 +5,7 @@ import PlayableLayout from "@/components/layout/PlayableLayout";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Spinner from "@/components/ui/Spinner";
 import ScrollToTop from "@/components/ScrollToTop";
+import RouteMeta from "@/components/seo/RouteMeta";
 import { useAuthStore } from "@/store/auth-store";
 import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
 import { crosswordGenerator } from "@/lib/puzzles/crossword/generator";
@@ -15,6 +16,7 @@ import { sentenceOrderGenerator } from "@/lib/puzzles/sentence-order/generator";
 import { matchColumnsGenerator } from "@/lib/puzzles/match-columns/generator";
 import { memoryGenerator } from "@/lib/puzzles/memory/generator";
 import { roscoGenerator } from "@/lib/puzzles/rosco/generator";
+import { wordleGenerator } from "@/lib/puzzles/wordle/generator";
 import { registerPuzzle } from "@/lib/puzzles/registry";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
@@ -27,6 +29,7 @@ const SentenceOrderPage = lazy(() => import("@/pages/SentenceOrderPage"));
 const MatchColumnsPage = lazy(() => import("@/pages/MatchColumnsPage"));
 const MemoryPage = lazy(() => import("@/pages/MemoryPage"));
 const RoscoPage = lazy(() => import("@/pages/RoscoPage"));
+const WordlePage = lazy(() => import("@/pages/WordlePage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const SignupPage = lazy(() => import("@/pages/SignupPage"));
 const VerifyPage = lazy(() => import("@/pages/VerifyPage"));
@@ -45,6 +48,7 @@ const PlaySentenceOrderPage = lazy(() => import("@/pages/play/PlaySentenceOrderP
 const PlayMatchColumnsPage = lazy(() => import("@/pages/play/PlayMatchColumnsPage"));
 const PlayMemoryPage = lazy(() => import("@/pages/play/PlayMemoryPage"));
 const PlayRoscoPage = lazy(() => import("@/pages/play/PlayRoscoPage"));
+const PlayWordlePage = lazy(() => import("@/pages/play/PlayWordlePage"));
 
 let didInit = false;
 
@@ -60,6 +64,7 @@ function initPuzzles() {
   registerPuzzle(matchColumnsGenerator);
   registerPuzzle(memoryGenerator);
   registerPuzzle(roscoGenerator);
+  registerPuzzle(wordleGenerator);
 }
 
 initPuzzles();
@@ -75,6 +80,7 @@ export default function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <ScrollToTop />
+        <RouteMeta />
         <Suspense
           fallback={
             <div className="flex min-h-[50vh] items-center justify-center" aria-live="polite">
@@ -94,6 +100,7 @@ export default function App() {
             <Route path="/relacionar-columnas" element={<MatchColumnsPage />} />
             <Route path="/memoria" element={<MemoryPage />} />
             <Route path="/rosco" element={<RoscoPage />} />
+            <Route path="/cadenas-de-palabras" element={<WordlePage />} />
             <Route path="/iniciar-sesion" element={<LoginPage />} />
             <Route path="/crear-cuenta" element={<SignupPage />} />
             <Route path="/verificar" element={<VerifyPage />} />
@@ -113,6 +120,7 @@ export default function App() {
             <Route path="/jugar/relacionar-columnas/:id" element={<PlayMatchColumnsPage />} />
             <Route path="/jugar/memoria/:id" element={<PlayMemoryPage />} />
             <Route path="/jugar/rosco/:id" element={<PlayRoscoPage />} />
+            <Route path="/jugar/cadenas-de-palabras/:id" element={<PlayWordlePage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
           </Routes>

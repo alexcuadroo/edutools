@@ -3,7 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 export interface ProgressEntry {
   participantId: string;
   alias: string;
-  type: "word-search" | "crossword" | "rosco";
+  type: "word-search" | "crossword" | "rosco" | "fill-blanks" | "match-columns" | "memory" | "wordle";
   correctItems: string[];
   incorrectItems: string[];
   total: number;

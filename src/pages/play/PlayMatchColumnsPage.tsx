@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, AlertCircle, Loader2 } from "lucide-react";
 import MatchColumnsGame from "@/components/playable/MatchColumnsGame";
 import type { MCPlayData } from "@/lib/share/types";
 import { usePuzzleLoader } from "@/hooks/usePuzzleLoader";
 import { useAttemptCounter } from "@/hooks/useAttemptCounter";
+import { useLiveProgress } from "@/hooks/useLiveProgress";
+import { StudentIdentityModal } from "@/components/playable/StudentIdentityModal";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 export default function PlayMatchColumnsPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +21,8 @@ export default function PlayMatchColumnsPage() {
   });
 
   const { count: attemptCount, increment: onAttemptIncrement } = useAttemptCounter("relacionar-columnas", id || "");
+  const [progress, setProgress] = useState<ProgressSnapshot>({ correctItems: [], total: 0, completed: false });
+  const live = useLiveProgress(id, "match-columns", progress);
 
   if (loading) {
     return (
@@ -56,7 +62,8 @@ export default function PlayMatchColumnsPage() {
         <ArrowLeft className="w-4 h-4" />
         Volver al inicio
       </Link>
-      <MatchColumnsGame matches={decoded.matches} shuffledDefinitions={decoded.shuffledDefinitions} title={decoded.title} attemptCount={attemptCount} onAttemptIncrement={onAttemptIncrement} />
+      <MatchColumnsGame matches={decoded.matches} shuffledDefinitions={decoded.shuffledDefinitions} title={decoded.title} attemptCount={attemptCount} onAttemptIncrement={onAttemptIncrement} onProgress={setProgress} />
+      {!live.confirmed && <StudentIdentityModal alias={live.alias} onConfirm={live.confirm} />}
     </div>
   );
 }

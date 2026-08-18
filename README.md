@@ -15,6 +15,10 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 - **Lucide React** para iconos
 - **React Toastify** para notificaciones
 - **qrcode.react** para generación local de QR
+- **nanoid** para IDs cortos de puzzles
+- **@noble/hashes** para Argon2id (hashing de contraseñas en Workers)
+- **vite-plugin-pwa** + **workbox-window** para PWA instalable y offline
+- **tailwind-animations** para animaciones de Tailwind
 - **Cloudflare Pages** + **Pages Functions** + **KV** para backend y almacenamiento
 - **Cloudflare Durable Objects** para seguimiento de progreso en vivo
 
@@ -31,6 +35,7 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 | Relacionar columnas | `/relacionar-columnas` | `/jugar/relacionar-columnas/:id` |
 | Memoria | `/memoria` | `/jugar/memoria/:id` |
 | Rosco | `/rosco` | `/jugar/rosco/:id` |
+| Cadenas de palabras | `/cadenas-de-palabras` | `/jugar/cadenas-de-palabras/:id` |
 
 ## Instalación
 
@@ -137,9 +142,9 @@ src/
 │   ├── puzzles/               # Previews y inputs de cada puzzle
 │   ├── auth/                  # UserMenu, SavePuzzleButton
 │   └── ui/                    # Button, PageHeader, DownloadDropdown, ShareModal
-├── hooks/                     # Custom hooks (useAuth, usePuzzleLoader, etc.)
+├── hooks/                     # Custom hooks (useAuth, usePuzzleLoader, useNoIndexMeta, etc.)
 ├── lib/
-│   ├── puzzles/               # Generadores de cada puzzle
+│   ├── puzzles/               # Generadores de cada puzzle (con types y registry)
 │   ├── pdf/                   # Generación de PDFs
 │   ├── png/                   # Exportación a PNG
 │   └── share/                 # api.ts (savePuzzle/loadPuzzle) + types.ts
@@ -151,6 +156,7 @@ src/
 │   ├── ForgotPasswordPage.tsx # Recuperar contraseña
 │   ├── ResetPasswordPage.tsx  # Nueva contraseña
 │   ├── MyPuzzlesPage.tsx      # Mis puzzles guardados
+│   ├── PuzzleProgressPage.tsx # Progreso en vivo del docente
 │   ├── play/                  # Páginas jugables (/jugar/*)
 │   └── NotFoundPage.tsx
 └── store/                     # Zustand stores (auth-store, saved-puzzles-store, puzzle-store)
@@ -158,18 +164,25 @@ src/
 functions/
 ├── api/
 │   ├── auth/                  # signup, login, logout, me, verify, forgot, reset
+│   ├── account.ts             # DELETE /api/account (eliminar cuenta)
+│   ├── progress/[id].ts       # POST /api/progress/:id (progreso de estudiantes)
 │   └── puzzles/
 │       ├── index.ts           # POST /api/puzzles (crear puzzle)
 │       ├── [id].ts            # GET /api/puzzles/:id (obtener puzzle)
-│       ├── saved.ts           # GET /api/puzzles/saved, POST /api/puzzles/save
-│       └── saved/[id].ts      # GET/DELETE /api/puzzles/saved/:id, POST share
-└── lib/                       # Helpers (auth, email, rate-limit, types, validation, puzzle-id)
+│       └── saved/[[path]].ts  # GET/POST /api/puzzles/saved, GET/DELETE/:id, share, progreso
+└── lib/                       # Helpers (auth, email, rate-limit, env, types, validation, puzzle-id)
+
+progress-worker/               # Worker separado con Durable Objects (progreso en vivo)
 
 public/
 ├── _redirects                 # SPA routing (/* → /index.html 200)
+├── _headers                   # Headers de seguridad (CSP, HSTS, etc.)
 ├── favicon.svg
 ├── robots.txt
-└── sitemap.xml
+├── sitemap.xml
+├── llms.txt                   # Resumen para LLMs y herramientas de IA
+├── pwa-192x192.png            # Ícono PWA
+└── pwa-512x512.png            # Ícono PWA
 ```
 
 ## Rutas
@@ -186,16 +199,19 @@ public/
 | `/ordenar-oracion` | Generador de ordenar oración |
 | `/relacionar-columnas` | Generador de relacionar columnas |
 | `/memoria` | Generador de memoria |
+| `/rosco` | Generador de rosco |
+| `/cadenas-de-palabras` | Generador de cadenas de palabras (Wordle) |
 
-### Autenticación
+### Autenticación y cuenta
 | Ruta | Página |
 |------|--------|
-| `/login` | Inicio de sesión |
-| `/signup` | Registro de cuenta |
+| `/iniciar-sesion` | Inicio de sesión |
+| `/crear-cuenta` | Registro de cuenta |
 | `/verificar` | Verificación de email |
-| `/forgot` | Recuperar contraseña |
-| `/reset-password` | Nueva contraseña |
+| `/recuperar-cuenta` | Recuperar contraseña |
+| `/restablecer-contrasena` | Nueva contraseña |
 | `/mis-puzzles` | Mis puzzles guardados |
+| `/mis-puzzles/:id/progreso` | Progreso en vivo del puzzle |
 
 ### Juegos digitales
 | Ruta | Descripción |
@@ -209,6 +225,8 @@ public/
 | `/jugar/ordenar-oracion/:id` | Ordenar oración jugable |
 | `/jugar/relacionar-columnas/:id` | Relacionar columnas jugable |
 | `/jugar/memoria/:id` | Memoria jugable |
+| `/jugar/rosco/:id` | Rosco jugable |
+| `/jugar/cadenas-de-palabras/:id` | Cadenas de palabras jugable |
 
 ## API Endpoints (Pages Functions)
 
@@ -228,6 +246,7 @@ public/
 | GET | `/api/auth/verify` | Verificar email (query: `?token=xxx`) |
 | POST | `/api/auth/forgot` | Solicitar reset de contraseña (body: `{ email }`) |
 | POST | `/api/auth/reset` | Resetear contraseña (body: `{ token, newPassword }`) |
+| DELETE | `/api/account` | Eliminar cuenta autenticada (body: `{ confirm: email }`) |
 
 ### Puzzles guardados (requiere autenticación)
 | Method | Path | Descripción |
@@ -243,7 +262,7 @@ public/
 ### Progreso de estudiantes
 | Method | Path | Descripción |
 |--------|------|-------------|
-| POST | `/api/progress/:id` | Reportar progreso anónimo de Sopa, Crucigrama o Rosco |
+| POST | `/api/progress/:id` | Reportar progreso anónimo (Sopa, Crucigrama, Rellenar huecos, Relacionar columnas, Memoria, Rosco y Cadenas de palabras) |
 
 ## Funcionalidades
 
@@ -270,6 +289,11 @@ public/
 - Apodo anónimo y editable por dispositivo para el seguimiento docente
 - Case-insensitive: `F3D78213` y `f3d78213` funcionan igual
 
+### PWA (instalable y offline)
+- Instalable como app en el escritorio y en el móvil (manifest + service worker)
+- Funciona offline con el bundle precacheado (`vite-plugin-pwa` + Workbox)
+- Aviso de nueva versión disponible para recargar
+
 ### Flujo de compartir
 1. El docente genera el puzzle y hace clic en "Compartir"
 2. El sistema guarda el puzzle en KV y genera un ID de 8 caracteres
@@ -289,7 +313,7 @@ public/
 1. El estudiante abre un puzzle compartido compatible y confirma un apodo anónimo.
 2. El juego reporta los aciertos y la presencia cada 10 segundos.
 3. El docente abre **Mis puzzles → Progreso** para ver el avance, actualizado cada 4 segundos.
-4. Sopa de letras, Crucigrama y Rosco están disponibles en esta primera versión.
+4. Puzzles con seguimiento en vivo: Sopa de letras, Crucigrama, Rellenar huecos, Relacionar columnas, Memoria, Rosco y Cadenas de palabras.
 
 ## Agregar un nuevo puzzle
 
@@ -303,8 +327,10 @@ public/
 8. Crear la página jugable en `src/pages/play/Play<Nombre>Page.tsx`.
 9. Agregar la ruta `/jugar/<nombre>/:id` en `App.tsx`.
 10. Agregar tipos y conversores en `src/lib/share/types.ts`.
-11. Agregar el tipo en `ALLOWED_TYPES` en `functions/api/puzzles/index.ts`.
-12. Agregar la ruta en `PUZZLE_TYPE_ROUTES` en `src/pages/play/PlayHubPage.tsx`.
+11. Agregar el slug y la etiqueta en `src/lib/puzzles/slugs.ts` (`PUZZLE_TYPE_TO_SLUG`, `SLUG_TO_PUZZLE_TYPE`, `PUZZLE_TYPE_LABELS`).
+12. Agregar el tipo en `ALLOWED_TYPES` en `functions/api/puzzles/index.ts` y en `ALLOWED_PUZZLE_TYPES` en `functions/lib/env.ts`.
+13. Si el puzzle es jugable en vivo, agregarlo en `functions/api/progress/[id].ts` y en el Worker `progress-worker/` si corresponde.
+14. Actualizar `public/sitemap.xml`, `public/llms.txt` y este README.
 
 ## Deployment
 

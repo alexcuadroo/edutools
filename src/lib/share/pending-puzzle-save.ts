@@ -9,7 +9,7 @@ export interface PendingPuzzleSave {
 }
 
 const PLAYABLE_TYPES: PlayablePuzzleType[] = [
-  "word-search", "crossword", "fill-blanks", "hangman", "anagram", "sentence-order", "match-columns", "memory", "rosco",
+  "word-search", "crossword", "fill-blanks", "hangman", "anagram", "sentence-order", "match-columns", "memory", "rosco", "wordle",
 ];
 
 export function parsePendingPuzzleSave(value: string | null): PendingPuzzleSave | null {

@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { RotateCcw, Trophy, Layers } from "lucide-react";
+import type { ProgressSnapshot } from "@/lib/progress/types";
 
 interface MemoryCard {
   id: string;
@@ -14,6 +15,7 @@ interface MemoryGameProps {
   title?: string;
   attemptCount?: number;
   onAttemptIncrement?: () => void;
+  onProgress?: (progress: ProgressSnapshot) => void;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -25,7 +27,7 @@ function shuffleArray<T>(arr: T[]): T[] {
   return a;
 }
 
-export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemptIncrement }: MemoryGameProps) {
+export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemptIncrement, onProgress }: MemoryGameProps) {
   const [shuffledCards, setShuffledCards] = useState(() => shuffleArray(cards));
   const [flipped, setFlipped] = useState<Set<string>>(new Set());
   const [matched, setMatched] = useState<Set<number>>(new Set());
@@ -34,6 +36,7 @@ export default function MemoryGame({ cards, pairs, title, attemptCount, onAttemp
   const [disabled, setDisabled] = useState(false);
 
   const isComplete = matched.size === pairs.length;
+  useEffect(() => { onProgress?.({ correctItems: [...matched].map((pairId) => pairs.find((_, index) => index === pairId)?.word ?? String(pairId)), incorrectItems: [], total: pairs.length, completed: isComplete }); }, [isComplete, matched, onProgress, pairs]);
 
   const handleCardClick = useCallback((card: MemoryCard) => {
     if (disabled) return;

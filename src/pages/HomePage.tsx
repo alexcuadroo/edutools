@@ -18,6 +18,7 @@ import {
   TextCursorInput,
   AlertCircle,
   LetterText,
+  Keyboard,
 } from "lucide-react";
 import { loadPuzzle } from "@/lib/share/api";
 import { PUZZLE_TYPE_TO_SLUG } from "@/lib/puzzles/slugs";
@@ -33,6 +34,7 @@ const PUZZLES = [
   { path: "/relacionar-columnas", title: "Relacionar Columnas", detail: "Uní conceptos con sus definiciones.", icon: Link2 },
   { path: "/memoria", title: "Memoria", detail: "Pares de palabras y definiciones.", icon: Layers },
   { path: "/rosco", title: "Rosco", detail: "Preguntas, cronómetro y pasapalabra.", icon: CircleHelp },
+  { path: "/cadenas-de-palabras", title: "Cadenas de Palabras", detail: "Un Wordle temático de 4 o más letras.", icon: Keyboard },
 ];
 
 export default function HomePage() {
@@ -67,7 +69,7 @@ export default function HomePage() {
 
   return (
     <div className="py-6 sm:py-10">
-      <section className="home-hero relative overflow-hidden rounded-[2rem] border px-5 py-8 shadow-[0_28px_80px_-42px_rgba(67,56,202,0.45)] sm:px-10 sm:py-12" aria-labelledby="home-title">
+      <section className="home-hero relative overflow-hidden rounded-4xl border px-5 py-8 shadow-[0_28px_80px_-42px_rgba(67,56,202,0.45)] sm:px-10 sm:py-12" aria-labelledby="home-title">
         <div className="landing-orb pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-violet-100/70 blur-3xl" aria-hidden="true" />
         <div className="landing-orb pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-sky-100/70 blur-3xl" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-12">

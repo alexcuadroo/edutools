@@ -1,4 +1,4 @@
-export type ProgressPuzzleType = "word-search" | "crossword" | "rosco";
+export type ProgressPuzzleType = "word-search" | "crossword" | "rosco" | "fill-blanks" | "match-columns" | "memory" | "wordle";
 
 export interface ProgressSnapshot {
   correctItems: string[];

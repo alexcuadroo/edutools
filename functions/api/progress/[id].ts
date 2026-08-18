@@ -7,7 +7,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (typeof id !== "string" || !/^[a-f0-9]{8}$/i.test(id)) return jsonResponse({ error: "ID inválido" }, 400);
   if (!context.env.PROGRESS) return jsonResponse({ error: "Seguimiento no configurado" }, 503);
   const body = await context.request.json().catch(() => null) as Record<string, unknown> | null;
-  if (!body || typeof body.participantId !== "string" || typeof body.alias !== "string" || !["word-search", "crossword", "rosco"].includes(String(body.type)) || !Array.isArray(body.correctItems) || (body.incorrectItems !== undefined && !Array.isArray(body.incorrectItems)) || typeof body.total !== "number" || typeof body.completed !== "boolean") return jsonResponse({ error: "Progreso inválido" }, 400);
+  if (!body || typeof body.participantId !== "string" || typeof body.alias !== "string" || !["word-search", "crossword", "rosco", "fill-blanks", "match-columns", "memory", "wordle"].includes(String(body.type)) || !Array.isArray(body.correctItems) || (body.incorrectItems !== undefined && !Array.isArray(body.incorrectItems)) || typeof body.total !== "number" || typeof body.completed !== "boolean") return jsonResponse({ error: "Progreso inválido" }, 400);
   const puzzle = await context.env.PUZZLES.get(id);
   if (!puzzle) return jsonResponse({ error: "Puzzle no encontrado" }, 404);
   const stub = context.env.PROGRESS.get(context.env.PROGRESS.idFromName(`puzzle:${id}`));

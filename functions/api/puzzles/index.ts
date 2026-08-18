@@ -12,6 +12,7 @@ const ALLOWED_TYPES = [
   "match-columns",
   "memory",
   "rosco",
+  "wordle",
 ] as const;
 const ID_PATTERN = /^[a-f0-9]{8}$/;
 
