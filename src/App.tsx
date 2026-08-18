@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import PlayableLayout from "@/components/layout/PlayableLayout";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import Spinner from "@/components/ui/Spinner";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useAuthStore } from "@/store/auth-store";
 import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
@@ -76,8 +77,8 @@ export default function App() {
         <ScrollToTop />
         <Suspense
           fallback={
-            <div className="py-20 text-center text-gray-500" role="status" aria-live="polite">
-              Cargando página…
+            <div className="flex min-h-[50vh] items-center justify-center" aria-live="polite">
+              <Spinner />
             </div>
           }
         >

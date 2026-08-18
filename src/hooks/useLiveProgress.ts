@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ProgressPuzzleType, ProgressSnapshot } from "@/lib/progress/types";
 
 const ADJECTIVES = ["Ágil", "Brillante", "Curioso", "Valiente", "Veloz"];
@@ -13,15 +13,23 @@ export function useLiveProgress(id: string | undefined, type: ProgressPuzzleType
   const storageKey = useMemo(() => `edutools-progress:${id}`, [id]);
   const [identity, setIdentity] = useState<{ participantId: string; alias: string } | null>(() => {
     if (!id) return null;
-    const saved = sessionStorage.getItem(`edutools-progress:${id}`);
-    return saved ? JSON.parse(saved) as { participantId: string; alias: string } : { participantId: crypto.randomUUID(), alias: randomAlias() };
+    try {
+      const saved = sessionStorage.getItem(`edutools-progress:${id}`);
+      return saved ? JSON.parse(saved) as { participantId: string; alias: string } : { participantId: crypto.randomUUID(), alias: randomAlias() };
+    } catch {
+      return { participantId: crypto.randomUUID(), alias: randomAlias() };
+    }
   });
   const [confirmed, setConfirmed] = useState(false);
+  const snapshotRef = useRef(snapshot);
+  useEffect(() => {
+    snapshotRef.current = snapshot;
+  }, [snapshot]);
 
   const report = useCallback(async () => {
     if (!id || !identity || !confirmed) return;
-    await fetch(`/api/progress/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...identity, type, ...snapshot }) }).catch(() => undefined);
-  }, [confirmed, id, identity, snapshot, type]);
+    await fetch(`/api/progress/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...identity, type, ...snapshotRef.current }) }).catch(() => undefined);
+  }, [confirmed, id, identity, type]);
 
   useEffect(() => { void report(); }, [report]);
   useEffect(() => {
@@ -32,7 +40,11 @@ export function useLiveProgress(id: string | undefined, type: ProgressPuzzleType
   const confirm = (alias: string) => {
     if (!identity) return;
     const next = { ...identity, alias: alias.trim().slice(0, 40) || identity.alias };
-    sessionStorage.setItem(storageKey, JSON.stringify(next));
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(next));
+    } catch {
+      // La sesión puede bloquear storage en navegación privada.
+    }
     setIdentity(next);
     setConfirmed(true);
   };
