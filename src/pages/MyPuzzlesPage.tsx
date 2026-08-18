@@ -158,7 +158,7 @@ export default function MyPuzzlesPage() {
                   <Play className="h-4 w-4" aria-hidden="true" />
                   Jugar
                 </Link>
-                {(["word-search", "crossword", "rosco"] as string[]).includes(puzzle.type) && (
+                {(["word-search", "crossword", "rosco", "fill-blanks", "match-columns", "memory", "wordle"] as string[]).includes(puzzle.type) && (
                   <Link to={`/mis-puzzles/${puzzle.id}/progreso`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-800 transition-colors hover:bg-violet-100">
                     <ChartNoAxesCombined className="h-4 w-4" aria-hidden="true" /> Progreso
                   </Link>
