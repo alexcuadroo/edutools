@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ViewTransition } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import Spinner from "@/components/ui/Spinner";
 import { usePuzzleStore } from "@/store/puzzle-store";
@@ -28,7 +29,10 @@ export default function PuzzlePageLayout({
 
       {loading && <Spinner label="Generando..." />}
 
-      {preview}
+      <ViewTransition name="puzzle-preview">
+        {preview}
+      </ViewTransition>
     </div>
   );
 }
+

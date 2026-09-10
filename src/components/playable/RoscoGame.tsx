@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, startTransition, addTransitionType, ViewTransition } from "react";
 import { CheckCircle2, CirclePause, CirclePlay, Clock3, RotateCcw, SkipForward, XCircle } from "lucide-react";
 import { answerRoscoEntry, createRoscoGameState, isRoscoComplete, passRoscoEntry, type RoscoEntryStatus } from "@/lib/puzzles/rosco/game";
 import type { RoscoEntry } from "@/lib/puzzles/rosco/types";
@@ -60,30 +60,54 @@ export default function RoscoGame({ entries, durationSeconds, title, attemptCoun
   }), [game.statuses]);
   useEffect(() => { onProgress?.({ correctItems: entries.filter((_, index) => game.statuses[index] === "correct").map((entry) => entry.letter), incorrectItems: entries.filter((_, index) => game.statuses[index] === "incorrect").map((entry) => entry.letter), total: entries.length, completed: ended }); }, [ended, entries, game.statuses, onProgress]);
 
-  const submitAnswer = (event: React.FormEvent) => {
-    event.preventDefault();
+  const submitAnswer = () => {
     if (ended || paused || !answer.trim()) return;
-    const next = answerRoscoEntry(game, current, answer);
-    const correct = next.statuses[game.currentIndex] === "correct";
-    setGame(next);
-    setFeedback(correct ? `Correcto: ${current.answer}.` : `Incorrecto. La respuesta era ${current.answer}.`);
-    setAnswer("");
+    startTransition(() => {
+      addTransitionType("rosco-answer");
+      const next = answerRoscoEntry(game, current, answer);
+      const correct = next.statuses[game.currentIndex] === "correct";
+      setGame(next);
+      setFeedback(correct ? `Correcto: ${current.answer}.` : `Incorrecto. La respuesta era ${current.answer}.`);
+      setAnswer("");
+    });
   };
 
   const pass = () => {
     if (ended || paused) return;
-    setGame(passRoscoEntry(game));
-    setAnswer("");
-    setFeedback(`Pasapalabra: ${current.letter} queda para la próxima vuelta.`);
+    startTransition(() => {
+      addTransitionType("rosco-pass");
+      setGame(passRoscoEntry(game));
+      setAnswer("");
+      setFeedback(`Pasapalabra: ${current.letter} queda para la próxima vuelta.`);
+    });
+  };
+
+  const handleFormSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const submitter =
+      (event.nativeEvent as globalThis.SubmitEvent)?.submitter as HTMLElement | null ??
+      event.submitter;
+    const action = submitter instanceof HTMLButtonElement ? submitter.value : "answer";
+    if (action === "pass") {
+      if (document.activeElement === inputRef.current && !answer.trim()) {
+        return;
+      }
+      pass();
+    } else {
+      submitAnswer();
+    }
   };
 
   const restart = () => {
-    setGame(createRoscoGameState(entries));
-    setRemainingSeconds(durationSeconds);
-    setPaused(false);
-    setAnswer("");
-    setFeedback("Nueva partida iniciada.");
-    onAttemptIncrement?.();
+    startTransition(() => {
+      addTransitionType("rosco-restart");
+      setGame(createRoscoGameState(entries));
+      setRemainingSeconds(durationSeconds);
+      setPaused(false);
+      setAnswer("");
+      setFeedback("Nueva partida iniciada.");
+      onAttemptIncrement?.();
+    });
   };
 
   const relation = current.rule === "starts-with" ? "Empieza con" : "Contiene la";
@@ -126,27 +150,36 @@ export default function RoscoGame({ entries, durationSeconds, title, attemptCoun
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
-          {ended ? (
-            <div className="space-y-5">
-              <div className={`rounded-xl p-4 ${timedOut ? "bg-amber-50 text-amber-900" : "bg-indigo-50 text-indigo-900"}`}>
-                <h2 className="text-xl font-bold">{timedOut ? "Se terminó el tiempo" : "¡Rosco completado!"}</h2>
-                <p className="mt-1 text-sm">{totals.correct} correctas · {totals.incorrect} incorrectas · {totals.pending} sin responder</p>
+          <ViewTransition name="rosco-card">
+            {ended ? (
+              <div key="ended" className="space-y-5">
+                <div className={`rounded-xl p-4 ${timedOut ? "bg-amber-50 text-amber-900" : "bg-indigo-50 text-indigo-900"}`}>
+                  <h2 className="text-xl font-bold">{timedOut ? "Se terminó el tiempo" : "¡Rosco completado!"}</h2>
+                  <p className="mt-1 text-sm">{totals.correct} correctas · {totals.incorrect} incorrectas · {totals.pending} sin responder</p>
+                </div>
+                <ol className="max-h-80 space-y-2 overflow-y-auto pr-1" aria-label="Soluciones del rosco">
+                  {entries.map((entry) => <li key={entry.letter} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm"><strong className="text-indigo-700">{entry.letter}.</strong> {entry.answer} <span className="text-gray-500">— {entry.clue}</span></li>)}
+                </ol>
+                <button type="button" onClick={restart} className="cursor-pointer inline-flex min-h-11 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"><RotateCcw className="h-4 w-4" aria-hidden="true" /> Jugar de nuevo</button>
               </div>
-              <ol className="max-h-80 space-y-2 overflow-y-auto pr-1" aria-label="Soluciones del rosco">
-                {entries.map((entry) => <li key={entry.letter} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm"><strong className="text-indigo-700">{entry.letter}.</strong> {entry.answer} <span className="text-gray-500">— {entry.clue}</span></li>)}
-              </ol>
-              <button type="button" onClick={restart} className="cursor-pointer inline-flex min-h-11 items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"><RotateCcw className="h-4 w-4" aria-hidden="true" /> Jugar de nuevo</button>
-            </div>
-          ) : (
-            <form onSubmit={submitAnswer} className="space-y-5">
-              <div className="flex items-center justify-between gap-3"><span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-bold text-indigo-800">{relation} {current.letter}</span><span className="text-xs font-medium text-gray-500">Letra {game.currentIndex + 1} de 26</span></div>
-              <h2 className="text-xl font-semibold leading-relaxed text-gray-900">{current.clue}</h2>
-              <label htmlFor="rosco-answer" className="block text-sm font-medium text-gray-700">Tu respuesta</label>
-              <input ref={inputRef} id="rosco-answer" value={answer} onChange={(event) => setAnswer(event.target.value)} disabled={paused} autoComplete="off" spellCheck={false} className="input-field w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-lg outline-none disabled:bg-gray-100" placeholder="Escribí la respuesta" />
-              <div className="flex flex-col gap-3 sm:flex-row"><button type="submit" disabled={paused || !answer.trim()} className="cursor-pointer inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"><CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Responder</button><button type="button" onClick={pass} disabled={paused} className="cursor-pointer inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-semibold text-amber-950 hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"><SkipForward className="h-4 w-4" aria-hidden="true" /> Pasapalabra</button></div>
-              {paused && <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">La partida está en pausa.</p>}
-            </form>
-          )}
+            ) : (
+              <form key="playing" onSubmit={handleFormSubmit} className="space-y-5">
+                <div className="flex items-center justify-between gap-3"><span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-bold text-indigo-800">{relation} {current.letter}</span><span className="text-xs font-medium text-gray-500">Letra {game.currentIndex + 1} de 26</span></div>
+                <h2 className="text-xl font-semibold leading-relaxed text-gray-900">{current.clue}</h2>
+                <label htmlFor="rosco-answer" className="block text-sm font-medium text-gray-700">Tu respuesta</label>
+                <input ref={inputRef} id="rosco-answer" value={answer} onChange={(event) => setAnswer(event.target.value)} disabled={paused} autoComplete="off" spellCheck={false} className="input-field w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-lg outline-none disabled:bg-gray-100" placeholder="Escribí la respuesta" />
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <button type="submit" name="action" value="answer" disabled={paused || !answer.trim()} className="cursor-pointer inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50">
+                    <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Responder
+                  </button>
+                  <button type="submit" name="action" value="pass" disabled={paused} className="cursor-pointer inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-semibold text-amber-950 hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50">
+                    <SkipForward className="h-4 w-4" aria-hidden="true" /> Pasapalabra
+                  </button>
+                </div>
+                {paused && <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">La partida está en pausa.</p>}
+              </form>
+            )}
+          </ViewTransition>
           <p className="sr-only" aria-live="polite">{feedback}</p>
         </div>
       </div>
@@ -154,3 +187,4 @@ export default function RoscoGame({ entries, durationSeconds, title, attemptCoun
     </section>
   );
 }
+

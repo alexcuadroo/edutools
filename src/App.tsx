@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, ViewTransition } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import PlayableLayout from "@/components/layout/PlayableLayout";
@@ -81,50 +81,52 @@ export default function App() {
       <BrowserRouter>
         <ScrollToTop />
         <RouteMeta />
-        <Suspense
-          fallback={
-            <div className="flex min-h-[50vh] items-center justify-center" aria-live="polite">
-              <Spinner />
-            </div>
-          }
-        >
-          <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/sopa-de-letras" element={<WordSearchPage />} />
-            <Route path="/crucigrama" element={<CrosswordPage />} />
-            <Route path="/rellenar-huecos" element={<FillBlanksPage />} />
-            <Route path="/adivina-la-palabra" element={<HangmanPage />} />
-            <Route path="/anagrama" element={<AnagramPage />} />
-            <Route path="/ordenar-oracion" element={<SentenceOrderPage />} />
-            <Route path="/relacionar-columnas" element={<MatchColumnsPage />} />
-            <Route path="/memoria" element={<MemoryPage />} />
-            <Route path="/rosco" element={<RoscoPage />} />
-            <Route path="/cadenas-de-palabras" element={<WordlePage />} />
-            <Route path="/iniciar-sesion" element={<LoginPage />} />
-            <Route path="/crear-cuenta" element={<SignupPage />} />
-            <Route path="/verificar" element={<VerifyPage />} />
-            <Route path="/recuperar-cuenta" element={<ForgotPasswordPage />} />
-            <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
-            <Route path="/mis-puzzles" element={<MyPuzzlesPage />} />
-            <Route path="/mis-puzzles/:id/progreso" element={<PuzzleProgressPage />} />
-          </Route>
-          <Route element={<PlayableLayout />}>
-            <Route path="/jugar" element={<PlayHubPage />} />
-            <Route path="/jugar/sopa-de-letras/:id" element={<PlayWordSearchPage />} />
-            <Route path="/jugar/crucigrama/:id" element={<PlayCrosswordPage />} />
-            <Route path="/jugar/rellenar-huecos/:id" element={<PlayFillBlanksPage />} />
-            <Route path="/jugar/adivina-la-palabra/:id" element={<PlayHangmanPage />} />
-            <Route path="/jugar/anagrama/:id" element={<PlayAnagramPage />} />
-            <Route path="/jugar/ordenar-oracion/:id" element={<PlaySentenceOrderPage />} />
-            <Route path="/jugar/relacionar-columnas/:id" element={<PlayMatchColumnsPage />} />
-            <Route path="/jugar/memoria/:id" element={<PlayMemoryPage />} />
-            <Route path="/jugar/rosco/:id" element={<PlayRoscoPage />} />
-            <Route path="/jugar/cadenas-de-palabras/:id" element={<PlayWordlePage />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
+        <ViewTransition name="app-routes">
+          <Suspense
+            fallback={
+              <div className="flex min-h-[50vh] items-center justify-center" aria-live="polite">
+                <Spinner />
+              </div>
+            }
+          >
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/sopa-de-letras" element={<WordSearchPage />} />
+                <Route path="/crucigrama" element={<CrosswordPage />} />
+                <Route path="/rellenar-huecos" element={<FillBlanksPage />} />
+                <Route path="/adivina-la-palabra" element={<HangmanPage />} />
+                <Route path="/anagrama" element={<AnagramPage />} />
+                <Route path="/ordenar-oracion" element={<SentenceOrderPage />} />
+                <Route path="/relacionar-columnas" element={<MatchColumnsPage />} />
+                <Route path="/memoria" element={<MemoryPage />} />
+                <Route path="/rosco" element={<RoscoPage />} />
+                <Route path="/cadenas-de-palabras" element={<WordlePage />} />
+                <Route path="/iniciar-sesion" element={<LoginPage />} />
+                <Route path="/crear-cuenta" element={<SignupPage />} />
+                <Route path="/verificar" element={<VerifyPage />} />
+                <Route path="/recuperar-cuenta" element={<ForgotPasswordPage />} />
+                <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
+                <Route path="/mis-puzzles" element={<MyPuzzlesPage />} />
+                <Route path="/mis-puzzles/:id/progreso" element={<PuzzleProgressPage />} />
+              </Route>
+              <Route element={<PlayableLayout />}>
+                <Route path="/jugar" element={<PlayHubPage />} />
+                <Route path="/jugar/sopa-de-letras/:id" element={<PlayWordSearchPage />} />
+                <Route path="/jugar/crucigrama/:id" element={<PlayCrosswordPage />} />
+                <Route path="/jugar/rellenar-huecos/:id" element={<PlayFillBlanksPage />} />
+                <Route path="/jugar/adivina-la-palabra/:id" element={<PlayHangmanPage />} />
+                <Route path="/jugar/anagrama/:id" element={<PlayAnagramPage />} />
+                <Route path="/jugar/ordenar-oracion/:id" element={<PlaySentenceOrderPage />} />
+                <Route path="/jugar/relacionar-columnas/:id" element={<PlayMatchColumnsPage />} />
+                <Route path="/jugar/memoria/:id" element={<PlayMemoryPage />} />
+                <Route path="/jugar/rosco/:id" element={<PlayRoscoPage />} />
+                <Route path="/jugar/cadenas-de-palabras/:id" element={<PlayWordlePage />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </ViewTransition>
       </BrowserRouter>
     </ErrorBoundary>
   );

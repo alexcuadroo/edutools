@@ -1,4 +1,4 @@
-import { useTransition, useCallback, useRef, useEffect } from "react";
+import { useTransition, useCallback, useRef, useEffect, addTransitionType } from "react";
 import { usePuzzleStore } from "@/store/puzzle-store";
 
 interface UsePuzzleGeneratorOptions<T> {
@@ -39,6 +39,7 @@ export function usePuzzleGenerator<T>(options: UsePuzzleGeneratorOptions<T>) {
       setError(null);
 
       startTransition(() => {
+        addTransitionType("generate-puzzle");
         try {
           const result = opts.generate(words, extra);
           opts.onResult(result);

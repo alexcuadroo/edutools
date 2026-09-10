@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { Bot, Clipboard, FileUp, Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
@@ -39,16 +39,21 @@ export default function RoscoInput() {
     }
     const durationSeconds = minuteValue * 60 + secondValue;
     setLoading(true);
-    try {
-      const result = roscoGenerator.generate({ words: [], entries, durationSeconds });
-      setRoscoTitle(title.trim());
-      setRoscoResult(result.grid);
-      toast.success("Rosco generado");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "No se pudo generar el rosco");
-    } finally {
-      setLoading(false);
-    }
+    setTimeout(() => {
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = roscoGenerator.generate({ words: [], entries, durationSeconds });
+          setRoscoTitle(title.trim());
+          setRoscoResult(result.grid);
+          toast.success("Rosco generado");
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : "No se pudo generar el rosco");
+        } finally {
+          setLoading(false);
+        }
+      });
+    }, 50);
   };
 
   const handleExample = () => {

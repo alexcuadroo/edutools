@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { matchColumnsGenerator } from "@/lib/puzzles/match-columns/generator";
@@ -38,15 +38,18 @@ export default function MatchColumnsInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = matchColumnsGenerator.generate({ words: items });
-        setMatchColumnsResult(result.grid);
-        toast.success("Relacionar columnas generado!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = matchColumnsGenerator.generate({ words: items });
+          setMatchColumnsResult(result.grid);
+          toast.success("Relacionar columnas generado!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 
