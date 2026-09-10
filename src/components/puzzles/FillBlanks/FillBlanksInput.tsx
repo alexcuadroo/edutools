@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { fillBlanksGenerator } from "@/lib/puzzles/fill-blanks/generator";
@@ -24,18 +24,21 @@ export default function FillBlanksInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = fillBlanksGenerator.generateFromText({
-          text: text.trim(),
-          blankCount,
-        });
-        setFillBlanksResult(result);
-        toast.success("¡Texto con huecos generado!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = fillBlanksGenerator.generateFromText({
+            text: text.trim(),
+            blankCount,
+          });
+          setFillBlanksResult(result);
+          toast.success("¡Texto con huecos generado!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 

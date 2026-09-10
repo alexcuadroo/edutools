@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { anagramGenerator } from "@/lib/puzzles/anagram/generator";
@@ -38,15 +38,18 @@ export default function AnagramInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = anagramGenerator.generate({ words: items });
-        setAnagramResult(result.grid);
-        toast.success("Anagramas generados!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = anagramGenerator.generate({ words: items });
+          setAnagramResult(result.grid);
+          toast.success("Anagramas generados!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 

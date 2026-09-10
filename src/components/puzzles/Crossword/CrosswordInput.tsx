@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { crosswordGenerator } from "@/lib/puzzles/crossword/generator";
@@ -52,17 +52,20 @@ export default function CrosswordInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = crosswordGenerator.generate({
-          words: items,
-        });
-        setCrosswordResult(result.grid as CWGrid);
-        toast.success("¡Crucigrama generado!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = crosswordGenerator.generate({
+            words: items,
+          });
+          setCrosswordResult(result.grid as CWGrid);
+          toast.success("¡Crucigrama generado!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 

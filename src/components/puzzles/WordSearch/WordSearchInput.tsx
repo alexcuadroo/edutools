@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { wordSearchGenerator } from "@/lib/puzzles/word-search/generator";
@@ -32,18 +32,21 @@ export default function WordSearchInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = wordSearchGenerator.generate({
-          words: items,
-          size: gridSize,
-        });
-        setWordSearchResult(result.grid as WSGrid);
-        toast.success("¡Sopa de letras generada!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = wordSearchGenerator.generate({
+            words: items,
+            size: gridSize,
+          });
+          setWordSearchResult(result.grid as WSGrid);
+          toast.success("¡Sopa de letras generada!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 

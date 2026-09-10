@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { memoryGenerator } from "@/lib/puzzles/memory/generator";
@@ -38,15 +38,18 @@ export default function MemoryInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = memoryGenerator.generate({ words: items });
-        setMemoryResult(result.grid);
-        toast.success("Juego de memoria generado!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = memoryGenerator.generate({ words: items });
+          setMemoryResult(result.grid);
+          toast.success("Juego de memoria generado!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 

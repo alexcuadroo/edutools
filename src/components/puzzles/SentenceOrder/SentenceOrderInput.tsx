@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, startTransition, addTransitionType } from "react";
 import { toast } from "react-toastify";
 import { usePuzzleStore } from "@/store/puzzle-store";
 import { sentenceOrderGenerator } from "@/lib/puzzles/sentence-order/generator";
@@ -28,15 +28,18 @@ export default function SentenceOrderInput() {
     setLoading(true);
 
     setTimeout(() => {
-      try {
-        const result = sentenceOrderGenerator.generate({ words: items });
-        setSentenceOrderResult(result.grid);
-        toast.success("Oraciones generadas!");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Error al generar");
-      } finally {
-        setLoading(false);
-      }
+      startTransition(() => {
+        addTransitionType("generate-puzzle");
+        try {
+          const result = sentenceOrderGenerator.generate({ words: items });
+          setSentenceOrderResult(result.grid);
+          toast.success("Oraciones generadas!");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Error al generar");
+        } finally {
+          setLoading(false);
+        }
+      });
     }, 50);
   };
 
