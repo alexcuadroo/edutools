@@ -3,8 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BookOpenCheck,
+  Bot,
   Check,
   CircleHelp,
+  Copy,
   Crosshair,
   FileDown,
   Gamepad2,
@@ -23,6 +25,15 @@ import {
 import { loadPuzzle } from "@/lib/share/api";
 import { PUZZLE_TYPE_TO_SLUG } from "@/lib/puzzles/slugs";
 import type { PlayablePuzzleType } from "@/lib/share/types";
+import { useAuthStore } from "@/store/auth-store";
+
+const MCP_PROMPT = `Usá EduTools para crear una sopa de letras titulada "Animales de granja" con estas palabras, una por línea:
+gallina
+vaca
+oveja
+caballo
+
+Guardá el puzzle en mi cuenta y devolveme el enlace para jugar.`;
 
 const PUZZLES = [
   { path: "/sopa-de-letras", title: "Sopa de Letras", detail: "Palabras, temas y cuadrícula personalizable.", icon: LetterText },
@@ -41,8 +52,24 @@ export default function HomePage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [promptCopied, setPromptCopied] = useState(false);
+  const [promptCopyError, setPromptCopyError] = useState(false);
   const navigate = useNavigate();
+  const authStatus = useAuthStore((state) => state.status);
+  const integrationsHref = authStatus === "anon" ? "/crear-cuenta" : "/integraciones";
   const isCodeComplete = code.trim().length === 8;
+
+  const handleCopyMcpPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(MCP_PROMPT);
+      setPromptCopied(true);
+      setPromptCopyError(false);
+      window.setTimeout(() => setPromptCopied(false), 2500);
+    } catch {
+      setPromptCopyError(true);
+      setPromptCopied(false);
+    }
+  };
 
   const handlePlay = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -131,6 +158,50 @@ export default function HomePage() {
               Crear un puzzle <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </section>
+        </div>
+      </section>
+
+      <section className="mcp-promo mx-auto mt-8 grid max-w-5xl gap-6 overflow-hidden rounded-3xl border border-indigo-100 p-5 shadow-[0_22px_65px_-42px_rgba(67,56,202,0.55)] sm:p-8 lg:grid-cols-[1fr_0.9fr] lg:items-center" aria-labelledby="mcp-title">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-800">
+            <Bot className="h-4 w-4" aria-hidden="true" /> Nuevo · MCP
+          </div>
+          <h2 id="mcp-title" className="mt-4 max-w-xl text-balance text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+            Creá puzzles desde tu LLM favorito
+          </h2>
+          <p className="mt-3 max-w-xl text-pretty text-sm leading-relaxed text-slate-600 sm:text-base">
+            Conectá EduTools a un cliente compatible con MCP. Pedí una actividad con tus propias palabras: EduTools la genera, la guarda en tu cuenta y te devuelve el enlace para jugar.
+          </p>
+          <ol className="mt-5 grid gap-3 text-sm text-slate-700 sm:grid-cols-3 lg:grid-cols-1">
+            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">1</span>Creá tu token de conexión.</li>
+            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">2</span>Conectá el servidor MCP en tu LLM.</li>
+            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">3</span>Pedí un puzzle y recibí su link.</li>
+          </ol>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link to={integrationsHref} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md">
+              {authStatus === "auth" ? "Configurar MCP" : authStatus === "anon" ? "Crear cuenta y conectar" : "Conectar MCP"}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            {authStatus === "anon" && <Link to="/iniciar-sesion" className="min-h-11 content-center text-sm font-semibold text-indigo-800 underline decoration-indigo-300 underline-offset-4 hover:text-indigo-950">Ya tengo cuenta</Link>}
+          </div>
+          <p className="mt-3 text-xs text-slate-500">Tu contraseña no se comparte con el LLM. Usás un token que podés revocar cuando quieras.</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Probalo en tu chat</p>
+              <h3 className="mt-1 font-semibold text-slate-950">Copiá este mini prompt</h3>
+            </div>
+            <button type="button" onClick={() => void handleCopyMcpPrompt()} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 px-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-indigo-600">
+              {promptCopied ? <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+              {promptCopied ? "Copiado" : "Copiar prompt"}
+            </button>
+          </div>
+          <pre className="mt-4 max-h-64 overflow-auto whitespace-pre-wrap rounded-xl bg-slate-950 p-4 font-mono text-xs leading-relaxed text-slate-100 sm:text-sm">{MCP_PROMPT}</pre>
+          <p aria-live="polite" className={`mt-2 min-h-5 text-xs ${promptCopyError ? "text-red-700" : "text-slate-500"}`}>
+            {promptCopyError ? "No se pudo copiar. Seleccioná el texto para copiarlo manualmente." : promptCopied ? "Prompt copiado. Pegalo en tu LLM después de conectar EduTools." : "Primero conectá EduTools con el token de tu cuenta."}
+          </p>
         </div>
       </section>
 

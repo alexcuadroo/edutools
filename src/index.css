@@ -146,6 +146,38 @@ body {
   color: #3730a3;
 }
 
+.mcp-promo {
+  background-image: linear-gradient(135deg, #eef2ff 0%, #ffffff 54%, #f5f3ff 100%);
+}
+
+.dark .mcp-promo {
+  background-image: linear-gradient(135deg, #182235 0%, #111827 58%, #211d43 100%);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+.dark .mcp-promo-step {
+  background-color: var(--primary-subtle);
+  color: var(--primary);
+}
+
+.mcp-token-copy-button {
+  background-color: #ffffff;
+  color: #78350f;
+}
+
+.mcp-token-copy-button:hover {
+  background-color: #fef3c7;
+}
+
+.dark .mcp-token-copy-button {
+  background-color: #1f2937;
+  color: #fde68a;
+}
+
+.dark .mcp-token-copy-button:hover {
+  background-color: #374151;
+}
+
 .dark .home-hero {
   background: #020617;
   border-color: color-mix(in srgb, var(--primary) 16%, var(--border));

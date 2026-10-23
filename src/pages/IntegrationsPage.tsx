@@ -25,6 +25,8 @@ export default function IntegrationsPage() {
   const [creating, setCreating] = useState(false);
   const [revoking, setRevoking] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [instructionsCopied, setInstructionsCopied] = useState(false);
+  const mcpUrl = `${window.location.origin}/api/mcp`;
 
   useNoIndexMeta("Integraciones MCP");
 
@@ -101,11 +103,29 @@ export default function IntegrationsPage() {
     }
   };
 
+  const copyLlmInstructions = async () => {
+    if (!createdToken) return;
+    const instructions = [
+      "Ayudame a configurar EduTools como servidor MCP remoto en este cliente.",
+      `URL del servidor: ${mcpUrl}`,
+      "Transporte: Streamable HTTP",
+      `Encabezado: Authorization: Bearer ${createdToken.token}`,
+      "Si podés editar la configuración MCP de este cliente, agregá el servidor con esos datos. Si no, indicame dónde pegarlos exactamente.",
+      "No repitas ni muestres el token en tu respuesta. Cuando esté conectado, probá la herramienta save_puzzle para crear una actividad y devolverme su enlace.",
+    ].join("\n");
+
+    try {
+      await navigator.clipboard.writeText(instructions);
+      setInstructionsCopied(true);
+      window.setTimeout(() => setInstructionsCopied(false), 2500);
+    } catch {
+      toast.error("No se pudieron copiar las instrucciones. Copialas manualmente desde la configuración.");
+    }
+  };
+
   if (status === "loading" || status === "anon") {
     return <div className="flex min-h-[50vh] items-center justify-center"><Loader2 className="h-7 w-7 animate-spin text-indigo-600" /></div>;
   }
-
-  const mcpUrl = `${window.location.origin}/api/mcp`;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
@@ -119,7 +139,7 @@ export default function IntegrationsPage() {
 
       <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-gray-900">Servidor MCP</h2>
-        <p className="mt-1 text-sm text-gray-600">Usá esta dirección en un cliente MCP compatible con Streamable HTTP y encabezados personalizados.</p>
+        <p className="mt-1 text-sm text-gray-600">Usá esta dirección en un cliente MCP compatible con Streamable HTTP y encabezados personalizados. Después de crear un token, podés copiar instrucciones para pedirle al LLM que configure la conexión; algunos clientes requieren hacerlo desde sus ajustes.</p>
         <code className="mt-3 block break-all rounded-lg bg-gray-50 p-3 text-sm text-gray-800">{mcpUrl}</code>
         <p className="mt-3 text-xs text-gray-500">Autenticación: encabezado <code>Authorization: Bearer TU_TOKEN</code>. El token da acceso a guardar puzzles en tu cuenta; no lo compartas.</p>
       </section>
@@ -156,10 +176,17 @@ export default function IntegrationsPage() {
                 <p className="font-semibold text-amber-950">Copiá y guardá el token ahora</p>
                 <p className="mt-1 text-sm text-amber-900">No podremos volver a mostrarlo. Si lo perdés, revocalo y creá uno nuevo.</p>
                 <code className="mt-3 block break-all rounded-lg border border-amber-200 bg-white p-3 text-sm text-gray-900">{createdToken.token}</code>
-                <button type="button" onClick={() => void copyToken()} className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-lg border border-amber-400 bg-white px-3 text-sm font-medium text-amber-950 hover:bg-amber-100">
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copied ? "Copiado" : "Copiar token"}
-                </button>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button type="button" onClick={() => void copyToken()} className="mcp-token-copy-button inline-flex min-h-10 items-center gap-2 rounded-lg border border-amber-400 bg-white px-3 text-sm font-medium text-amber-950 hover:bg-amber-100">
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    {copied ? "Copiado" : "Copiar token"}
+                  </button>
+                  <button type="button" onClick={() => void copyLlmInstructions()} className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-indigo-600 px-3 text-sm font-semibold text-white hover:bg-indigo-700">
+                    {instructionsCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    {instructionsCopied ? "Instrucciones copiadas" : "Copiar instrucciones para el LLM"}
+                  </button>
+                </div>
+                <p className="mt-2 text-xs text-amber-900">Las instrucciones incluyen el token. Pegalas solo en un LLM o cliente de confianza.</p>
               </div>
             </div>
           </div>
