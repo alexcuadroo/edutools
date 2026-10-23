@@ -3,12 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useNoIndexMeta } from "@/hooks/useNoIndexMeta";
 import { useSavedPuzzlesStore } from "@/store/saved-puzzles-store";
-import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle, ChartNoAxesCombined, RefreshCw } from "lucide-react";
+import { Loader2, Trash2, Share2, Play, FolderOpen, AlertCircle, ChartNoAxesCombined, RefreshCw, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import ShareModal from "@/components/ui/ShareModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { puzzleTypeSlug, puzzleTypeLabel } from "@/lib/puzzles/slugs";
 import type { PlayablePuzzleType } from "@/lib/share/types";
+import SavedPuzzleSolution from "@/components/puzzles/SavedPuzzleSolution";
+import type { SavedPuzzle } from "@/store/saved-puzzles-store";
 
 function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
@@ -33,6 +35,7 @@ export default function MyPuzzlesPage() {
   const [sharing, setSharing] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [solutionPuzzle, setSolutionPuzzle] = useState<SavedPuzzle | null>(null);
 
   useNoIndexMeta("Mis puzzles");
 
@@ -158,6 +161,14 @@ export default function MyPuzzlesPage() {
                   <Play className="h-4 w-4" aria-hidden="true" />
                   Jugar
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => setSolutionPuzzle(puzzle)}
+                  disabled={sharing !== null || deleting}
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-sky-50 px-3.5 py-2 text-sm font-medium text-sky-800 transition-colors hover:bg-sky-100 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Eye className="h-4 w-4" aria-hidden="true" /> Ver solución
+                </button>
                 {(["word-search", "crossword", "rosco", "fill-blanks", "match-columns", "memory", "wordle"] as string[]).includes(puzzle.type) && (
                   <Link to={`/mis-puzzles/${puzzle.id}/progreso`} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-800 transition-colors hover:bg-violet-100">
                     <ChartNoAxesCombined className="h-4 w-4" aria-hidden="true" /> Progreso
@@ -199,6 +210,10 @@ export default function MyPuzzlesPage() {
           title="Puzzle compartido"
           onClose={() => setShareOpen(false)}
         />
+      )}
+
+      {solutionPuzzle && (
+        <SavedPuzzleSolution puzzle={solutionPuzzle} onClose={() => setSolutionPuzzle(null)} />
       )}
 
       <ConfirmModal
