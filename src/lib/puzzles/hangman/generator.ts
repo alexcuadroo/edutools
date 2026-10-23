@@ -1,5 +1,5 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import type { HangmanResult } from "@/lib/puzzles/hangman/types";
+import type { HangmanResult } from "./types";
 
 class HangmanGenerator implements IPuzzleGenerator {
   id = "hangman" as const;

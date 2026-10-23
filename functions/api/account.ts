@@ -36,6 +36,16 @@ export const onRequestDelete: PagesFunction<Env> = async (context) => {
       await context.env.USERS.delete(key.name);
     }
 
+    const mcpTokenList = await context.env.USERS.list({ prefix: `mcp-token-index:${userId}:` });
+    for (const key of mcpTokenList.keys) {
+      const tokenRecord = await context.env.USERS.get(key.name);
+      if (tokenRecord) {
+        const { tokenHash } = JSON.parse(tokenRecord) as { tokenHash?: string };
+        if (tokenHash) await context.env.SESSIONS.delete(`mcp-token:${tokenHash}`);
+      }
+      await context.env.USERS.delete(key.name);
+    }
+
     await context.env.USERS.delete(`user:${userId}`);
     await context.env.USERS.delete(`email-idx:${user.email}`);
 

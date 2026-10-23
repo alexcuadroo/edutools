@@ -36,6 +36,7 @@ const VerifyPage = lazy(() => import("@/pages/VerifyPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const MyPuzzlesPage = lazy(() => import("@/pages/MyPuzzlesPage"));
+const IntegrationsPage = lazy(() => import("@/pages/IntegrationsPage"));
 const PuzzleProgressPage = lazy(() => import("@/pages/PuzzleProgressPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 const PlayHubPage = lazy(() => import("@/pages/play/PlayHubPage"));
@@ -108,6 +109,7 @@ export default function App() {
                 <Route path="/recuperar-cuenta" element={<ForgotPasswordPage />} />
                 <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
                 <Route path="/mis-puzzles" element={<MyPuzzlesPage />} />
+                <Route path="/integraciones" element={<IntegrationsPage />} />
                 <Route path="/mis-puzzles/:id/progreso" element={<PuzzleProgressPage />} />
               </Route>
               <Route element={<PlayableLayout />}>

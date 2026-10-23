@@ -1,5 +1,5 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import type { WordleEntry, WordlePuzzleInput, WordleResult } from "@/lib/puzzles/wordle/types";
+import type { WordleEntry, WordlePuzzleInput, WordleResult } from "./types";
 
 export function normalizeWordleWord(value: string): string {
   return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();

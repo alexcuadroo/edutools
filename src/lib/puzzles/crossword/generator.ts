@@ -1,6 +1,6 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import type { CWGrid, CWWord } from "@/lib/puzzles/crossword/types";
-import { shuffle } from "@/lib/utils";
+import type { CWGrid, CWWord } from "./types";
+import { shuffle } from "../../utils/shuffle";
 
 class CrosswordGenerator implements IPuzzleGenerator {
   id = "crossword" as const;

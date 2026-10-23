@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-PORT=8788
+PORT="${TEST_PORT:-$(node -e 'const net = require("node:net"); const server = net.createServer(); server.listen(0, "127.0.0.1", () => { console.log(server.address().port); server.close(); });')}"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+WRANGLER_STATE_DIR="$(mktemp -d /tmp/opencode/edutools-integration.XXXXXX)"
 
 cleanup() {
   if [ -n "$WRANGLER_PID" ]; then
@@ -10,6 +11,7 @@ cleanup() {
     kill "$WRANGLER_PID" 2>/dev/null || true
     wait "$WRANGLER_PID" 2>/dev/null || true
   fi
+  rm -rf -- "$WRANGLER_STATE_DIR"
 }
 trap cleanup EXIT INT TERM
 
@@ -19,12 +21,13 @@ pnpm build
 
 echo ""
 echo "=== Iniciando wrangler pages dev en puerto $PORT ==="
-pnpx wrangler pages dev dist \
+pnpm exec wrangler pages dev dist \
   --port "$PORT" \
   --binding ENVIRONMENT=development \
   --kv PUZZLES \
   --kv USERS \
-  --kv SESSIONS &
+  --kv SESSIONS \
+  --persist-to "$WRANGLER_STATE_DIR" &
 WRANGLER_PID=$!
 
 echo "Esperando a que el servidor responda..."
@@ -42,7 +45,7 @@ done
 
 echo ""
 echo "=== Ejecutando tests de integración ==="
-TEST_BASE_URL="http://localhost:$PORT" npx vitest run --config vitest.integration.config.ts
+TEST_BASE_URL="http://localhost:$PORT" pnpm exec vitest run --config vitest.integration.config.ts
 
 echo ""
 echo "=== Tests completados ==="

@@ -1,5 +1,5 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import { ROSCO_LETTERS, type RoscoPuzzleInput, type RoscoResult } from "@/lib/puzzles/rosco/types";
+import { ROSCO_LETTERS, type RoscoPuzzleInput, type RoscoResult } from "./types";
 
 export function normalizeRoscoAnswer(value: string): string {
   return value

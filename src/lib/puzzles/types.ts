@@ -19,4 +19,4 @@ export interface IPuzzleGenerator<GridType = unknown> {
   description: string;
   generate(input: PuzzleInput): PuzzleResult<GridType>;
 }
-import type { RoscoEntry } from "@/lib/puzzles/rosco/types";
+import type { RoscoEntry } from "./rosco/types";

@@ -1,6 +1,6 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import type { MCResult } from "@/lib/puzzles/match-columns/types";
-import { shuffle } from "@/lib/utils";
+import type { MCResult } from "./types";
+import { shuffle } from "../../utils/shuffle";
 
 class MatchColumnsGenerator implements IPuzzleGenerator {
   id = "match-columns" as const;

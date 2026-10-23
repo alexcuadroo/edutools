@@ -1,6 +1,6 @@
 import type { IPuzzleGenerator, PuzzleResult } from "@/lib/puzzles/types";
-import type { TextToken, BlankWord, FillBlanksResult, FillBlanksInput } from "@/lib/puzzles/fill-blanks/types";
-import { shuffle } from "@/lib/utils";
+import type { TextToken, BlankWord, FillBlanksResult, FillBlanksInput } from "./types";
+import { shuffle } from "../../utils/shuffle";
 
 const DISTRACTORS: Record<number, string[]> = {
   3: ["sol", "mar", "pan", "luz", "rio", "ave", "pez", "dos", "ojo", "pie", "fin", "sal", "rey", "ley", "voz"],

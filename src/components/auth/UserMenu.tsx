@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { LogOut, FolderOpen, Loader2, Trash2 } from "lucide-react";
+import { LogOut, FolderOpen, Loader2, Trash2, KeyRound } from "lucide-react";
 import { toast } from "react-toastify";
 import DeleteAccountModal from "@/components/auth/DeleteAccountModal";
 
@@ -92,6 +92,14 @@ export default function UserMenu({ variant = "desktop", onNavigate, open, onOpen
             <FolderOpen className="h-4 w-4 text-gray-500" aria-hidden="true" />
             Mis puzzles
           </Link>
+          <Link
+            to="/integraciones"
+            onClick={onNavigate}
+            className="flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+          >
+            <KeyRound className="h-4 w-4 text-gray-500" aria-hidden="true" />
+            Conectar con MCP
+          </Link>
           <button
             type="button"
             onClick={() => void handleLogout()}
@@ -149,6 +157,16 @@ export default function UserMenu({ variant = "desktop", onNavigate, open, onOpen
           >
             <FolderOpen className="w-4 h-4" />
             Mis puzzles
+          </Link>
+
+          <Link
+            to="/integraciones"
+            onClick={() => setOpen(false)}
+            role="menuitem"
+            className="flex min-h-10 items-center gap-2 px-4 text-sm font-medium text-muted transition-colors hover:bg-surface-muted hover:text-foreground"
+          >
+            <KeyRound className="w-4 h-4" />
+            Conectar con MCP
           </Link>
 
           <button

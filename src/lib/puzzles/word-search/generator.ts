@@ -1,6 +1,6 @@
 import type { IPuzzleGenerator, PuzzleInput, PuzzleResult } from "@/lib/puzzles/types";
-import { type WSDirection, type WSGrid, type WSWordPlacement, WS_DIRECTIONS } from "@/lib/puzzles/word-search/types";
-import { shuffle } from "@/lib/utils";
+import { type WSDirection, type WSGrid, type WSWordPlacement, WS_DIRECTIONS } from "./types";
+import { shuffle } from "../../utils/shuffle";
 
 class WordSearchGenerator implements IPuzzleGenerator {
   id = "word-search" as const;
