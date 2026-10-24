@@ -5,6 +5,7 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface DownloadDropdownProps {
   groups: DownloadGroup[];
+  align?: "left" | "right";
 }
 
 const FORMAT_ICONS: Record<string, typeof FileText> = {
@@ -13,12 +14,12 @@ const FORMAT_ICONS: Record<string, typeof FileText> = {
   preview: Eye,
 };
 
-export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
+export default function DownloadDropdown({ groups, align = "right" }: DownloadDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside<HTMLDivElement>(open, () => setOpen(false));
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative inline-block">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
@@ -35,7 +36,7 @@ export default function DownloadDropdown({ groups }: DownloadDropdownProps) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg shadow-gray-100 z-20 py-1"
+          className={`absolute ${align === "left" ? "left-0" : "right-0"} top-full mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-lg shadow-gray-100 z-20 py-1`}
         >
           {groups.map((group, gi) => (
             <div key={group.label} role="group" aria-label={group.label}>

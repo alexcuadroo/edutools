@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Download, Loader2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { useSavedPuzzlesStore, type SavedPuzzle } from "@/store/saved-puzzles-store";
+import DownloadDropdown from "@/components/ui/DownloadDropdown";
 import type {
   AnagramPlayData,
   CWPlayData,
@@ -36,6 +37,7 @@ import { downloadWordSearchPNG } from "@/lib/png/word-search";
 import { downloadCrosswordPNG } from "@/lib/png/crossword";
 
 type DownloadFormat = "pdf" | "png";
+type DownloadMode = "solution" | "students";
 
 function buildWordSearchGrid(data: WSPlayData): WSGrid {
   return {
@@ -293,28 +295,28 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
   ].includes(puzzle.type);
   const supportsPng = puzzle.type === "word-search" || puzzle.type === "crossword";
 
-  const downloadSolution = async (format: DownloadFormat) => {
+  const downloadPuzzle = async (format: DownloadFormat, mode: DownloadMode) => {
     if (!data) return;
     const title = puzzle.title;
     try {
       if (format === "png") {
         if (puzzle.type === "word-search") {
-          downloadWordSearchPNG(buildWordSearchGrid(data as WSPlayData), "solution", title);
+          downloadWordSearchPNG(buildWordSearchGrid(data as WSPlayData), mode, title);
         } else if (puzzle.type === "crossword") {
-          downloadCrosswordPNG(buildCrosswordGrid(data as CWPlayData), "solution", title);
+          downloadCrosswordPNG(buildCrosswordGrid(data as CWPlayData), mode === "solution" ? "solution" : "blank", title);
         }
         return;
       }
 
       switch (puzzle.type) {
         case "word-search":
-          await generateWordSearchPDF(buildWordSearchGrid(data as WSPlayData), "solution", title, "download");
+          await generateWordSearchPDF(buildWordSearchGrid(data as WSPlayData), mode, title, "download");
           break;
         case "crossword":
-          await generateCrosswordPDF(buildCrosswordGrid(data as CWPlayData), "solution", title, "download");
+          await generateCrosswordPDF(buildCrosswordGrid(data as CWPlayData), mode === "solution" ? "solution" : "blank", title, "download");
           break;
         case "fill-blanks":
-          await generateFillBlanksPDF(buildFillBlanksResult(data as FBPlayData), "solution", title, "download");
+          await generateFillBlanksPDF(buildFillBlanksResult(data as FBPlayData), mode, title, "download");
           break;
         case "hangman": {
           const solution = data as HangmanPlayData;
@@ -322,7 +324,7 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
             words: solution.w.map((word) => ({ word: word.w, clue: word.c })),
             maxAttempts: solution.m,
           };
-          await generateHangmanPDF(result, "solution", title, "download");
+          await generateHangmanPDF(result, mode, title, "download");
           break;
         }
         case "anagram": {
@@ -330,7 +332,7 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
           const result: AnagramResult = {
             words: solution.w.map((word) => ({ word: word.w, clue: word.c, scrambled: word.s })),
           };
-          await generateAnagramPDF(result, "solution", title, "download");
+          await generateAnagramPDF(result, mode, title, "download");
           break;
         }
         case "sentence-order": {
@@ -338,7 +340,7 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
           const result: SentenceOrderResult = {
             sentences: solution.s.map((sentence) => ({ original: sentence.o, shuffled: sentence.w })),
           };
-          await generateSentenceOrderPDF(result, "solution", title, "download");
+          await generateSentenceOrderPDF(result, mode, title, "download");
           break;
         }
         case "match-columns": {
@@ -347,11 +349,11 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
             matches: solution.m.map((match) => ({ word: match.w, definition: match.d })),
             shuffledDefinitions: solution.sd,
           };
-          await generateMatchColumnsPDF(result, "solution", title, "download");
+          await generateMatchColumnsPDF(result, mode, title, "download");
           break;
         }
         case "memory":
-          await generateMemoryPDF(buildMemoryResult(data as MemPlayData), "solution", title, "download");
+          await generateMemoryPDF(buildMemoryResult(data as MemPlayData), mode, title, "download");
           break;
         default:
           return;
@@ -386,26 +388,29 @@ export default function SavedPuzzleSolution({ puzzle, onClose }: SavedPuzzleSolu
             <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">{error}</p>
           ) : (
             <>
-              <div className="mb-4 flex flex-wrap gap-2">
-                {supportsPdf && (
-                  <button
-                    type="button"
-                    onClick={() => void downloadSolution("pdf")}
-                    className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    <Download className="h-4 w-4" aria-hidden="true" /> Descargar PDF
-                  </button>
-                )}
-                {supportsPng && (
-                  <button
-                    type="button"
-                    onClick={() => void downloadSolution("png")}
-                    className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    <Download className="h-4 w-4" aria-hidden="true" /> Descargar PNG
-                  </button>
-                )}
-              </div>
+              {(supportsPdf || supportsPng) && (
+                <div className="mb-4">
+                  <DownloadDropdown
+                    align="left"
+                    groups={[
+                      ...(supportsPdf ? [{
+                        label: "PDF",
+                        options: [
+                          { label: "Con solución", onClick: () => downloadPuzzle("pdf", "solution") },
+                          { label: "Versión de estudiante", onClick: () => downloadPuzzle("pdf", "students") },
+                        ],
+                      }] : []),
+                      ...(supportsPng ? [{
+                        label: "PNG",
+                        options: [
+                          { label: "Con solución", onClick: () => downloadPuzzle("png", "solution") },
+                          { label: "Versión de estudiante", onClick: () => downloadPuzzle("png", "students") },
+                        ],
+                      }] : []),
+                    ]}
+                  />
+                </div>
+              )}
               <PuzzleAnswer puzzle={puzzleWithData} />
             </>
           )}
