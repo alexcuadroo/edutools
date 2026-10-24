@@ -55,12 +55,36 @@ Levanta el servidor en `http://localhost:5173`.
 
 ### Frontend + API local (con KV)
 
+Para probar las Pages Functions sin el seguimiento en vivo:
+
 ```bash
 pnpm build
 pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 ```
 
 Levanta el servidor en `http://127.0.0.1:8788` con las Pages Functions y KV namespaces locales.
+
+### Frontend + API + progreso en vivo
+
+Para probar el seguimiento en vivo necesitás dos procesos. Abrí dos terminales en la raíz del proyecto. Primero, compilá el frontend (Pages sirve los archivos de `dist/`):
+
+```bash
+pnpm build
+```
+
+Terminal 1 — Worker local con el Durable Object:
+
+```bash
+pnpm exec wrangler dev --config progress-worker/wrangler.jsonc --port 8787
+```
+
+Terminal 2 — Pages Functions, KV local y binding al Worker:
+
+```bash
+pnpm exec wrangler pages dev dist --port 8788 --kv PUZZLES --kv USERS --kv SESSIONS --do PROGRESS=PuzzleProgress@edutools-progress
+```
+
+Abrí `http://127.0.0.1:8788`. Dejá ambas terminales abiertas mientras trabajás y presioná `Ctrl+C` en cada una para detener sus servidores. Si cambiás el frontend, volvé a ejecutar `pnpm build`; Wrangler servirá el nuevo contenido desde `dist/`. KV y el Durable Object usan almacenamiento local de Wrangler.
 
 Para probar el flujo completo de autenticación (envío de emails), creá un archivo `.dev.vars` junto a `wrangler.toml` con tu clave. Este archivo no se versiona:
 
@@ -375,15 +399,7 @@ pnpm exec wrangler pages deploy dist
    - Variable name: `PUZZLES`
    - Seleccionar el namespace creado
 
-### Desarrollo local con KV
-
-```bash
-pnpm build
-pnpm exec wrangler dev --config progress-worker/wrangler.jsonc --port 8787
-pnpm exec wrangler pages dev dist --port 8788 --kv PUZZLES --kv USERS --kv SESSIONS --do PROGRESS=PuzzleProgress@edutools-progress
-```
-
-Para tests de integración, ver sección "Tests".
+Para desarrollo local, seguí las instrucciones de la sección [Desarrollo](#desarrollo). Para tests de integración, ver la sección "Tests".
 
 ### Worker de progreso
 
