@@ -39,9 +39,15 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 
 ## Instalación
 
+Usá **Node.js >=22.13.0** (versión de referencia en `.node-version`) y **pnpm 11.4.0**, fijado en `package.json` mediante `packageManager` y `engines`. Todas las operaciones de dependencias se hacen con pnpm.
+
 ```bash
+node --version
+pnpm --version
 pnpm install
 ```
+
+Versioná `pnpm-lock.yaml` y cualquier cambio intencional en `pnpm-workspace.yaml` junto con los cambios de dependencias. En CI, usá `pnpm install --frozen-lockfile`. Ejecutá las herramientas del proyecto con `pnpm exec`, por ejemplo `pnpm exec wrangler --version`.
 
 ## Desarrollo
 
@@ -113,7 +119,15 @@ pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS
 pnpm build
 ```
 
-Compila TypeScript y genera el bundle de producción en `dist/`.
+Genera los tipos del Worker de progreso, compila TypeScript y genera el bundle de producción en `dist/`.
+
+Para regenerar solo los tipos después de cambiar los bindings o la fecha de compatibilidad en `progress-worker/wrangler.jsonc`:
+
+```bash
+pnpm generate:worker-types
+```
+
+El script usa `wrangler types --config progress-worker/wrangler.jsonc progress-worker/worker-configuration.d.ts`: la ruta de salida es un argumento posicional (sin `--outfile`). No edites manualmente el archivo generado.
 
 ## Lint
 

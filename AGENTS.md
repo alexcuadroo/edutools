@@ -4,6 +4,10 @@
 
 Always use **pnpm** (version 11.4.0) for all package management operations. Do not use npm or yarn.
 
+Usar **Node.js >=22.13.0**; `.node-version` define la versión de referencia. Mantener estas instrucciones alineadas con `packageManager` y `engines` en `package.json`.
+
+Instalar con `pnpm install` (en CI: `pnpm install --frozen-lockfile`). Versionar `pnpm-lock.yaml` y los cambios intencionales de políticas en `pnpm-workspace.yaml` junto con las dependencias. Ejecutar herramientas locales con `pnpm exec`, incluido Wrangler, para usar la versión instalada en el proyecto.
+
 ```bash
 pnpm <command>
 ```
@@ -12,7 +16,8 @@ pnpm <command>
 
 ```bash
 pnpm dev       # Iniciar servidor de desarrollo
-pnpm build     # Compilar para producción (tsc + vite build)
+pnpm build     # Generar tipos del Worker + tsc + vite build
+pnpm generate:worker-types # Regenerar tipos del Worker de progreso
 pnpm lint      # Ejecutar ESLint
 pnpm preview   # Previsualizar build de producción
 pnpm test      # Tests unitarios (vitest run)
@@ -27,6 +32,12 @@ pnpm test:all  # Unit + Integration
 pnpm add <package>
 pnpm add -D <package>  # devDependency
 ```
+
+### Tipos de Wrangler
+
+`pnpm generate:worker-types` genera `progress-worker/worker-configuration.d.ts` desde `progress-worker/wrangler.jsonc`. Ejecutarlo después de cambiar bindings o la fecha de compatibilidad; `pnpm build` también lo ejecuta automáticamente. No editar manualmente los tipos generados.
+
+La sintaxis es `pnpm exec wrangler types --config progress-worker/wrangler.jsonc progress-worker/worker-configuration.d.ts`: la ruta de salida es posicional; no usar `--outfile`.
 
 ## Verificación post-cambios
 
@@ -211,7 +222,7 @@ functions/
 - **Output directory:** `dist`
 - **SPA routing:** `public/_redirects` con `/* /index.html 200`
 - **API:** Pages Functions en `functions/` con KV bindings `PUZZLES`, `USERS`, `SESSIONS`
-- **Secrets:** `RESEND_API_KEY` (vía `wrangler secret put`)
+- **Secrets:** `RESEND_API_KEY` (vía `pnpm exec wrangler secret put`)
 - **SEO:** `robots.txt`, `sitemap.xml`, OpenGraph y Twitter Cards en `index.html`
 - **OG image:** `https://res.cloudinary.com/drfdwvrzc/image/upload/v1780247505/tools-og_tx3eya.png`
 
@@ -219,14 +230,14 @@ functions/
 
 ```bash
 pnpm dev          # Vite dev server (frontend)
-wrangler pages dev dist --binding PUZZLES=puzzles-dev --binding USERS=users-dev --binding SESSIONS=sessions-dev  # Con API + KV local
+pnpm exec wrangler pages dev dist --kv=PUZZLES --kv=USERS --kv=SESSIONS  # Con API + KV local
 ```
 
 ### Deploy
 
 ```bash
 pnpm build        # Build de producción
-wrangler pages deploy dist  # Deploy a Cloudflare Pages
+pnpm exec wrangler pages deploy dist  # Deploy a Cloudflare Pages
 ```
 
 ## Archivos estáticos
