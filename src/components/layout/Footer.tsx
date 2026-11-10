@@ -13,7 +13,7 @@ export default function Footer() {
           to="/"
           className="flex items-center gap-2 text-sm font-bold text-foreground no-underline"
         >
-          <Puzzle className="w-4 h-4 text-indigo-600" />
+          <Puzzle className="w-4 h-4 text-brand" />
           EduTools
         </Link>
         <p className="flex items-center gap-1 text-xs text-muted">

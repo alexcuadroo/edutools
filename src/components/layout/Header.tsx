@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { Puzzle, Search, Grid3X3, Menu, X, TextCursorInput, Heart, Shuffle, ChevronDown, LayoutGrid, ListOrdered, Play, Link2, Layers, CircleHelp, Keyboard } from "lucide-react";
 import UserMenu from "@/components/auth/UserMenu";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const TABS = [
   { path: "/sopa-de-letras", label: "Sopa de Letras", icon: Search },
@@ -53,12 +52,12 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-surface/85 backdrop-blur-md">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className={`${location.pathname === "/" ? "max-w-6xl" : "max-w-5xl"} mx-auto px-4 h-16 flex items-center justify-between`}>
           <Link
             to="/"
             className="flex items-center gap-2 text-lg font-extrabold text-foreground no-underline hover:opacity-80 transition-opacity"
           >
-            <Puzzle className="w-6 h-6 text-indigo-600" />
+            <Puzzle className="w-6 h-6 text-brand" />
             EduTools
           </Link>
 
@@ -119,7 +118,6 @@ export default function Header() {
               </div>
             )}
 
-            <ThemeToggle className="min-h-9 min-w-9 rounded-lg" />
             <UserMenu open={activePopover === "user"} onOpenChange={(open) => setActivePopover(open ? "user" : null)} />
           </div>
 
@@ -164,11 +162,10 @@ export default function Header() {
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 text-lg font-bold text-gray-900 no-underline"
             >
-              <Puzzle className="w-6 h-6 text-indigo-600" />
+              <Puzzle className="w-6 h-6 text-brand" />
               EduTools
             </Link>
             <div className="flex items-center gap-1">
-              <ThemeToggle className="min-h-11 min-w-11 border-0 bg-transparent" />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}

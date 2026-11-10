@@ -56,7 +56,7 @@ export default defineConfig({
         short_name: "EduTools",
         description:
           "Genera puzzles educativos personalizados: sopa de letras, crucigramas y más.",
-        theme_color: "#4f46e5",
+        theme_color: "#8b65c5",
         background_color: "#ffffff",
         display: "standalone",
         orientation: "any",

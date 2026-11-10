@@ -26,10 +26,11 @@
   --muted: #52617a;
   --muted-subtle: #73809a;
   --border: #dce2ee;
-  --primary: #4338ca;
-  --primary-hover: #3730a3;
+  --brand: #8b65c5;
+  --primary: #7953b0;
+  --primary-hover: #684398;
   --primary-foreground: #ffffff;
-  --primary-subtle: #eef2ff;
+  --primary-subtle: #f4effa;
   --success: #047857;
   --success-subtle: #ecfdf5;
   --danger: #dc2626;
@@ -38,32 +39,46 @@
   --shadow-card: 0 12px 30px -20px rgb(15 23 42 / 0.25);
   color-scheme: light;
   scrollbar-gutter: stable;
-  scrollbar-color: var(--primary) transparent;
+  scrollbar-color: var(--brand) transparent;
   scrollbar-width: thin;
 }
 
-html.dark {
-  --background: #111827;
-  --surface: #182235;
-  --surface-muted: #202c42;
-  --foreground: #f8fafc;
-  --muted: #b4c0d3;
-  --muted-subtle: #91a0b9;
-  --border: #334155;
-  --primary: #a5b4fc;
-  --primary-hover: #c7d2fe;
-  --primary-foreground: #1e1b4b;
-  --primary-subtle: #252b4a;
-  --success: #6ee7b7;
-  --success-subtle: #123c35;
-  --danger: #fca5a5;
-  --danger-subtle: #4a1d28;
-  --warning: #fcd34d;
-  --shadow-card: 0 18px 38px -22px rgb(0 0 0 / 0.8);
-  color-scheme: dark;
-}
-
 @theme inline {
+  --color-brand: var(--brand);
+  --color-brand-50: #faf7fd;
+  --color-brand-100: #f0e8f8;
+  --color-brand-200: #dfd0ef;
+  --color-brand-300: #c6afe2;
+  --color-brand-400: #ac8bd4;
+  --color-brand-500: var(--brand);
+  --color-brand-600: var(--primary);
+  --color-brand-700: var(--primary-hover);
+  --color-brand-800: #55377c;
+  --color-brand-900: #442d61;
+  --color-brand-950: #2c1b43;
+  /* Las utilidades existentes comparten la paleta de marca en toda la app. */
+  --color-indigo-50: var(--color-brand-50);
+  --color-indigo-100: var(--color-brand-100);
+  --color-indigo-200: var(--color-brand-200);
+  --color-indigo-300: var(--color-brand-300);
+  --color-indigo-400: var(--color-brand-400);
+  --color-indigo-500: var(--color-brand-500);
+  --color-indigo-600: var(--color-brand-600);
+  --color-indigo-700: var(--color-brand-700);
+  --color-indigo-800: var(--color-brand-800);
+  --color-indigo-900: var(--color-brand-900);
+  --color-indigo-950: var(--color-brand-950);
+  --color-violet-50: var(--color-brand-50);
+  --color-violet-100: var(--color-brand-100);
+  --color-violet-200: var(--color-brand-200);
+  --color-violet-300: var(--color-brand-300);
+  --color-violet-400: var(--color-brand-400);
+  --color-violet-500: var(--color-brand-500);
+  --color-violet-600: var(--color-brand-600);
+  --color-violet-700: var(--color-brand-700);
+  --color-violet-800: var(--color-brand-800);
+  --color-violet-900: var(--color-brand-900);
+  --color-violet-950: var(--color-brand-950);
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
@@ -95,69 +110,25 @@ body {
   outline-offset: 3px;
 }
 
-/* Semantic dark-mode bridge for the existing Tailwind utility surface. */
-.dark .bg-white { background-color: var(--surface); }
-.dark .bg-white\/80 { background-color: color-mix(in srgb, var(--surface) 80%, transparent); }
-.dark .bg-gray-50, .dark .bg-slate-50 { background-color: var(--background); }
-.dark .bg-gray-100, .dark .bg-slate-100 { background-color: var(--surface-muted); }
-.dark .bg-gray-200, .dark .bg-slate-200 { background-color: #2d3a50; }
-.dark .text-gray-900, .dark .text-gray-950, .dark .text-slate-900, .dark .text-slate-950, .dark .text-gray-800, .dark .text-slate-800 { color: var(--foreground); }
-.dark .text-gray-700, .dark .text-slate-700, .dark .text-gray-600, .dark .text-slate-600 { color: var(--muted); }
-.dark .text-gray-500, .dark .text-slate-500, .dark .text-gray-400, .dark .text-slate-400 { color: var(--muted-subtle); }
-.dark .border-gray-100, .dark .border-gray-200, .dark .border-gray-300, .dark .border-slate-100, .dark .border-slate-200, .dark .border-slate-300 { border-color: var(--border); }
-.dark .bg-indigo-50, .dark .bg-violet-50 { background-color: var(--primary-subtle); }
-.dark .bg-indigo-100, .dark .bg-violet-100 { background-color: var(--primary-subtle); }
-.dark .bg-indigo-50\/60 { background-color: var(--primary-subtle); }
-.dark .bg-indigo-50\/70 { background-color: var(--primary-subtle); }
-.dark .text-indigo-600, .dark .text-indigo-700, .dark .text-indigo-800, .dark .text-violet-700, .dark .text-violet-800 { color: var(--primary); }
-.dark .text-indigo-900, .dark .text-indigo-950 { color: var(--foreground); }
-.dark .border-indigo-100, .dark .border-indigo-200, .dark .border-indigo-300, .dark .border-violet-100, .dark .border-violet-200 { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
-.dark .bg-emerald-50 { background-color: var(--success-subtle); }
-.dark .text-emerald-600, .dark .text-emerald-700, .dark .text-emerald-800 { color: var(--success); }
-.dark .bg-red-50 { background-color: var(--danger-subtle); }
-.dark .text-red-600, .dark .text-red-700, .dark .text-red-800 { color: var(--danger); }
-.dark .border-red-100, .dark .border-red-200 { border-color: color-mix(in srgb, var(--danger) 42%, var(--border)); }
-.dark .hover\:bg-gray-50:hover, .dark .hover\:bg-gray-100:hover { background-color: var(--surface-muted); }
-.dark .hover\:bg-white:hover { background-color: var(--surface-muted); }
-.dark .hover\:bg-indigo-50:hover, .dark .hover\:bg-indigo-100:hover { background-color: color-mix(in srgb, var(--primary-subtle) 70%, var(--primary)); }
-.dark .hover\:bg-emerald-50:hover, .dark .hover\:bg-emerald-100:hover { background-color: color-mix(in srgb, var(--success-subtle) 75%, var(--success)); }
 
-.dark .landing-orb { opacity: 0; }
-
-/* El hero acompaña el tema de la aplicación sin perder su jerarquía visual. */
+/* La trama CSS es el respaldo estático del shader y conserva el contraste. */
 .home-hero {
-  background: linear-gradient(135deg, #ffffff 0%, #f8faff 58%, #eef2ff 100%);
-  border-color: #dce2ee;
+  background-color: #fbfaf8;
+  background-image: radial-gradient(ellipse at 90% 45%, #d5eadd70, transparent 65%),
+    radial-gradient(#a792c64d 0.7px, transparent 0.7px);
+  background-size: auto, 6px 6px;
+  border: 1px solid #e7e2ee;
+  box-shadow: 0 18px 50px -30px #7d689936;
 }
 
-.home-hero-title { color: #0f172a; }
-.home-hero-description { color: #52617a; }
-.home-hero-teacher { border-color: #dce2ee; }
-
-.home-hero-cta {
+.student-entry {
   background: #ffffff;
-  border-color: #cbd5e1;
-  color: #1e293b;
+  color-scheme: light;
+  box-shadow: 8px 8px 0 #b8a3ef26, 0 20px 60px #55417314;
+  border: 1px solid #e8e1f1;
 }
-
-.home-hero-cta:hover {
-  background: #eef2ff;
-  border-color: #a5b4fc;
-  color: #3730a3;
-}
-
 .mcp-promo {
-  background-image: linear-gradient(135deg, #eef2ff 0%, #ffffff 54%, #f5f3ff 100%);
-}
-
-.dark .mcp-promo {
-  background-image: linear-gradient(135deg, #182235 0%, #111827 58%, #211d43 100%);
-  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
-}
-
-.dark .mcp-promo-step {
-  background-color: var(--primary-subtle);
-  color: var(--primary);
+  background-image: linear-gradient(135deg, var(--color-brand-50), #ffffff 70%);
 }
 
 .mcp-token-copy-button {
@@ -169,67 +140,13 @@ body {
   background-color: #fef3c7;
 }
 
-.dark .mcp-token-copy-button {
-  background-color: #1f2937;
-  color: #fde68a;
-}
-
-.dark .mcp-token-copy-button:hover {
-  background-color: #374151;
-}
-
-.dark .home-hero {
-  background: #020617;
-  border-color: color-mix(in srgb, var(--primary) 16%, var(--border));
-}
-
-.dark .home-hero-title { color: #ffffff; }
-.dark .home-hero-description { color: #cbd5e1; }
-.dark .home-hero-teacher { border-color: rgb(255 255 255 / 0.15); }
-
-.dark .home-hero-cta {
-  background: rgb(255 255 255 / 0.1);
-  border-color: rgb(255 255 255 / 0.2);
-  color: #ffffff;
-}
-
-.dark .home-hero-cta:hover {
-  background: rgb(255 255 255 / 0.15);
-  border-color: #c4b5fd;
-  color: #ffffff;
-}
-
-.student-entry {
-  box-shadow: 0 18px 34px -22px rgb(67 56 202 / 0.8);
-}
-
-.dark .student-entry {
-  box-shadow: 0 16px 30px -22px rgb(0 0 0 / 0.75);
-}
-
-/* Puzzle grids are documents: preserve their deliberate paper contrast in every app theme. */
+/* Las previsualizaciones conservan el contraste del documento impreso. */
 .preview-document,
 .preview-document * {
   color-scheme: light;
 }
 .preview-document { color: #111827; }
-.dark .preview-document,
-.dark .preview-document .bg-white,
-.dark .preview-document [class*="bg-gray-"],
-.dark .preview-document [class*="bg-slate-"] {
-  background-color: #fff !important;
-}
-.dark .preview-document [class*="text-gray-"],
-.dark .preview-document [class*="text-slate-"] {
-  color: #111827 !important;
-}
-.dark .preview-document [class*="border-gray-"],
-.dark .preview-document [class*="border-slate-"] {
-  border-color: #d1d5db !important;
-}
-
-/* Los tableros interactivos son superficies de juego: conservan una paleta de
- * papel para que letras, casillas y números no pierdan contraste en oscuro. */
+/* Los tableros conservan una paleta de papel con letras y casillas legibles. */
 .play-board,
 .play-board * {
   color-scheme: light;
@@ -239,22 +156,6 @@ body {
   background: #fff;
   color: #1f2937;
   box-shadow: 0 8px 18px rgb(15 23 42 / 0.16);
-}
-
-.dark .play-board {
-  background: #fff;
-  border-color: #cbd5e1;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
-}
-
-.dark .play-board [class*="text-gray-"],
-.dark .play-board [class*="text-slate-"] {
-  color: #1f2937 !important;
-}
-
-.dark .play-board [class*="border-gray-"],
-.dark .play-board [class*="border-slate-"] {
-  border-color: #d1d5db !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -438,7 +339,7 @@ body {
   left: 50%;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  background: linear-gradient(90deg, var(--brand), var(--color-brand-300));
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(-50%);
   border-radius: 1px;
@@ -459,7 +360,7 @@ body {
   left: 50%;
   width: 60%;
   height: 2px;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  background: linear-gradient(90deg, var(--brand), var(--color-brand-300));
   transform: translateX(-50%);
   border-radius: 1px;
 }
@@ -519,7 +420,7 @@ body {
   --toastify-color-success: #10b981;
   --toastify-color-warning: #f59e0b;
   --toastify-color-error: #ef4444;
-  --toastify-color-info: #6366f1;
+  --toastify-color-info: var(--primary);
 }
 
 .Toastify__toast {

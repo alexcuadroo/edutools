@@ -21,7 +21,14 @@ import {
   AlertCircle,
   LetterText,
   Keyboard,
+  Sparkles,
+  Pause,
+  Play,
+  Terminal,
+  MessageSquare,
+  ShieldCheck,
 } from "lucide-react";
+import { DitheringBackground } from "@/components/ui/DitheringBackground";
 import { loadPuzzle } from "@/lib/share/api";
 import { PUZZLE_TYPE_TO_SLUG } from "@/lib/puzzles/slugs";
 import type { PlayablePuzzleType } from "@/lib/share/types";
@@ -54,6 +61,7 @@ export default function HomePage() {
   const [error, setError] = useState("");
   const [promptCopied, setPromptCopied] = useState(false);
   const [promptCopyError, setPromptCopyError] = useState(false);
+  const [animationPaused, setAnimationPaused] = useState(false);
   const navigate = useNavigate();
   const authStatus = useAuthStore((state) => state.status);
   const integrationsHref = authStatus === "anon" ? "/crear-cuenta" : "/integraciones";
@@ -95,37 +103,42 @@ export default function HomePage() {
   };
 
   return (
-    <div className="py-6 sm:py-10">
-      <section className="home-hero relative overflow-hidden rounded-4xl border px-5 py-8 shadow-[0_28px_80px_-42px_rgba(67,56,202,0.45)] sm:px-10 sm:py-12" aria-labelledby="home-title">
-        <div className="landing-orb pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-violet-100/70 blur-3xl" aria-hidden="true" />
-        <div className="landing-orb pointer-events-none absolute -bottom-32 -left-24 h-64 w-64 rounded-full bg-sky-100/70 blur-3xl" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-12">
-          <div className="max-w-xl">
-            <h1 id="home-title" className="home-hero-title text-balance text-4xl font-bold tracking-[-0.04em] sm:text-6xl">
-              Aprender jugando empieza acá.
+    <div className="pb-6 pt-1 sm:pt-3">
+      <section className="home-hero relative isolate overflow-hidden rounded-[1.75rem] px-5 pt-6 sm:rounded-[2rem] sm:px-10 sm:pt-8 lg:px-12" aria-labelledby="home-title">
+        <DitheringBackground paused={animationPaused} />
+        <div className="pointer-events-none absolute inset-0 bg-[#fbfaf8]/45 bg-[linear-gradient(90deg,rgba(251,250,248,0.9),rgba(251,250,248,0.55)_38%,transparent_75%)] lg:bg-transparent" aria-hidden="true" />
+        <div className="relative flex items-center justify-between gap-4">
+          <p className="flex items-center gap-2.5 font-mono text-[10px] font-medium tracking-[0.15em] text-[#74618e] sm:text-xs"><span className="h-2 w-2 bg-[#518464]" aria-hidden="true" /> UN POCO DE CURIOSIDAD. MUCHO JUEGO.</p>
+          <button type="button" onClick={() => setAnimationPaused((value) => !value)} aria-label={animationPaused ? "Reanudar animación del fondo" : "Pausar animación del fondo"} aria-pressed={animationPaused} className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[#dcd3e7] text-[#74618e] transition-colors hover:bg-[#ede7f5] motion-reduce:hidden">
+            {animationPaused ? <Play className="h-3.5 w-3.5" aria-hidden="true" /> : <Pause className="h-3.5 w-3.5" aria-hidden="true" />}
+          </button>
+        </div>
+        <div className="relative grid gap-10 pb-12 pt-10 sm:pt-12 lg:grid-cols-[1.12fr_1fr] lg:items-center lg:gap-14 lg:pb-14">
+          <div>
+            <h1 id="home-title" className="text-[clamp(3.6rem,7.5vw,6.25rem)] font-[850] leading-[0.98] tracking-[-0.065em] text-[#282332]">
+              Aprender<br />es un <span className="relative inline-block text-brand">juego<span className="text-[#488364]">.</span><svg className="absolute -bottom-3 left-0 h-3 w-full text-brand" viewBox="0 0 240 12" fill="none" aria-hidden="true"><path d="M2 9C55 1 154 0 237 5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg></span>
             </h1>
-            <p className="home-hero-description mt-5 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
-              Elegí cómo querés continuar: jugá una actividad que te compartieron o creá una nueva para tu clase.
-            </p>
+            <p className="mt-8 max-w-[23rem] text-pretty text-base leading-relaxed text-[#696273] sm:text-lg">Transformá lo que enseñás en algo que quieran jugar. Creá, compartí y despertá la curiosidad.</p>
+            <a href="#actividades" className="mt-7 inline-flex min-h-12 items-center justify-center gap-4 rounded-xl bg-primary px-5 text-sm font-extrabold text-white no-underline transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-[0_6px_24px_#7053a730]">Crear una actividad <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+            <p className="mt-4 flex items-center gap-2 text-xs text-[#746b7e]"><Check className="h-3.5 w-3.5 text-[#488364]" aria-hidden="true" /> Gratis. Sin instalar nada. A tu manera.</p>
           </div>
 
-          <section className="student-entry rounded-3xl bg-indigo-600 p-5 text-white shadow-[0_20px_50px_-24px_rgba(129,140,248,0.9)] sm:p-7" aria-labelledby="student-title">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15"><Gamepad2 className="h-6 w-6" aria-hidden="true" /></span>
-              <div>
-                <p className="text-sm font-semibold text-indigo-100">Para estudiantes</p>
-                <h2 id="student-title" className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">¿Tenés un código?</h2>
-              </div>
+          <section className="student-entry relative rounded-2xl p-6 sm:p-8 lg:mt-8" aria-labelledby="student-title">
+            <div className="absolute -top-4 right-5 rotate-[7deg] rounded-md border border-[#33265c] bg-[#d1c3ff] px-3 py-1.5 font-mono text-[10px] font-bold tracking-wider text-[#33265c] shadow-sm">¡TU TURNO!</div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-primary"><Gamepad2 className="h-6 w-6" aria-hidden="true" /></span>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#746c82]">Para mentes curiosas</p>
             </div>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-indigo-100">Pegalo acá y entrá directo a tu puzzle. No necesitás cuenta.</p>
+            <h2 id="student-title" className="mt-6 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#242033]">¿Tenés un código?</h2>
+            <p className="mt-2 text-sm leading-relaxed text-[#6b6477]">Tu próximo desafío empieza acá.<br />Ingresá el código y entrá a jugar.</p>
             <form className="mt-6" onSubmit={handlePlay} noValidate>
-              <label htmlFor="home-puzzle-code" className="sr-only">Código del puzzle</label>
-              <div className="flex flex-col gap-2.5 sm:flex-row">
+              <label htmlFor="home-puzzle-code" className="mb-2 block text-xs font-bold text-[#4b435d]">Código del puzzle</label>
+              <div className="flex flex-col gap-3">
                 <input
                   id="home-puzzle-code"
                   value={code}
                   onChange={(event) => { setCode(event.target.value.toUpperCase()); if (error) setError(""); }}
-                  placeholder="CÓDIGO DE 8 CARACTERES"
+                  placeholder="Ej. A1B2C3D4"
                   maxLength={8}
                   aria-invalid={Boolean(error)}
                   aria-describedby={error ? "home-code-error" : "home-code-help"}
@@ -134,89 +147,34 @@ export default function HomePage() {
                   spellCheck={false}
                   enterKeyHint="go"
                   disabled={loading}
-                  className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-slate-950/80 px-4 text-center font-mono text-base font-bold tracking-[0.14em] text-white outline-none placeholder:text-xs placeholder:font-semibold placeholder:tracking-normal placeholder:text-slate-400 focus:border-amber-200 disabled:opacity-60 sm:text-left"
+                  className="min-h-14 min-w-0 rounded-lg border border-[#d9d4e2] bg-[#efedf2] px-4 text-center font-mono text-lg font-semibold tracking-[0.18em] text-[#332846] outline-none transition-colors placeholder:text-sm placeholder:font-normal placeholder:tracking-[0.12em] placeholder:text-[#8c8399] focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
-                <button type="submit" disabled={loading || !isCodeComplete} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-300 px-6 text-sm font-bold text-amber-950 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0">
-                  {loading ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Buscando…</> : <>Jugar <ArrowRight className="h-4 w-4" aria-hidden="true" /></>}
+                <button type="submit" disabled={loading || !isCodeComplete} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-3 rounded-lg bg-primary px-6 text-sm font-bold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-[#e4dfed] disabled:text-[#8a809d]">
+                  {loading ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Buscando…</> : <>Vamos a jugar <ArrowRight className="h-4 w-4" aria-hidden="true" /></>}
                 </button>
               </div>
-              <p id="home-code-help" className="mt-2 text-xs text-indigo-100">El código tiene 8 caracteres. Si tenés un enlace, abrilo directamente.</p>
-              {error && <p id="home-code-error" role="alert" className="mt-3 flex items-start gap-2 rounded-lg bg-red-950/25 p-2.5 text-sm text-white"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{error}</p>}
+              <p id="home-code-help" className="mt-3 text-center text-[11px] leading-relaxed text-[#746a82]">8 caracteres. Cero vueltas. No necesitás cuenta.</p>
+              {error && <p id="home-code-error" role="alert" className="mt-3 flex items-start gap-2 rounded-lg bg-[#ffe6e4] p-2.5 text-sm text-[#9c2835]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{error}</p>}
             </form>
           </section>
-
-          <section className="home-hero-teacher border-t pt-6 lg:col-span-2 lg:flex lg:items-center lg:justify-between lg:gap-8" aria-labelledby="teacher-title">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-300 text-emerald-950"><BookOpenCheck className="h-6 w-6" aria-hidden="true" /></span>
-              <div>
-                <p className="text-sm font-semibold text-emerald-700">Para docentes</p>
-                <h2 id="teacher-title" className="home-hero-title mt-1 text-xl font-bold">Creá una actividad</h2>
-                <p className="home-hero-description mt-2 max-w-xl text-sm leading-relaxed">Generá, imprimí o compartí puzzles para tu grupo. Guardar es opcional.</p>
-              </div>
-            </div>
-            <a href="#actividades" className="home-hero-cta mt-5 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold no-underline transition-colors lg:mt-0">
-              Crear un puzzle <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </section>
+        </div>
+        <div className="relative flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-[#dcd4e5] py-5">
+          <p className="flex items-center gap-2.5 text-xs font-semibold text-[#696073]"><BookOpenCheck className="h-4 w-4 text-[#488364]" aria-hidden="true" /> Hecho para enseñar. Diseñado para jugar.</p>
+          <p className="flex items-center gap-2 font-mono text-[10px] tracking-wide text-[#76648c]"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> {PUZZLES.length} formatos · infinitas ideas</p>
         </div>
       </section>
-
-      <section className="mcp-promo mx-auto mt-8 grid max-w-5xl gap-6 overflow-hidden rounded-3xl border border-indigo-100 p-5 shadow-[0_22px_65px_-42px_rgba(67,56,202,0.55)] sm:p-8 lg:grid-cols-[1fr_0.9fr] lg:items-center" aria-labelledby="mcp-title">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-800">
-            <Bot className="h-4 w-4" aria-hidden="true" /> Nuevo · MCP
-          </div>
-          <h2 id="mcp-title" className="mt-4 max-w-xl text-balance text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
-            Creá puzzles desde tu LLM favorito
-          </h2>
-          <p className="mt-3 max-w-xl text-pretty text-sm leading-relaxed text-slate-600 sm:text-base">
-            Conectá EduTools a un cliente compatible con MCP. Pedí una actividad con tus propias palabras: EduTools la genera, la guarda en tu cuenta y te devuelve el enlace para jugar.
-          </p>
-          <ol className="mt-5 grid gap-3 text-sm text-slate-700 sm:grid-cols-3 lg:grid-cols-1">
-            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">1</span>Creá tu token de conexión.</li>
-            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">2</span>Conectá el servidor MCP en tu LLM.</li>
-            <li className="flex items-center gap-2"><span className="mcp-promo-step inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-950">3</span>Pedí un puzzle y recibí su link.</li>
-          </ol>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link to={integrationsHref} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md">
-              {authStatus === "auth" ? "Configurar MCP" : authStatus === "anon" ? "Crear cuenta y conectar" : "Conectar MCP"}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            {authStatus === "anon" && <Link to="/iniciar-sesion" className="min-h-11 content-center text-sm font-semibold text-indigo-800 underline decoration-indigo-300 underline-offset-4 hover:text-indigo-950">Ya tengo cuenta</Link>}
-          </div>
-          <p className="mt-3 text-xs text-slate-500">Tu contraseña no se comparte con el LLM. Usás un token que podés revocar cuando quieras.</p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Probalo en tu chat</p>
-              <h3 className="mt-1 font-semibold text-slate-950">Copiá este mini prompt</h3>
-            </div>
-            <button type="button" onClick={() => void handleCopyMcpPrompt()} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 px-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-indigo-600">
-              {promptCopied ? <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
-              {promptCopied ? "Copiado" : "Copiar prompt"}
-            </button>
-          </div>
-          <pre className="mt-4 max-h-64 overflow-auto whitespace-pre-wrap rounded-xl bg-slate-950 p-4 font-mono text-xs leading-relaxed text-slate-100 sm:text-sm">{MCP_PROMPT}</pre>
-          <p aria-live="polite" className={`mt-2 min-h-5 text-xs ${promptCopyError ? "text-red-700" : "text-slate-500"}`}>
-            {promptCopyError ? "No se pudo copiar. Seleccioná el texto para copiarlo manualmente." : promptCopied ? "Prompt copiado. Pegalo en tu LLM después de conectar EduTools." : "Primero conectá EduTools con el token de tu cuenta."}
-          </p>
-        </div>
-      </section>
-
-      <section id="actividades" className="mx-auto max-w-5xl scroll-mt-24 py-16 sm:py-24" aria-labelledby="catalog-title">
+      <section id="actividades" className="mx-auto scroll-mt-24 py-12 sm:py-16" aria-labelledby="catalog-title">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
             <p className="text-sm font-semibold text-indigo-700">Para docentes</p>
-            <h2 id="catalog-title" className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Elegí el tipo de actividad</h2>
+            <h2 id="catalog-title" className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Tu próxima gran idea empieza con un juego.</h2>
           </div>
         </div>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PUZZLES.map((puzzle) => {
             const Icon = puzzle.icon;
             return (
-              <Link key={puzzle.path} to={puzzle.path} className="group rounded-2xl border border-slate-200 bg-white p-5 no-underline shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_18px_35px_-24px_rgba(67,56,202,0.8)] focus-visible:-translate-y-1">
+              <Link key={puzzle.path} to={puzzle.path} className="group rounded-2xl border border-slate-200 bg-white p-5 no-underline shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_18px_35px_-24px_rgba(139,101,197,0.4)] focus-visible:-translate-y-1">
                 <div className="flex items-start gap-3">
                   <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 transition-colors group-hover:bg-indigo-600 group-hover:text-white"><Icon className="h-5 w-5" aria-hidden="true" /></span>
                   <div>
@@ -228,6 +186,78 @@ export default function HomePage() {
               </Link>
             );
           })}
+        </div>
+      </section>
+
+      <section className="mcp-promo mb-12 grid gap-10 overflow-hidden rounded-3xl border border-brand-200 p-5 sm:p-8 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-12 lg:p-10" aria-labelledby="mcp-title">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> Tu asistente + EduTools
+          </div>
+          <h2 id="mcp-title" className="mt-5 max-w-xl text-balance text-3xl font-extrabold leading-[1.12] tracking-[-0.04em] text-[#282332] sm:text-4xl">
+            Vos ponés la idea.<br /><span className="text-brand">Tu chat, el primer paso.</span>
+          </h2>
+          <p className="mt-3 max-w-xl text-pretty text-sm leading-relaxed text-slate-600 sm:text-base">
+            Creá puzzles desde tu asistente de IA favorito. Conectalo a EduTools con MCP, pedile una actividad con tus palabras y recibí el enlace para jugar.
+          </p>
+          <ol className="mt-7 grid gap-4 text-sm text-slate-700">
+            <li className="flex items-center gap-3"><span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand-200 bg-white font-mono text-xs font-semibold text-primary">01</span>Creá tu token de conexión.</li>
+            <li className="flex items-center gap-3"><span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand-200 bg-white font-mono text-xs font-semibold text-primary">02</span>Conectá EduTools a tu asistente.</li>
+            <li className="flex items-center gap-3"><span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand-200 bg-white font-mono text-xs font-semibold text-primary">03</span>Pedí un puzzle. Compartí el juego.</li>
+          </ol>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link to={integrationsHref} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md">
+              {authStatus === "auth" ? "Configurar MCP" : authStatus === "anon" ? "Crear cuenta y conectar" : "Conectar MCP"}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            {authStatus === "anon" && <Link to="/iniciar-sesion" className="min-h-11 content-center text-sm font-semibold text-indigo-800 underline decoration-indigo-300 underline-offset-4 hover:text-indigo-950">Ya tengo cuenta</Link>}
+          </div>
+          <p className="mt-5 flex max-w-sm items-start gap-2 text-xs leading-relaxed text-slate-500"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />Tu contraseña se queda con vos. Usás un token que podés revocar cuando quieras.</p>
+        </div>
+
+        <div className="min-w-0">
+          <div className="overflow-hidden rounded-2xl border border-[#352b49] bg-[#17131f] shadow-[0_18px_45px_-20px_#4c356b60]">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-[#211a2c] px-4 py-3.5">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5" aria-hidden="true"><span className="h-2 w-2 rounded-full bg-[#c6afe2]" /><span className="h-2 w-2 rounded-full bg-[#8b65c5]" /><span className="h-2 w-2 rounded-full bg-[#518464]" /></div>
+                <span className="flex items-center gap-2 font-mono text-[11px] text-[#c8bbda]"><Terminal className="h-3.5 w-3.5" aria-hidden="true" /> edutools / chat</span>
+              </div>
+              <span className="rounded border border-white/15 px-1.5 py-0.5 font-mono text-[9px] tracking-widest text-[#bbaeC9]">DEMO</span>
+            </div>
+            <div className="space-y-6 p-4 sm:p-5" aria-label="Ejemplo de conversación con EduTools">
+              <div className="ml-5 rounded-xl rounded-tr-sm border border-[#6f52924d] bg-[#342440] p-4">
+                <p className="mb-2 flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-widest text-[#c6afe2]"><MessageSquare className="h-3 w-3" aria-hidden="true" /> Vos</p>
+                <p className="text-sm leading-relaxed text-[#f0e8f8]">Creá una sopa de letras de animales de granja con gallina, vaca, oveja y caballo. Guardala y pasame el enlace para jugar.</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#bba0df40] bg-[#8b65c526] text-[#c6afe2]"><Bot className="h-4 w-4" aria-hidden="true" /></span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-[#c6afe2]">Tu asistente</p>
+                  <p className="mt-1.5 text-sm text-[#e1d8eb]">¡Listo! Tu idea ya tiene forma de juego.</p>
+                  <div className="mt-3 rounded-xl border border-[#51405f] bg-[#241d2d] p-4">
+                    <p className="flex items-center gap-1.5 font-mono text-[10px] text-[#a9d6ba]"><Check className="h-3 w-3" aria-hidden="true" /> Actividad generada</p>
+                    <p className="mt-2.5 font-bold text-[#f8f4fc]">Animales de granja</p>
+                    <p className="mt-1 text-xs text-[#b5a8c4]">Sopa de letras · 4 palabras</p>
+                    <p className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3 text-xs font-medium text-[#d4baf6]"><Link2 className="h-3.5 w-3.5" aria-hidden="true" /> Enlace listo para compartir</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 bg-[#211a2c] px-4 py-3">
+              <span className="font-mono text-[10px] text-[#b9acc8]">Probalo en tu asistente</span>
+              <button type="button" onClick={() => void handleCopyMcpPrompt()} className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-[#ac8bd44d] bg-[#8b65c526] px-3 text-xs font-semibold text-[#e1d0f5] transition-colors hover:bg-[#8b65c540] focus-visible:outline-[#c6afe2]">
+                {promptCopied ? <Check className="h-3.5 w-3.5 text-[#a9d6ba]" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+                {promptCopied ? "Copiado" : "Copiar prompt"}
+              </button>
+            </div>
+          </div>
+          <p aria-live="polite" className={`mt-3 min-h-5 text-[11px] leading-relaxed ${promptCopyError ? "text-red-700" : "text-slate-500"}`}>
+            {promptCopyError ? "No se pudo copiar. Abrí el prompt de abajo para copiarlo manualmente." : promptCopied ? "Prompt copiado. Pegalo en tu asistente después de conectar EduTools." : "Conversación de ejemplo. Conectá tu cuenta para crear el tuyo."}
+          </p>
+          <details className="mt-1 text-xs text-primary">
+            <summary className="inline-flex min-h-8 cursor-pointer items-center underline decoration-brand-200 underline-offset-4">Ver prompt completo</summary>
+            <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-brand-200 bg-white p-3 font-mono text-[11px] leading-relaxed text-slate-700">{MCP_PROMPT}</pre>
+          </details>
         </div>
       </section>
 
