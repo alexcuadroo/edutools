@@ -3,8 +3,11 @@
 Este Worker contiene el Durable Object `PuzzleProgress`, uno por puzzle compartido. Pages lo consume mediante el binding `PROGRESS` definido en el `wrangler.toml` raíz.
 
 ```powershell
+pnpm generate:worker-types
 pnpm exec wrangler deploy --config progress-worker/wrangler.jsonc
 ```
+
+Los tipos se generan desde `progress-worker/wrangler.jsonc` y corresponden a su fecha de compatibilidad y bindings. El build de la raíz los regenera automáticamente; el archivo generado se escribe en `progress-worker/worker-configuration.d.ts`.
 
 El Worker productivo se llama `edutools-progress`. Si cambiás código en este directorio, volvé a ejecutar el deploy anterior; los deploys automáticos de Cloudflare Pages no despliegan Workers separados.
 

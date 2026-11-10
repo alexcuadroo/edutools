@@ -3,13 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@11.4.0",
   "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=10.0.0"
+    "node": ">=22.13.0",
+    "pnpm": "11.4.0"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm generate:worker-types && tsc -b && vite build",
+    "generate:worker-types": "wrangler types --config progress-worker/wrangler.jsonc progress-worker/worker-configuration.d.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
@@ -52,6 +54,6 @@
     "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.5",
     "workbox-window": "^7.4.1",
-    "wrangler": "^4.151.3"
+    "wrangler": "^4.160.0"
   }
 }
