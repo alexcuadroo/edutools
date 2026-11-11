@@ -39,7 +39,7 @@ Generador de puzzles educativos para docentes y estudiantes. Creá puzzles, expo
 
 ## Instalación
 
-Usá **Node.js >=26.13.1** (versión de referencia en `.node-version`) y **pnpm 11.4.0**, fijado en `package.json` mediante `packageManager` y `engines`. Todas las operaciones de dependencias se hacen con pnpm.
+Usá **Node.js >=26.13.0** (versión de referencia en `.node-version`) y **pnpm 11.4.0**, fijado en `package.json` mediante `packageManager` y `engines`. Todas las operaciones de dependencias se hacen con pnpm.
 
 ```bash
 node --version
