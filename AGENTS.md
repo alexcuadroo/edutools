@@ -4,7 +4,7 @@
 
 Always use **pnpm** (version 11.4.0) for all package management operations. Do not use npm or yarn.
 
-Usar **Node.js >=22.13.0**; `.node-version` define la versión de referencia. Mantener estas instrucciones alineadas con `packageManager` y `engines` en `package.json`.
+Usar **Node.js >=26.13.1**; `.node-version` define la versión de referencia. Mantener estas instrucciones alineadas con `packageManager` y `engines` en `package.json`.
 
 Instalar con `pnpm install` (en CI: `pnpm install --frozen-lockfile`). Versionar `pnpm-lock.yaml` y los cambios intencionales de políticas en `pnpm-workspace.yaml` junto con las dependencias. Ejecutar herramientas locales con `pnpm exec`, incluido Wrangler, para usar la versión instalada en el proyecto.
 
